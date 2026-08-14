@@ -1,10 +1,13 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, ArrowLeft, Loader2, LogIn } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+
 
 export const Route = createFileRoute('/login')({
   head: () => ({
@@ -21,10 +24,20 @@ export const Route = createFileRoute('/login')({
 });
 
 function LoginPage() {
+  const { redirect } = Route.useSearch() as { redirect?: string };
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        navigate({ to: redirect || '/' as any });
+      }
+    });
+  }, [navigate, redirect]);
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -38,14 +51,36 @@ function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
       setIsLoading(true);
-      // Logic for authentication will be connected later
-      setTimeout(() => setIsLoading(false), 1500);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        setIsLoading(false);
+      }
     }
   };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      }
+    });
+    if (error) {
+      toast.error(error.message);
+      setIsLoading(false);
+    }
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 py-12">
@@ -77,14 +112,11 @@ function LoginPage() {
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="w-full" disabled={isLoading}>
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
-              <Button variant="outline" className="w-full" disabled={isLoading}>
+              <Button variant="outline" className="w-full" disabled={isLoading} onClick={handleGoogleLogin}>
                 <Mail className="mr-2 h-4 w-4" />
                 Google
               </Button>
+
             </div>
             
             <div className="relative">
