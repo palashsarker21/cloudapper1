@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, PackageSearch, CreditCard } from "lucide-react";
+import { ArrowRight, PackageSearch } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export const Hero = () => {
   return (
@@ -26,13 +27,17 @@ export const Hero = () => {
           </p>
           
           <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Button size="lg" className="h-12 px-8 text-base">
-              Explore Marketplace
-              <ArrowRight className="ml-2 h-4 w-4" />
+            <Button size="lg" className="h-12 px-8 text-base" asChild>
+              <Link href="/">
+                Explore Marketplace
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
-            <Button variant="outline" size="lg" className="h-12 px-8 text-base">
-              <PackageSearch className="mr-2 h-4 w-4" />
-              Track Order
+            <Button variant="outline" size="lg" className="h-12 px-8 text-base" asChild>
+              <Link href="/track-order">
+                <PackageSearch className="mr-2 h-4 w-4" />
+                Track Order
+              </Link>
             </Button>
           </div>
 
