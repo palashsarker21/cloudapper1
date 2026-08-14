@@ -26,6 +26,7 @@ export const Header = () => {
     { label: "Digital Products", href: "/" },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
     { label: "Pricing", href: "/" },
+    { label: "Settings", href: "/admin/settings" },
     { label: "Support", href: "/" },
   ];
 

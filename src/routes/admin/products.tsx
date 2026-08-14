@@ -34,12 +34,24 @@ function AdminProductsPage() {
             <h1 className="text-3xl font-bold">Manage Products</h1>
             <p className="text-muted-foreground">Add and edit products in your marketplace.</p>
           </div>
-          <Button asChild>
-            <Link to="/admin/products/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/admin/settings">
+                Settings
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/admin/orders">
+                Orders
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link to="/admin/products/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Product
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <Card>

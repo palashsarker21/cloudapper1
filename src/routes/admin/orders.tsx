@@ -113,6 +113,18 @@ function AdminOrdersPage() {
             <h1 className="text-3xl font-bold tracking-tight">Order Management</h1>
             <p className="text-muted-foreground">Manage customer orders and verify payments.</p>
           </div>
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/admin/settings">
+                Settings
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/admin/products">
+                Products
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <Card>
