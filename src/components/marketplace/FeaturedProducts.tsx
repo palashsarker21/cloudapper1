@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
 
 export interface Product {
   id: string;
@@ -66,45 +69,30 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 };
 
 export const FeaturedProducts = () => {
-  // Empty state if no data, but here we provide some demo data as per "foundation"
-  const products: Product[] = [
-    {
-      id: "1",
-      name: "Midjourney Prompt Library",
-      category: "Prompts",
-      price: 19.99,
-      rating: 4.8,
-      reviews: 124,
-      image: "https://images.unsplash.com/photo-1675557009875-436f49d7af8f?auto=format&fit=crop&q=80&w=400",
-    },
-    {
-      id: "2",
-      name: "ChatGPT Plus 1-Month Credit",
-      category: "AI Credits",
-      price: 22.00,
-      rating: 4.9,
-      reviews: 856,
-      image: "https://images.unsplash.com/photo-1673172496993-48b4882c89f2?auto=format&fit=crop&q=80&w=400",
-    },
-    {
-      id: "3",
-      name: "Automated SEO Tool Suite",
-      category: "AI Tools",
-      price: 49.00,
-      rating: 4.7,
-      reviews: 56,
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400",
-    },
-    {
-      id: "4",
-      name: "Modern UI Kit for React",
-      category: "Templates",
-      price: 35.00,
-      rating: 4.6,
-      reviews: 89,
-      image: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?auto=format&fit=crop&q=80&w=400",
-    },
-  ];
+  const { data: products, isLoading } = useQuery({
+    queryKey: ['featured-products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, categories(name)')
+        .eq('is_active', true)
+        .eq('is_featured', true)
+        .limit(4);
+      
+      if (error) throw error;
+      
+      return data.map(p => ({
+        id: p.id,
+        name: p.name,
+        category: (p.categories as any)?.name || 'Product',
+        price: Number(p.price),
+        rating: 5.0, // Default for new products
+        reviews: 0,
+        image: p.image_url || "https://images.unsplash.com/photo-1675557009875-436f49d7af8f?auto=format&fit=crop&q=80&w=400",
+      }));
+    }
+  });
+
 
   return (
     <section className="py-16">
@@ -123,7 +111,13 @@ export const FeaturedProducts = () => {
           </Button>
         </div>
 
-        {products.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-80 rounded-xl border bg-background animate-pulse" />
+            ))}
+          </div>
+        ) : products && products.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
