@@ -281,6 +281,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_license: {
+        Args: { p_product_id: string; p_user_id: string }
+        Returns: string
+      }
+      decrement_stock: {
+        Args: { p_product_id: string; p_quantity: number }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
