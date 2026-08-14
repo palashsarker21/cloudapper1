@@ -19,7 +19,7 @@ export const createOrder = createServerFn({ method: "POST" })
   .inputValidator((data) => createOrderSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { items, customerEmail, customerName, couponCode, notes } = data;
-    const userId = context.userId;
+    const userId = context?.userId;
 
     if (!userId) {
       throw new Error("Unauthorized");
