@@ -24,7 +24,9 @@ import {
   XCircle,
   Package
 } from 'lucide-react';
+import { Logo } from '@/components/marketplace/Logo';
 import { toast } from 'sonner';
+
 
 export const Route = createFileRoute('/admin/fulfillment')({
   head: () => ({
@@ -73,10 +75,14 @@ function AdminFulfillmentPage() {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Fulfillment Center</h1>
-            <p className="text-muted-foreground">Monitor and manage digital product deliveries.</p>
+          <div className="flex items-center gap-4">
+            <Logo variant="icon" className="h-10 w-10" />
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Fulfillment Center</h1>
+              <p className="text-muted-foreground">Monitor and manage digital product deliveries.</p>
+            </div>
           </div>
+
           <div className="flex gap-2">
             <Button variant="outline" asChild>
               <Link to="/admin/orders">Orders</Link>

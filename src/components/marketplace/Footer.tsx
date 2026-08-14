@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { Mail, Globe, MessageSquare, Info, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Logo } from "./Logo";
+
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -11,9 +13,10 @@ export const Footer = () => {
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <Link to="/" className="text-2xl font-bold text-primary">
-              CloudApper
+            <Link to="/">
+              <Logo />
             </Link>
+
             <p className="mt-4 text-sm text-muted-foreground">
               The premier marketplace for AI tools, digital credits, and professional software resources. Elevate your productivity today.
             </p>

@@ -1,4 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { Logo } from '@/components/marketplace/Logo';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -94,9 +96,11 @@ function LoginPage() {
 
       <div className="w-full max-w-[400px] space-y-6">
         <div className="flex flex-col items-center text-center space-y-2">
-          <Link to="/" className="text-3xl font-bold tracking-tight text-primary">
-            CloudApper
+          <Link to="/" className="mb-4 transform transition-transform hover:scale-105 active:scale-95">
+            <Logo variant="full" className="h-14 w-auto drop-shadow-2xl" />
           </Link>
+
+
           <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
           <p className="text-sm text-muted-foreground">
             Enter your credentials to access your account

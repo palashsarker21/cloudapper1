@@ -29,7 +29,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
 
-    <Card className="group overflow-hidden border bg-background transition-all hover:shadow-lg flex flex-col">
+    <Card className="group overflow-hidden border bg-background transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col rounded-2xl">
       <CardHeader className="p-0">
         <Link to="/product/$productId" params={{ productId: product.id }} className="block relative aspect-[4/3] overflow-hidden bg-muted">
           <img

@@ -12,8 +12,10 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Loader2, Save, CheckCircle2, XCircle, Globe, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Logo } from "@/components/marketplace/Logo";
 import { Header } from "@/components/marketplace/Header";
 import { Footer } from "@/components/marketplace/Footer";
+
 
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({
@@ -100,10 +102,14 @@ function AdminSettings() {
       <Header />
       <main className="flex-grow container mx-auto py-10 px-4 space-y-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">System Settings</h1>
-            <p className="text-muted-foreground">Manage payment providers and marketplace configuration.</p>
+          <div className="flex items-center gap-4">
+            <Logo variant="icon" className="h-10 w-10" />
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">System Settings</h1>
+              <p className="text-muted-foreground">Manage payment providers and marketplace configuration.</p>
+            </div>
           </div>
+
           <Button onClick={handleSave} disabled={updateMutation.isPending}>
             {updateMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Save Changes

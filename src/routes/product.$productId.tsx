@@ -22,9 +22,11 @@ import {
   Loader2,
   Check
 } from 'lucide-react';
+import { Logo } from '@/components/marketplace/Logo';
 import { useCart } from '@/contexts/CartContext';
 import { useState } from 'react';
 import { toast } from 'sonner';
+
 
 
 
@@ -124,10 +126,15 @@ function ProductDetailPage() {
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         {/* Breadcrumb / Back button */}
         <div className="mb-8">
-          <Link to="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            Back to Marketplace
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              <ChevronLeft className="mr-1 h-4 w-4" />
+              Back to Marketplace
+            </Link>
+            <Separator orientation="vertical" className="h-4" />
+            <Logo variant="wordmark" />
+          </div>
+
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">

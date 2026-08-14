@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { Plus, Package, Edit, Trash2 } from 'lucide-react';
+import { Logo } from '@/components/marketplace/Logo';
+
 
 export const Route = createFileRoute('/admin/products')({
   head: () => ({
@@ -34,10 +36,14 @@ function AdminProductsPage() {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Manage Products</h1>
-            <p className="text-muted-foreground">Add and edit products in your marketplace.</p>
+          <div className="flex items-center gap-4">
+            <Logo variant="icon" className="h-10 w-10" />
+            <div>
+              <h1 className="text-3xl font-bold">Manage Products</h1>
+              <p className="text-muted-foreground">Add and edit products in your marketplace.</p>
+            </div>
           </div>
+
           <div className="flex gap-2">
             <Button variant="outline" asChild>
               <Link to="/admin/settings">

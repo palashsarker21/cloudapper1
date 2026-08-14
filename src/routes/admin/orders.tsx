@@ -35,7 +35,9 @@ import {
   AlertCircle,
   Eye
 } from 'lucide-react';
+import { Logo } from '@/components/marketplace/Logo';
 import { useState } from 'react';
+
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/orders')({
@@ -113,10 +115,14 @@ function AdminOrdersPage() {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Order Management</h1>
-            <p className="text-muted-foreground">Manage customer orders and verify payments.</p>
+          <div className="flex items-center gap-4">
+            <Logo variant="icon" className="h-10 w-10" />
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Order Management</h1>
+              <p className="text-muted-foreground">Manage customer orders and verify payments.</p>
+            </div>
           </div>
+
           <div className="flex gap-2">
             <Button variant="outline" asChild>
               <Link to="/admin/settings">

@@ -75,10 +75,11 @@ export const ProcessSection = () => {
                  className="h-full w-full object-cover opacity-80"
                />
             </div>
-            <div className="absolute -bottom-6 -left-6 h-32 w-32 rounded-2xl bg-primary p-6 text-primary-foreground shadow-xl">
+            <div className="absolute -bottom-6 -left-6 h-32 w-32 rounded-3xl bg-[var(--brand-gradient)] p-6 text-white shadow-[var(--brand-glow)]">
                <div className="text-4xl font-bold italic">10k+</div>
                <div className="text-xs font-medium uppercase tracking-wider opacity-90">Happy Users</div>
             </div>
+
           </div>
         </div>
 
@@ -93,9 +94,10 @@ export const ProcessSection = () => {
                 {index < steps.length - 1 && (
                   <div className="absolute top-8 left-[60%] hidden w-full border-t border-dashed border-muted-foreground/30 md:block" />
                 )}
-                <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary bg-background text-xl font-bold text-primary">
+                <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border bg-[var(--brand-gradient)] text-white shadow-[var(--brand-glow)] text-xl font-bold">
                   {step.icon}
                 </div>
+
                 <h3 className="mt-6 font-semibold text-foreground">{step.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
               </div>
