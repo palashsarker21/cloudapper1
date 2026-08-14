@@ -113,7 +113,7 @@ function AdminSettings() {
               description="Bangladesh's leading mobile financial service."
               data={localSettings.bkash}
               onToggle={() => handleToggle('bkash')}
-              onChange={(field, val) => handleChange('bkash', field, val)}
+              onChange={(field: string, val: string) => handleChange('bkash', field, val)}
               configured={isConfigured(localSettings.bkash)}
               fields={[
                 { id: 'app_key', label: 'App Key', type: 'password' },
