@@ -75,7 +75,7 @@ export const FeaturedProducts = () => {
       const { data, error } = await supabase
         .from('products')
         .select('*, categories(name)')
-        .eq('is_active', true)
+        .eq('status', 'active')
         .eq('is_featured', true)
         .limit(4);
       

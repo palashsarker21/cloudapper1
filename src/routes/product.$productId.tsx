@@ -45,6 +45,7 @@ function ProductDetailPage() {
         .from('products')
         .select('*, categories(name)')
         .eq('id', productId)
+        .eq('status', 'active')
         .single();
       
       if (error) throw error;
