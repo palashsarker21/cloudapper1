@@ -96,9 +96,10 @@ function LoginPage() {
 
       <div className="w-full max-w-[400px] space-y-6">
         <div className="flex flex-col items-center text-center space-y-2">
-          <Link to="/" className="mb-4">
-            <Logo variant="full" className="h-12 w-auto" />
+          <Link to="/" className="mb-4 transform transition-transform hover:scale-105 active:scale-95">
+            <Logo variant="full" className="h-14 w-auto drop-shadow-2xl" />
           </Link>
+
 
           <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
           <p className="text-sm text-muted-foreground">
