@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const orderItemSchema = z.object({
   productId: z.string().uuid(),
@@ -16,14 +17,11 @@ const createOrderSchema = z.object({
 });
 
 export const createOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data) => createOrderSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { items, customerEmail, customerName, couponCode, notes } = data;
-    const userId = context?.userId;
-
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = context.userId;
 
     // 1. Fetch products and validate status/inventory
     const productIds = items.map((item) => item.productId);
@@ -44,7 +42,7 @@ export const createOrder = createServerFn({ method: "POST" })
       
       // Inventory check
       if (product.inventory_type === "finite") {
-        if (product.stock_quantity! < item.quantity) {
+        if (Number(product.stock_quantity || 0) < item.quantity) {
           throw new Error(`Product "${product.name}" is out of stock.`);
         }
       } else if (product.inventory_type === "license") {
@@ -104,13 +102,13 @@ export const createOrder = createServerFn({ method: "POST" })
       .insert({
         customer_id: userId,
         customer_email: customerEmail,
-        customer_name: customerName,
+        customer_name: customerName ?? null,
         subtotal,
         discount_amount: discountAmount,
         total,
         status: "pending",
         coupon_id: couponId,
-        notes,
+        notes: notes ?? null,
       })
       .select()
       .single();
@@ -135,8 +133,6 @@ export const createOrder = createServerFn({ method: "POST" })
 
     const { error: itemsError } = await supabaseAdmin.from("order_items").insert(orderItems);
     if (itemsError) {
-      // In a real production app, we'd roll back the order creation here
-      // But for this simple implementation, we'll just throw
       throw new Error("Failed to create order items.");
     }
 
@@ -144,6 +140,7 @@ export const createOrder = createServerFn({ method: "POST" })
   });
 
 export const initiatePayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({
     orderId: z.string().uuid(),
     provider: z.enum(["bkash", "nagad", "binance_pay", "manual"]),
@@ -152,10 +149,6 @@ export const initiatePayment = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { orderId, provider, paymentDetails } = data;
     const userId = context.userId;
-
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
 
     // Verify order exists and belongs to user
     const { data: order, error: orderError } = await supabaseAdmin
@@ -177,9 +170,9 @@ export const initiatePayment = createServerFn({ method: "POST" })
         provider,
         amount: order.total,
         status: "pending",
-        provider_transaction_id: paymentDetails?.transactionId || null,
-        screenshot_url: paymentDetails?.screenshotUrl || null,
-        verification_status: provider === "manual" ? "pending" : "pending",
+        provider_transaction_id: paymentDetails?.transactionId ?? null,
+        screenshot_url: paymentDetails?.screenshotUrl ?? null,
+        verification_status: "pending",
       })
       .select()
       .single();
@@ -188,11 +181,10 @@ export const initiatePayment = createServerFn({ method: "POST" })
       throw new Error("Failed to initiate payment.");
     }
 
-    // Here you would integrate with real payment providers (bKash, Nagad API)
-    // For now, we return the payment ID and provider info
     return {
       paymentId: payment.id,
       status: payment.status,
       provider,
     };
   });
+
