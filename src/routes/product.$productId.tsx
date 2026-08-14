@@ -19,8 +19,13 @@ import {
   CheckCircle2,
   Share2,
   Heart,
-  Loader2
+  Loader2,
+  Check
 } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
+import { useState } from 'react';
+import { toast } from 'sonner';
+
 
 
 export const Route = createFileRoute('/product/$productId')({
