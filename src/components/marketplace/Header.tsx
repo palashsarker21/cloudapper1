@@ -15,13 +15,13 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: "Marketplace", href: "/marketplace" },
-    { label: "AI Tools", href: "/category/ai-tools" },
-    { label: "Credits", href: "/category/credits" },
-    { label: "Extensions", href: "/category/extensions" },
-    { label: "Digital Products", href: "/category/digital-products" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "Support", href: "/support" },
+    { label: "Marketplace", href: "/" },
+    { label: "AI Tools", href: "/" },
+    { label: "Credits", href: "/" },
+    { label: "Extensions", href: "/" },
+    { label: "Digital Products", href: "/" },
+    { label: "Pricing", href: "/" },
+    { label: "Support", href: "/" },
   ];
 
   return (

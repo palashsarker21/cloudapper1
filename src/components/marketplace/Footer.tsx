@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { FacebookIcon, TwitterIcon, InstagramIcon, GithubIcon, Mail } from "lucide-react";
+import { Facebook, Twitter, Instagram, Github, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -19,16 +19,16 @@ export const Footer = () => {
             </p>
             <div className="mt-6 flex gap-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <FacebookIcon className="h-5 w-5" />
+                <Facebook className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <TwitterIcon className="h-5 w-5" />
+                <Twitter className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <InstagramIcon className="h-5 w-5" />
+                <Instagram className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <GithubIcon className="h-5 w-5" />
+                <Github className="h-5 w-5" />
               </a>
             </div>
           </div>
