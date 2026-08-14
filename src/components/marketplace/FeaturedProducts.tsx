@@ -65,7 +65,20 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full" variant="outline">
+        <Button 
+          className="w-full" 
+          variant="outline"
+          onClick={() => {
+            addItem({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              image_url: product.image,
+              quantity: 1
+            });
+            toast.success("Added to cart");
+          }}
+        >
           <ShoppingCart className="mr-2 h-4 w-4" />
           Add to Cart
         </Button>
