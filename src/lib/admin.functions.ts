@@ -104,18 +104,22 @@ export const verifyPayment = createServerFn({ method: "POST" })
               .single();
             
             if (order?.customer_id) {
+              const productId: string = item.product_id;
+              const customerId: string = order.customer_id;
+              
               // Assign license keys
               for (let i = 0; i < item.quantity; i++) {
                 await supabaseAdmin.rpc("claim_license", {
-                  p_product_id: item.product_id,
-                  p_user_id: order.customer_id,
+                  p_product_id: productId,
+                  p_user_id: customerId,
                 });
               }
             }
           } else if (product?.inventory_type === "finite") {
+            const productId: string = item.product_id;
             // Decrement stock
             await supabaseAdmin.rpc("decrement_stock", {
-              p_product_id: item.product_id,
+              p_product_id: productId,
               p_quantity: item.quantity,
             });
           }
