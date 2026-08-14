@@ -214,7 +214,7 @@ function TrackOrderPage() {
                                 <div>
                                   <Badge variant="outline" className="capitalize text-[10px] mb-1">{ent.type}</Badge>
                                   <p className="font-medium text-sm">
-                                    {order.order_items?.find((i: any) => (i as any).product_id === ent.product_id)?.product_name || 'Product Delivery'}
+                                    {(order.order_items as any)?.find((i: any) => i.product_id === ent.product_id)?.product_name || 'Product Delivery'}
                                   </p>
                                 </div>
                               </div>
