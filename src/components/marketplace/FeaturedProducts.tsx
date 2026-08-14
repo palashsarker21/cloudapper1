@@ -25,7 +25,10 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const { addItem } = useCart();
+
   return (
+
     <Card className="group overflow-hidden border bg-background transition-all hover:shadow-lg flex flex-col">
       <CardHeader className="p-0">
         <Link to="/product/$productId" params={{ productId: product.id }} className="block relative aspect-[4/3] overflow-hidden bg-muted">
