@@ -66,7 +66,7 @@ function ProductDetailPage() {
         ],
         specs: [
           { label: "Delivery", value: data.stock_status === 'in_stock' ? "Instant" : "Delayed" },
-          { label: "Status", value: data.stock_status.replace('_', ' ') },
+          { label: "Status", value: (data.stock_status || 'in_stock').replace('_', ' ') },
           { label: "Added", value: new Date(data.created_at).toLocaleDateString() }
         ],
         highlights: [
@@ -122,12 +122,16 @@ function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left Column: Image Gallery Placeholder */}
           <div className="space-y-4">
-            <div className="aspect-video bg-muted/30 border-2 border-dashed border-muted rounded-3xl flex items-center justify-center overflow-hidden">
-              <div className="flex flex-col items-center text-muted-foreground">
-                <Download className="h-12 w-12 mb-4 opacity-20" />
-                <p className="font-medium">Product Preview Image</p>
-                <p className="text-sm opacity-60">High-resolution screenshot or mockup</p>
-              </div>
+            <div className="aspect-video bg-muted/30 border border-muted rounded-3xl flex items-center justify-center overflow-hidden">
+              {product.image ? (
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="flex flex-col items-center text-muted-foreground">
+                  <Download className="h-12 w-12 mb-4 opacity-20" />
+                  <p className="font-medium">Product Preview Image</p>
+                  <p className="text-sm opacity-60">High-resolution screenshot or mockup</p>
+                </div>
+              )}
             </div>
             
             <div className="grid grid-cols-4 gap-4">
