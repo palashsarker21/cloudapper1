@@ -44,7 +44,7 @@ export const Header = () => {
               <NavigationMenuList>
                 {navLinks.map((link) => (
                   <NavigationMenuItem key={link.href}>
-                    <Link to={link.href as any} className={navigationMenuTriggerStyle()}>
+                    <Link to={link.href as any} search={(link as any).search} className={navigationMenuTriggerStyle()}>
                       {link.label}
                     </Link>
                   </NavigationMenuItem>
@@ -106,6 +106,7 @@ export const Header = () => {
               <Link
                 key={link.href}
                 to={link.href as any}
+                search={(link as any).search}
                 className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
                 onClick={() => setIsMenuOpen(false)}
               >
