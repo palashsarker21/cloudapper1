@@ -41,6 +41,217 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          max_discount_amount: number | null
+          min_purchase_amount: number | null
+          starts_at: string | null
+          usage_count: number | null
+          usage_limit: number | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type: string
+          discount_value: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          min_purchase_amount?: number | null
+          starts_at?: string | null
+          usage_count?: number | null
+          usage_limit?: number | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          min_purchase_amount?: number | null
+          starts_at?: string | null
+          usage_count?: number | null
+          usage_limit?: number | null
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string | null
+          product_name: string
+          quantity: number
+          total_price: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id?: string | null
+          product_name: string
+          quantity: number
+          total_price: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          total_price?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          coupon_id: string | null
+          created_at: string
+          currency: string
+          customer_email: string
+          customer_id: string | null
+          customer_name: string | null
+          discount_amount: number | null
+          id: string
+          notes: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          coupon_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_email: string
+          customer_id?: string | null
+          customer_name?: string | null
+          discount_amount?: number | null
+          id?: string
+          notes?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal: number
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          coupon_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          customer_id?: string | null
+          customer_name?: string | null
+          discount_amount?: number | null
+          id?: string
+          notes?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          error_message: string | null
+          id: string
+          order_id: string
+          paid_at: string | null
+          provider: Database["public"]["Enums"]["payment_provider"]
+          provider_transaction_id: string | null
+          screenshot_url: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          verification_notes: string | null
+          verification_status: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          error_message?: string | null
+          id?: string
+          order_id: string
+          paid_at?: string | null
+          provider: Database["public"]["Enums"]["payment_provider"]
+          provider_transaction_id?: string | null
+          screenshot_url?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          verification_notes?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          error_message?: string | null
+          id?: string
+          order_id?: string
+          paid_at?: string | null
+          provider?: Database["public"]["Enums"]["payment_provider"]
+          provider_transaction_id?: string | null
+          screenshot_url?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          verification_notes?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_licenses: {
         Row: {
           assigned_at: string | null
@@ -312,6 +523,23 @@ export type Database = {
         | "expired"
         | "revoked"
         | "suspended"
+      order_status:
+        | "pending"
+        | "processing"
+        | "paid"
+        | "completed"
+        | "failed"
+        | "cancelled"
+        | "refunded"
+      payment_provider: "bkash" | "nagad" | "binance_pay" | "manual"
+      payment_status:
+        | "pending"
+        | "processing"
+        | "paid"
+        | "failed"
+        | "cancelled"
+        | "refunded"
+        | "partially_refunded"
       product_status: "draft" | "active" | "out_of_stock" | "archived"
       product_type:
         | "ai_credits"
@@ -466,6 +694,25 @@ export const Constants = {
         "expired",
         "revoked",
         "suspended",
+      ],
+      order_status: [
+        "pending",
+        "processing",
+        "paid",
+        "completed",
+        "failed",
+        "cancelled",
+        "refunded",
+      ],
+      payment_provider: ["bkash", "nagad", "binance_pay", "manual"],
+      payment_status: [
+        "pending",
+        "processing",
+        "paid",
+        "failed",
+        "cancelled",
+        "refunded",
+        "partially_refunded",
       ],
       product_status: ["draft", "active", "out_of_stock", "archived"],
       product_type: [
