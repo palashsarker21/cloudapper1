@@ -1,7 +1,8 @@
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "@tanstack/react-router";
 
 export interface Product {
   id: string;
@@ -19,9 +20,9 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   return (
-    <Card className="group overflow-hidden border bg-background transition-all hover:shadow-lg">
+    <Card className="group overflow-hidden border bg-background transition-all hover:shadow-lg flex flex-col">
       <CardHeader className="p-0">
-        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+        <Link to="/product/$productId" params={{ productId: product.id }} className="block relative aspect-[4/3] overflow-hidden bg-muted">
           <img
             src={product.image}
             alt={product.name}
@@ -31,17 +32,25 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <Badge className="absolute left-3 top-3 bg-background/80 text-foreground backdrop-blur-sm">
             {product.category}
           </Badge>
-        </div>
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <Button variant="secondary" size="sm" className="pointer-events-none">
+              View Details
+              <ExternalLink className="ml-2 h-3 w-3" />
+            </Button>
+          </div>
+        </Link>
       </CardHeader>
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex-grow">
         <div className="mb-2 flex items-center gap-1 text-sm text-yellow-500">
           <Star className="h-3.5 w-3.5 fill-current" />
           <span className="font-medium text-foreground">{product.rating}</span>
           <span className="text-muted-foreground">({product.reviews})</span>
         </div>
-        <h3 className="line-clamp-1 font-semibold text-foreground transition-colors group-hover:text-primary">
-          {product.name}
-        </h3>
+        <Link to="/product/$productId" params={{ productId: product.id }}>
+          <h3 className="line-clamp-1 font-semibold text-foreground transition-colors group-hover:text-primary">
+            {product.name}
+          </h3>
+        </Link>
         <p className="mt-2 text-xl font-bold text-foreground">
           ${product.price.toFixed(2)}
         </p>
