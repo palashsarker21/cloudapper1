@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
+import { Route as AdminFulfillmentRouteImport } from './routes/admin/fulfillment'
 import { Route as AdminHealthRouteImport } from './routes/admin.health'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
@@ -39,6 +40,11 @@ const LoginRoute = LoginRouteImport.update({
 const TrackOrderRoute = TrackOrderRouteImport.update({
   id: '/track-order',
   path: '/track-order',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFulfillmentRoute = AdminFulfillmentRouteImport.update({
+  id: '/admin/fulfillment',
+  path: '/admin/fulfillment',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminHealthRoute = AdminHealthRouteImport.update({
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
+  '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
+  '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
+  '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/login'
     | '/track-order'
+    | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
     | '/admin/products'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/login'
     | '/track-order'
+    | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
     | '/admin/products'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/login'
     | '/track-order'
+    | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
     | '/admin/products'
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   LoginRoute: typeof LoginRoute
   TrackOrderRoute: typeof TrackOrderRoute
+  AdminFulfillmentRoute: typeof AdminFulfillmentRoute
   AdminHealthRoute: typeof AdminHealthRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
@@ -199,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/track-order'
       fullPath: '/track-order'
       preLoaderRoute: typeof TrackOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/fulfillment': {
+      id: '/admin/fulfillment'
+      path: '/admin/fulfillment'
+      fullPath: '/admin/fulfillment'
+      preLoaderRoute: typeof AdminFulfillmentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/health': {
@@ -272,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   LoginRoute: LoginRoute,
   TrackOrderRoute: TrackOrderRoute,
+  AdminFulfillmentRoute: AdminFulfillmentRoute,
   AdminHealthRoute: AdminHealthRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
