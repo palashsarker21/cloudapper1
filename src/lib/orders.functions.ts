@@ -18,16 +18,32 @@ export const getOrderStatus = createServerFn({ method: "GET" })
         total,
         currency,
         order_items (
+          product_id,
           product_name,
           quantity
         ),
         payments (
           status,
           provider
+        ),
+        fulfillments (
+          id,
+          status,
+          fulfillment_type,
+          metadata,
+          error_message
+        ),
+        entitlements (
+          id,
+          type,
+          data,
+          download_count,
+          max_downloads
         )
       `)
       .eq("id", orderId)
       .single();
+
 
     if (error || !order) {
       throw new Error("Order not found.");
