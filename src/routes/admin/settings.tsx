@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { getSettings, updateSettings } from "@/lib/admin.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Loader2, Save, CheckCircle2, XCircle, Globe, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Header } from "@/components/marketplace/Header";
+import { Footer } from "@/components/marketplace/Footer";
 
 export const Route = createFileRoute("/admin/settings")({
   component: AdminSettings,
@@ -74,8 +76,12 @@ function AdminSettings() {
 
   if (isLoading || !localSettings) {
     return (
-      <div className="flex h-[400px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="flex-grow flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -86,17 +92,19 @@ function AdminSettings() {
   };
 
   return (
-    <div className="container mx-auto py-10 space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">System Settings</h1>
-          <p className="text-muted-foreground">Manage payment providers and marketplace configuration.</p>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-grow container mx-auto py-10 px-4 space-y-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">System Settings</h1>
+            <p className="text-muted-foreground">Manage payment providers and marketplace configuration.</p>
+          </div>
+          <Button onClick={handleSave} disabled={updateMutation.isPending}>
+            {updateMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+            Save Changes
+          </Button>
         </div>
-        <Button onClick={handleSave} disabled={updateMutation.isPending}>
-          {updateMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-          Save Changes
-        </Button>
-      </div>
 
       <Tabs defaultValue="payments" className="w-full">
         <TabsList className="grid w-full max-w-md grid-cols-2">
@@ -179,8 +187,10 @@ function AdminSettings() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
-  );
+    </main>
+    <Footer />
+  </div>
+);
 }
 
 function ProviderCard({ name, id, description, data, onToggle, onChange, configured, fields }: any) {
