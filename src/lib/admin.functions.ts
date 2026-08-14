@@ -79,53 +79,10 @@ export const verifyPayment = createServerFn({ method: "POST" })
         .eq("id", payment.order_id);
 
       // Trigger Fulfillment Logic
-      // 1. Get order items
-      const { data: items } = await supabaseAdmin
-        .from("order_items")
-        .select("*")
-        .eq("order_id", payment.order_id);
-
-      if (items) {
-        for (const item of items) {
-          if (!item.product_id) continue;
-          
-          const { data: product } = await supabaseAdmin
-            .from("products")
-            .select("inventory_type, delivery_method")
-            .eq("id", item.product_id)
-            .single();
-
-          if (product?.inventory_type === "license") {
-            // Find the order's customer_id
-            const { data: order } = await supabaseAdmin
-              .from("orders")
-              .select("customer_id")
-              .eq("id", payment.order_id)
-              .single();
-            
-            if (order?.customer_id) {
-              const productId: string = item.product_id;
-              const customerId: string = order.customer_id;
-              
-              // Assign license keys
-              for (let i = 0; i < item.quantity; i++) {
-                await supabaseAdmin.rpc("claim_license", {
-                  p_product_id: productId,
-                  p_user_id: customerId,
-                });
-              }
-            }
-          } else if (product?.inventory_type === "finite") {
-            const productId: string = item.product_id;
-            // Decrement stock
-            await supabaseAdmin.rpc("decrement_stock", {
-              p_product_id: productId,
-              p_quantity: item.quantity,
-            });
-          }
-        }
-      }
+      const { processOrderFulfillment } = await import("./fulfillment.server");
+      await processOrderFulfillment(payment.order_id);
     }
+
 
     return { success: true };
   });
