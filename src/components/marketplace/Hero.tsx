@@ -28,13 +28,13 @@ export const Hero = () => {
           
           <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Button size="lg" className="h-12 px-8 text-base" asChild>
-              <Link href="/">
+              <Link to="/">
                 Explore Marketplace
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button variant="outline" size="lg" className="h-12 px-8 text-base" asChild>
-              <Link href="/track-order">
+              <Link to="/track-order">
                 <PackageSearch className="mr-2 h-4 w-4" />
                 Track Order
               </Link>

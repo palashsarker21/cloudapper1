@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { Button } from '@/components/ui/button';
@@ -87,7 +87,7 @@ function TrackOrderPage() {
             We couldn't find any order matching those details. Once real order tracking data is connected, you'll see status updates here.
           </p>
           <Button variant="outline" asChild>
-            <a href="/">Return to Marketplace</a>
+            <Link to="/">Return to Marketplace</Link>
           </Button>
         </div>
       </main>
