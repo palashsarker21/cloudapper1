@@ -62,8 +62,15 @@ export const Header = () => {
                 className="pl-8 bg-muted/50 focus-visible:bg-background transition-colors"
               />
             </div>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="relative" asChild>
+              <Link to="/checkout">
+                <ShoppingCart className="h-5 w-5" />
+                {itemCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px]" variant="destructive">
+                    {itemCount}
+                  </Badge>
+                )}
+              </Link>
             </Button>
             <Button variant="default" className="hidden sm:flex" asChild>
               <Link to="/login">
