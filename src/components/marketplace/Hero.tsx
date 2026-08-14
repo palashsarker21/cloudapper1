@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, PackageSearch } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { Logo } from "./Logo";
+
 
 export const Hero = () => {
   return (
@@ -18,9 +20,12 @@ export const Hero = () => {
             New: GPT-4o Credits available now
           </div>
           
+          <Logo variant="icon" className="h-20 w-20 mb-6 drop-shadow-[0_0_15px_rgba(var(--primary),0.3)]" />
+          
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            AI Tools, Credits & <span className="text-primary">Digital Products</span> — All in One Place
+            AI Tools, Credits & <span className="bg-clip-text text-transparent bg-[var(--brand-gradient)]">Digital Products</span> — All in One Place
           </h1>
+
           
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
             Discover useful AI tools, software products and digital resources with fast and secure delivery. The ultimate marketplace for the modern developer and creator.
