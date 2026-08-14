@@ -35,7 +35,7 @@ function AdminSettings() {
   }, [settings]);
 
   const updateMutation = useMutation({
-    mutationFn: (newValues: any) => mutateSettings({ id: "payment_providers", value: newValues }),
+    mutationFn: (newValues: any) => mutateSettings({ data: { id: "payment_providers", value: newValues } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-settings"] });
       toast.success("Settings updated successfully");
