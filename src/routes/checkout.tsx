@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { ShoppingCart, CreditCard, Wallet, Smartphone, Banknote, ShieldCheck, ArrowLeft, Loader2 } from 'lucide-react';
+import { Logo } from '@/components/marketplace/Logo';
+
 import { useState } from 'react';
 import { useServerFn } from '@tanstack/react-start';
 import { createOrder, initiatePayment } from '@/lib/checkout.functions';
@@ -100,6 +102,8 @@ function CheckoutPage() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
+        <Logo className="mr-4" />
+
         <h1 className="text-3xl font-bold tracking-tight">Checkout</h1>
       </div>
 

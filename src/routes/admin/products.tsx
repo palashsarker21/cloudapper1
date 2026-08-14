@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { Plus, Package, Edit, Trash2 } from 'lucide-react';
+import { Logo } from '@/components/marketplace/Logo';
+
 
 export const Route = createFileRoute('/admin/products')({
   head: () => ({

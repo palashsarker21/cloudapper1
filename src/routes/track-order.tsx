@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Search, Package, ArrowRight, Loader2, CheckCircle2, Clock, XCircle, FileText } from 'lucide-react';
+import { Logo } from '@/components/marketplace/Logo';
+
 import { useState, useEffect } from 'react';
 import { useServerFn } from '@tanstack/react-start';
 import { getOrderStatus } from '@/lib/orders.functions';
@@ -73,8 +75,10 @@ function TrackOrderPage() {
       <Header />
       
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight mb-4">Track Your Order</h1>
+        <div className="flex flex-col items-center text-center mb-12">
+          <Logo variant="icon" className="h-16 w-16 mb-6" />
+          <h1 className="text-4xl font-bold tracking-tight mb-4 text-foreground">Track Your Order</h1>
+
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Enter your order ID to check the status of your purchase and fulfillment.
           </p>
