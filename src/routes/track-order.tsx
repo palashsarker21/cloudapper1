@@ -149,7 +149,7 @@ function TrackOrderPage() {
                     {order.payments && order.payments.length > 0 && (
                       <div>
                         <p className="text-sm text-muted-foreground">Payment Method</p>
-                        <Badge variant="outline" className="capitalize">{order.payments[0].provider}</Badge>
+                        <Badge variant="outline" className="capitalize">{order.payments[0]?.provider}</Badge>
                       </div>
                     )}
                   </div>
