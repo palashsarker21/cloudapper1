@@ -11,10 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Plus, Trash2, Globe, Shield, CreditCard, Package, Info, Image as ImageIcon, Search } from "lucide-react";
+import { Loader2, Plus, Trash2, Globe, Shield, CreditCard, Package, Info, Image as ImageIcon, Search, Key } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { LicenseManager } from "./LicenseManager";
+
 
 export const ProductForm = ({ product }: { product?: any }) => {
   const [loading, setLoading] = useState(false);
@@ -122,7 +124,13 @@ export const ProductForm = ({ product }: { product?: any }) => {
           <TabsTrigger value="media" className="rounded-none h-12 data-[state=active]:border-b-2 data-[state=active]:border-primary px-6">
             <ImageIcon className="w-4 h-4 mr-2" /> Media & SEO
           </TabsTrigger>
+          {product && inventoryType === 'license' && (
+            <TabsTrigger value="inventory-management" className="rounded-none h-12 data-[state=active]:border-b-2 data-[state=active]:border-primary px-6">
+              <Key className="w-4 h-4 mr-2" /> License Inventory
+            </TabsTrigger>
+          )}
         </TabsList>
+
 
         <div className="py-6">
           <TabsContent value="basic" className="space-y-6">
@@ -401,6 +409,13 @@ export const ProductForm = ({ product }: { product?: any }) => {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {product && inventoryType === 'license' && (
+            <TabsContent value="inventory-management">
+              <LicenseManager productId={product.id} />
+            </TabsContent>
+          )}
+
         </div>
       </Tabs>
     </form>
