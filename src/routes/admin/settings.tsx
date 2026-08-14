@@ -16,8 +16,12 @@ import { Header } from "@/components/marketplace/Header";
 import { Footer } from "@/components/marketplace/Footer";
 
 export const Route = createFileRoute("/admin/settings")({
+  head: () => ({
+    meta: [{ title: 'System Settings | Admin | CloudApper' }],
+  }),
   component: AdminSettings,
 });
+
 
 function AdminSettings() {
   const fetchSettings = useServerFn(getSettings);
