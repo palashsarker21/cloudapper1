@@ -130,7 +130,7 @@ function AdminSettings() {
               description="Fast and secure digital financial service in Bangladesh."
               data={localSettings.nagad}
               onToggle={() => handleToggle('nagad')}
-              onChange={(field, val) => handleChange('nagad', field, val)}
+              onChange={(field: string, val: string) => handleChange('nagad', field, val)}
               configured={isConfigured(localSettings.nagad)}
               fields={[
                 { id: 'merchant_id', label: 'Merchant ID', type: 'text' },
