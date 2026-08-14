@@ -1,7 +1,8 @@
 import { 
   Bot, 
   CreditCard, 
-  Chrome, 
+  Globe, 
+
   Layers, 
   FileCode, 
   Layout, 
@@ -12,7 +13,7 @@ import {
 const categories = [
   { name: "AI Credits", icon: CreditCard, color: "bg-blue-50 text-blue-600" },
   { name: "AI Tools", icon: Bot, color: "bg-purple-50 text-purple-600" },
-  { name: "Browser Extensions", icon: Chrome, color: "bg-orange-50 text-orange-600" },
+  { name: "Browser Extensions", icon: Globe, color: "bg-orange-50 text-orange-600" },
   { name: "SaaS Products", icon: Layers, color: "bg-green-50 text-green-600" },
   { name: "Digital Products", icon: FileCode, color: "bg-pink-50 text-pink-600" },
   { name: "Templates", icon: Layout, color: "bg-indigo-50 text-indigo-600" },

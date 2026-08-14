@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Twitter, Instagram, Github, Mail } from "lucide-react";
+import { FacebookIcon, TwitterIcon, InstagramIcon, GithubIcon, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -19,16 +19,16 @@ export const Footer = () => {
             </p>
             <div className="mt-6 flex gap-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Facebook className="h-5 w-5" />
+                <FacebookIcon className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter className="h-5 w-5" />
+                <TwitterIcon className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Instagram className="h-5 w-5" />
+                <InstagramIcon className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Github className="h-5 w-5" />
+                <GithubIcon className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -36,20 +36,20 @@ export const Footer = () => {
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Marketplace</h3>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/category/ai-tools" className="hover:text-primary">AI Tools</Link></li>
-              <li><Link to="/category/credits" className="hover:text-primary">Credits</Link></li>
-              <li><Link to="/category/extensions" className="hover:text-primary">Extensions</Link></li>
-              <li><Link to="/category/digital-products" className="hover:text-primary">Digital Products</Link></li>
+              <li><Link to="/" className="hover:text-primary">AI Tools</Link></li>
+              <li><Link to="/" className="hover:text-primary">Credits</Link></li>
+              <li><Link to="/" className="hover:text-primary">Extensions</Link></li>
+              <li><Link to="/" className="hover:text-primary">Digital Products</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Company</h3>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/pricing" className="hover:text-primary">Pricing</Link></li>
-              <li><Link to="/support" className="hover:text-primary">Support</Link></li>
-              <li><Link to="/about" className="hover:text-primary">About Us</Link></li>
-              <li><Link to="/terms" className="hover:text-primary">Terms of Service</Link></li>
+              <li><Link to="/" className="hover:text-primary">Pricing</Link></li>
+              <li><Link to="/" className="hover:text-primary">Support</Link></li>
+              <li><Link to="/" className="hover:text-primary">About Us</Link></li>
+              <li><Link to="/" className="hover:text-primary">Terms of Service</Link></li>
             </ul>
           </div>
 
