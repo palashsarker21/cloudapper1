@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
@@ -27,6 +28,10 @@ import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhoo
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -76,9 +81,9 @@ const ProductProductIdRoute = ProductProductIdRouteImport.update({
 } as any)
 const AuthenticatedAccountEntitlementsRoute =
   AuthenticatedAccountEntitlementsRouteImport.update({
-    id: '/_authenticated/account/entitlements',
+    id: '/account/entitlements',
     path: '/account/entitlements',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AdminProductsProductIdRoute = AdminProductsProductIdRouteImport.update({
   id: '/$productId',
@@ -131,6 +136,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
@@ -181,6 +187,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/checkout'
     | '/login'
     | '/track-order'
@@ -198,6 +205,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   CheckoutRoute: typeof CheckoutRoute
   LoginRoute: typeof LoginRoute
   TrackOrderRoute: typeof TrackOrderRoute
@@ -207,7 +215,6 @@ export interface RootRouteChildren {
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   AdminSettingsRoute: typeof AdminSettingsRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
-  AuthenticatedAccountEntitlementsRoute: typeof AuthenticatedAccountEntitlementsRoute
   ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
 }
 
@@ -218,6 +225,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -288,7 +302,7 @@ declare module '@tanstack/react-router' {
       path: '/account/entitlements'
       fullPath: '/account/entitlements'
       preLoaderRoute: typeof AuthenticatedAccountEntitlementsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/admin/products/$productId': {
       id: '/admin/products/$productId'
@@ -314,6 +328,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountEntitlementsRoute: typeof AuthenticatedAccountEntitlementsRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountEntitlementsRoute: AuthenticatedAccountEntitlementsRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 interface AdminProductsRouteChildren {
   AdminProductsProductIdRoute: typeof AdminProductsProductIdRoute
   AdminProductsNewRoute: typeof AdminProductsNewRoute
@@ -330,6 +355,7 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   CheckoutRoute: CheckoutRoute,
   LoginRoute: LoginRoute,
   TrackOrderRoute: TrackOrderRoute,
@@ -339,7 +365,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminSettingsRoute: AdminSettingsRoute,
   ProductProductIdRoute: ProductProductIdRoute,
-  AuthenticatedAccountEntitlementsRoute: AuthenticatedAccountEntitlementsRoute,
   ApiPublicWebhookRoute: ApiPublicWebhookRoute,
 }
 export const routeTree = rootRouteImport
