@@ -181,8 +181,8 @@ function TrackOrderPage() {
                       <div>
                         <h4 className="font-semibold text-primary">Fulfillment Status</h4>
                         <div className="space-y-2 mt-1">
-                          {order.fulfillments && order.fulfillments.length > 0 ? (
-                            order.fulfillments.map((f: any) => (
+                          {(order.fulfillments as any) && (order.fulfillments as any).length > 0 ? (
+                            (order.fulfillments as any).map((f: any) => (
                               <div key={f.id} className="flex items-center gap-2">
                                 <Badge variant={f.status === 'completed' ? 'default' : 'secondary'} className="text-[10px] py-0">
                                   {f.status}
@@ -201,20 +201,20 @@ function TrackOrderPage() {
                       </div>
                     </div>
 
-                    {order.entitlements && order.entitlements.length > 0 && (
+                    {(order.entitlements as any) && (order.entitlements as any).length > 0 && (
                       <div className="space-y-4">
                         <h3 className="font-semibold flex items-center gap-2">
-                          <Key className="h-4 w-4" />
+                          <Package className="h-4 w-4" />
                           Your Deliveries
                         </h3>
                         <div className="grid gap-3">
-                          {order.entitlements.map((ent: any) => (
+                          {(order.entitlements as any).map((ent: any) => (
                             <div key={ent.id} className="p-4 border rounded-lg bg-card shadow-sm">
                               <div className="flex justify-between items-start mb-3">
                                 <div>
                                   <Badge variant="outline" className="capitalize text-[10px] mb-1">{ent.type}</Badge>
                                   <p className="font-medium text-sm">
-                                    {order.order_items?.find((i: any) => i.product_id === ent.product_id)?.product_name || 'Product Delivery'}
+                                    {order.order_items?.find((i: any) => (i as any).product_id === ent.product_id)?.product_name || 'Product Delivery'}
                                   </p>
                                 </div>
                               </div>
@@ -228,7 +228,7 @@ function TrackOrderPage() {
                               {ent.type === 'file' && (
                                 <Button size="sm" variant="secondary" className="w-full" asChild>
                                   <Link to="/account/entitlements">
-                                    <Download className="h-3 w-3 mr-2" />
+                                    <Package className="h-3 w-3 mr-2" />
                                     Access Downloads
                                   </Link>
                                 </Button>
@@ -236,6 +236,7 @@ function TrackOrderPage() {
                             </div>
                           ))}
                         </div>
+
                         <div className="text-center">
                           <Button variant="link" size="sm" asChild>
                             <Link to="/account/entitlements">View all your products in account →</Link>

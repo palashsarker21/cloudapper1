@@ -19,6 +19,7 @@ import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
+import { Route as AuthenticatedAccountEntitlementsRouteImport } from './routes/_authenticated/account/entitlements'
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin/products.$productId'
 import { Route as AdminProductsNewRouteImport } from './routes/admin/products.new'
 
@@ -72,6 +73,12 @@ const ProductProductIdRoute = ProductProductIdRouteImport.update({
   path: '/product/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAccountEntitlementsRoute =
+  AuthenticatedAccountEntitlementsRouteImport.update({
+    id: '/_authenticated/account/entitlements',
+    path: '/account/entitlements',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminProductsProductIdRoute = AdminProductsProductIdRouteImport.update({
   id: '/$productId',
   path: '/$productId',
@@ -94,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
 }
@@ -108,6 +116,7 @@ export interface FileRoutesByTo {
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
 }
@@ -123,6 +132,7 @@ export interface FileRoutesById {
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/_authenticated/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
 }
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/settings'
     | '/product/$productId'
+    | '/account/entitlements'
     | '/admin/products/$productId'
     | '/admin/products/new'
   fileRoutesByTo: FileRoutesByTo
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/settings'
     | '/product/$productId'
+    | '/account/entitlements'
     | '/admin/products/$productId'
     | '/admin/products/new'
   id:
@@ -167,6 +179,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/settings'
     | '/product/$productId'
+    | '/_authenticated/account/entitlements'
     | '/admin/products/$productId'
     | '/admin/products/new'
   fileRoutesById: FileRoutesById
@@ -182,6 +195,7 @@ export interface RootRouteChildren {
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   AdminSettingsRoute: typeof AdminSettingsRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
+  AuthenticatedAccountEntitlementsRoute: typeof AuthenticatedAccountEntitlementsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -256,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/account/entitlements': {
+      id: '/_authenticated/account/entitlements'
+      path: '/account/entitlements'
+      fullPath: '/account/entitlements'
+      preLoaderRoute: typeof AuthenticatedAccountEntitlementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/products/$productId': {
       id: '/admin/products/$productId'
       path: '/$productId'
@@ -298,6 +319,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminSettingsRoute: AdminSettingsRoute,
   ProductProductIdRoute: ProductProductIdRoute,
+  AuthenticatedAccountEntitlementsRoute: AuthenticatedAccountEntitlementsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
