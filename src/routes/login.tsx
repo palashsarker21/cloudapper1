@@ -167,12 +167,26 @@ function LoginPage() {
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-wrap items-center justify-center gap-1 text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link to="/" className="text-primary font-medium hover:underline">
-              Create an account
-            </Link>
+          <CardFooter className="flex flex-col items-center justify-center gap-4 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-1">
+              Don't have an account?{" "}
+              <button 
+                onClick={async () => {
+                  if (validate()) {
+                    setIsLoading(true);
+                    const { error } = await supabase.auth.signUp({ email, password });
+                    if (error) toast.error(error.message);
+                    else toast.success("Check your email for confirmation link!");
+                    setIsLoading(false);
+                  }
+                }}
+                className="text-primary font-medium hover:underline"
+              >
+                Create an account
+              </button>
+            </div>
           </CardFooter>
+
         </Card>
         
         <p className="px-8 text-center text-xs text-muted-foreground leading-relaxed">
