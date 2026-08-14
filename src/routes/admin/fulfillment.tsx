@@ -28,8 +28,9 @@ import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/fulfillment')({
   head: () => ({
-    title: 'Fulfillment Management | Admin | CloudApper',
+    meta: [{ title: 'Fulfillment Management | Admin | CloudApper' }],
   }),
+
   component: AdminFulfillmentPage,
 
 });
