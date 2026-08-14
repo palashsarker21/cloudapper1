@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   ShoppingCart, 
   ChevronLeft, 
@@ -16,8 +18,10 @@ import {
   Download,
   CheckCircle2,
   Share2,
-  Heart
+  Heart,
+  Loader2
 } from 'lucide-react';
+
 
 export const Route = createFileRoute('/product/$productId')({
   head: ({ params }) => ({
@@ -34,35 +38,73 @@ export const Route = createFileRoute('/product/$productId')({
 function ProductDetailPage() {
   const { productId } = Route.useParams();
 
-  // Mock data for a single product
-  const product = {
-    id: productId,
-    name: "Advanced GPT-4o API Connector",
-    category: "AI Tools",
-    price: "$49.99",
-    rating: 4.9,
-    reviews: 128,
-    description: "Connect your applications to the most advanced AI model available. This connector provides a robust, type-safe interface for integrating GPT-4o into any project with minimal configuration.",
-    features: [
-      "Low-latency streaming responses",
-      "Built-in token counting and management",
-      "Automatic retry logic with exponential backoff",
-      "Comprehensive TypeScript definitions",
-      "Detailed usage analytics dashboard"
-    ],
-    specs: [
-      { label: "Format", value: "NPM Package / API Key" },
-      { label: "Compatibility", value: "Node.js, React, Python" },
-      { label: "Delivery", value: "Instant Activation" },
-      { label: "License", value: "Single Project" },
-      { label: "Last Updated", value: "2 days ago" }
-    ],
-    highlights: [
-      { icon: ShieldCheck, title: "Secure", description: "Fully encrypted API communication" },
-      { icon: Zap, title: "Fast", description: "Optimized for speed and efficiency" },
-      { icon: Clock, title: "24/7 Support", description: "Priority access to our help desk" }
-    ]
-  };
+  const { data: product, isLoading } = useQuery({
+    queryKey: ['product', productId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, categories(name)')
+        .eq('id', productId)
+        .single();
+      
+      if (error) throw error;
+
+      return {
+        id: data.id,
+        name: data.name,
+        category: (data.categories as any)?.name || 'Product',
+        price: `$${Number(data.price).toFixed(2)}`,
+        rating: 5.0,
+        reviews: 0,
+        description: data.description || "No description available.",
+        image: data.image_url,
+        features: [
+          "Secure delivery",
+          "Verified quality",
+          "Premium support",
+          "Instant access"
+        ],
+        specs: [
+          { label: "Delivery", value: data.stock_status === 'in_stock' ? "Instant" : "Delayed" },
+          { label: "Status", value: (data.stock_status || 'in_stock').replace('_', ' ') },
+          { label: "Added", value: new Date(data.created_at).toLocaleDateString() }
+        ],
+        highlights: [
+          { icon: ShieldCheck, title: "Secure", description: "Fully encrypted delivery" },
+          { icon: Zap, title: "Fast", description: "Optimized fulfillment" },
+          { icon: Clock, title: "Support", description: "Priority help desk" }
+        ]
+      };
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="flex-grow flex flex-col items-center justify-center p-4">
+          <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
+          <Button asChild>
+            <Link to="/">Back to Marketplace</Link>
+          </Button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -80,12 +122,16 @@ function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left Column: Image Gallery Placeholder */}
           <div className="space-y-4">
-            <div className="aspect-video bg-muted/30 border-2 border-dashed border-muted rounded-3xl flex items-center justify-center overflow-hidden">
-              <div className="flex flex-col items-center text-muted-foreground">
-                <Download className="h-12 w-12 mb-4 opacity-20" />
-                <p className="font-medium">Product Preview Image</p>
-                <p className="text-sm opacity-60">High-resolution screenshot or mockup</p>
-              </div>
+            <div className="aspect-video bg-muted/30 border border-muted rounded-3xl flex items-center justify-center overflow-hidden">
+              {product.image ? (
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="flex flex-col items-center text-muted-foreground">
+                  <Download className="h-12 w-12 mb-4 opacity-20" />
+                  <p className="font-medium">Product Preview Image</p>
+                  <p className="text-sm opacity-60">High-resolution screenshot or mockup</p>
+                </div>
+              )}
             </div>
             
             <div className="grid grid-cols-4 gap-4">
