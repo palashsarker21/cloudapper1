@@ -41,45 +41,191 @@ export type Database = {
         }
         Relationships: []
       }
+      product_licenses: {
+        Row: {
+          assigned_at: string | null
+          assigned_to: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          license_key: string
+          product_id: string
+          status: Database["public"]["Enums"]["license_status"] | null
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          license_key: string
+          product_id: string
+          status?: Database["public"]["Enums"]["license_status"] | null
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          license_key?: string
+          product_id?: string
+          status?: Database["public"]["Enums"]["license_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_licenses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_media: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          id: string
+          is_main: boolean | null
+          media_type: string
+          product_id: string
+          url: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          is_main?: boolean | null
+          media_type: string
+          product_id: string
+          url: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          is_main?: boolean | null
+          media_type?: string
+          product_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_media_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           category_id: string | null
+          compatibility: Json | null
           created_at: string
+          currency: string | null
+          delivery_instructions: string | null
+          delivery_method: Database["public"]["Enums"]["delivery_method"] | null
           description: string | null
+          device_limit: number | null
+          features: Json | null
+          full_description: string | null
           id: string
           image_url: string | null
-          is_active: boolean | null
+          inventory_type: Database["public"]["Enums"]["inventory_type"] | null
           is_featured: boolean | null
+          license_duration: number | null
           name: string
           price: number
+          product_type: Database["public"]["Enums"]["product_type"] | null
+          requirements: Json | null
+          resale_auth_verified: boolean | null
+          sale_price: number | null
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string | null
+          short_description: string | null
+          sku: string | null
           slug: string
+          status: Database["public"]["Enums"]["product_status"] | null
+          stock_quantity: number | null
           stock_status: string | null
+          version: string | null
+          whats_included: Json | null
         }
         Insert: {
           category_id?: string | null
+          compatibility?: Json | null
           created_at?: string
+          currency?: string | null
+          delivery_instructions?: string | null
+          delivery_method?:
+            | Database["public"]["Enums"]["delivery_method"]
+            | null
           description?: string | null
+          device_limit?: number | null
+          features?: Json | null
+          full_description?: string | null
           id?: string
           image_url?: string | null
-          is_active?: boolean | null
+          inventory_type?: Database["public"]["Enums"]["inventory_type"] | null
           is_featured?: boolean | null
+          license_duration?: number | null
           name: string
           price?: number
+          product_type?: Database["public"]["Enums"]["product_type"] | null
+          requirements?: Json | null
+          resale_auth_verified?: boolean | null
+          sale_price?: number | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          short_description?: string | null
+          sku?: string | null
           slug: string
+          status?: Database["public"]["Enums"]["product_status"] | null
+          stock_quantity?: number | null
           stock_status?: string | null
+          version?: string | null
+          whats_included?: Json | null
         }
         Update: {
           category_id?: string | null
+          compatibility?: Json | null
           created_at?: string
+          currency?: string | null
+          delivery_instructions?: string | null
+          delivery_method?:
+            | Database["public"]["Enums"]["delivery_method"]
+            | null
           description?: string | null
+          device_limit?: number | null
+          features?: Json | null
+          full_description?: string | null
           id?: string
           image_url?: string | null
-          is_active?: boolean | null
+          inventory_type?: Database["public"]["Enums"]["inventory_type"] | null
           is_featured?: boolean | null
+          license_duration?: number | null
           name?: string
           price?: number
+          product_type?: Database["public"]["Enums"]["product_type"] | null
+          requirements?: Json | null
+          resale_auth_verified?: boolean | null
+          sale_price?: number | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          short_description?: string | null
+          sku?: string | null
           slug?: string
+          status?: Database["public"]["Enums"]["product_status"] | null
+          stock_quantity?: number | null
           stock_status?: string | null
+          version?: string | null
+          whats_included?: Json | null
         }
         Relationships: [
           {
@@ -145,6 +291,31 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      delivery_method:
+        | "instant_download"
+        | "email_delivery"
+        | "license_key"
+        | "external_link"
+        | "manual_fulfillment"
+      inventory_type: "unlimited" | "finite" | "license"
+      license_status:
+        | "available"
+        | "assigned"
+        | "expired"
+        | "revoked"
+        | "suspended"
+      product_status: "draft" | "active" | "out_of_stock" | "archived"
+      product_type:
+        | "ai_credits"
+        | "ai_tools"
+        | "browser_extensions"
+        | "saas_products"
+        | "digital_files"
+        | "templates"
+        | "prompts"
+        | "automation_tools"
+        | "developer_tools"
+        | "services"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -273,6 +444,34 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      delivery_method: [
+        "instant_download",
+        "email_delivery",
+        "license_key",
+        "external_link",
+        "manual_fulfillment",
+      ],
+      inventory_type: ["unlimited", "finite", "license"],
+      license_status: [
+        "available",
+        "assigned",
+        "expired",
+        "revoked",
+        "suspended",
+      ],
+      product_status: ["draft", "active", "out_of_stock", "archived"],
+      product_type: [
+        "ai_credits",
+        "ai_tools",
+        "browser_extensions",
+        "saas_products",
+        "digital_files",
+        "templates",
+        "prompts",
+        "automation_tools",
+        "developer_tools",
+        "services",
+      ],
     },
   },
 } as const
