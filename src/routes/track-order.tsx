@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge';
 
 
 export const Route = createFileRoute('/track-order')({
-  validateSearch: (search: Record<string, unknown>): { orderId?: string } => {
+  validateSearch: (search: Record<string, unknown>): { orderId: string | undefined } => {
     return {
       orderId: typeof search['orderId'] === 'string' ? search['orderId'] : undefined,
     };
