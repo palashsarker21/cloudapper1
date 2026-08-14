@@ -24,7 +24,7 @@ export const Header = () => {
     { label: "Credits", href: "/" },
     { label: "Extensions", href: "/" },
     { label: "Digital Products", href: "/" },
-    { label: "Track Order", href: "/track-order" },
+    { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
     { label: "Pricing", href: "/" },
     { label: "Support", href: "/" },
   ];
