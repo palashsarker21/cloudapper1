@@ -4,11 +4,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { getLicenseInventory, updateLicenseStatus, addLicenseKeys } from "@/lib/licenses.functions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
-  Shield, 
   Plus, 
   RefreshCw, 
   Ban, 
@@ -28,7 +26,7 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
   const [newKeysText, setNewKeysText] = useState("");
   const [isAdding, setIsAdding] = useState(false);
 
-  const { data: licenses, isLoading, refetch } = useQuery({
+  const { data: licenses, isLoading } = useQuery({
     queryKey: ['product-licenses', productId],
     queryFn: () => getInventory({ data: { productId } })
   });
@@ -62,8 +60,8 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
 
   const counts = {
     total: licenses?.length || 0,
-    available: licenses?.filter(l => l.status === 'active' && !l.user_id).length || 0,
-    assigned: licenses?.filter(l => l.user_id).length || 0,
+    available: licenses?.filter(l => l.status === 'available').length || 0,
+    assigned: licenses?.filter(l => l.status === 'assigned').length || 0,
     revoked: licenses?.filter(l => l.status === 'revoked').length || 0,
   };
 
@@ -130,13 +128,13 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
 
           {isLoading ? (
             <div className="py-20 flex justify-center"><Loader2 className="w-8 h-8 animate-spin opacity-20" /></div>
-          ) : licenses?.length === 0 ? (
+          ) : !licenses || licenses.length === 0 ? (
             <div className="py-20 text-center border-2 border-dashed rounded-xl">
               <Key className="w-10 h-10 mx-auto mb-4 opacity-20" />
               <p className="text-muted-foreground">No license keys found. Import some to get started.</p>
             </div>
           ) : (
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -148,9 +146,9 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {licenses?.map((license) => (
+                  {licenses.map((license) => (
                     <TableRow key={license.id}>
-                      <TableCell className="font-mono text-xs">
+                      <TableCell className="font-mono text-xs whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <EyeOff className="w-3 h-3 opacity-40" />
                           {license.license_key}
@@ -158,21 +156,22 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
                       </TableCell>
                       <TableCell>
                         <Badge variant={
-                          license.status === 'active' ? (license.user_id ? 'default' : 'secondary') :
+                          license.status === 'available' ? 'secondary' :
+                          license.status === 'assigned' ? 'default' :
                           license.status === 'revoked' ? 'destructive' : 'outline'
                         } className="capitalize">
-                          {license.user_id && license.status === 'active' ? 'Assigned' : license.status}
+                          {license.status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {license.user_id ? `User: ${license.user_id.substring(0, 8)}...` : 'Unassigned'}
+                        {license.assigned_to ? `User: ${license.assigned_to.substring(0, 8)}...` : 'Unassigned'}
                       </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
+                      <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                         {new Date(license.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          {license.status === 'active' && (
+                          {license.status === 'available' && (
                             <>
                               <Button 
                                 variant="ghost" 
@@ -192,12 +191,12 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
                               </Button>
                             </>
                           )}
-                          {license.status !== 'active' && (
+                          {license.status !== 'available' && license.status !== 'assigned' && (
                             <Button 
                               variant="ghost" 
                               size="sm" 
                               className="h-8 px-2"
-                              onClick={() => updateStatusMutation.mutate({ id: license.id, status: 'active' })}
+                              onClick={() => updateStatusMutation.mutate({ id: license.id, status: 'available' })}
                             >
                               Restore
                             </Button>

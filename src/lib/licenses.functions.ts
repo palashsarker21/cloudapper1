@@ -37,7 +37,7 @@ export const updateLicenseStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({
     licenseId: z.string().uuid(),
-    status: z.enum(["active", "revoked", "suspended", "expired"]),
+    status: z.enum(["available", "assigned", "revoked", "suspended", "expired"]),
   }).parse(data))
   .handler(async ({ data, context }) => {
     const { userId, supabase } = context;
@@ -77,7 +77,7 @@ export const addLicenseKeys = createServerFn({ method: "POST" })
     const newLicenses = data.keys.map(key => ({
       product_id: data.productId,
       license_key: key,
-      status: "active" as const
+      status: "available" as const
     }));
 
     const { error } = await supabaseAdmin
