@@ -87,28 +87,25 @@ export const verifyPayment = createServerFn({ method: "POST" })
 
       if (items) {
         for (const item of items) {
+          if (!item.product_id) continue;
+          
           const { data: product } = await supabaseAdmin
             .from("products")
             .select("inventory_type, delivery_method")
-            .eq("id", item.product_id!)
+            .eq("id", item.product_id)
             .single();
 
           if (product?.inventory_type === "license") {
-            // Assign license keys
-            for (let i = 0; i < item.quantity; i++) {
-              await supabaseAdmin.rpc("claim_license", {
-                p_product_id: item.product_id,
-                p_user_id: payment.verified_by, // This should actually be the order customer_id
-              });
-              
-              // Correct logic: find the order's customer_id
-              const { data: order } = await supabaseAdmin
-                .from("orders")
-                .select("customer_id")
-                .eq("id", payment.order_id)
-                .single();
-              
-              if (order?.customer_id) {
+            // Find the order's customer_id
+            const { data: order } = await supabaseAdmin
+              .from("orders")
+              .select("customer_id")
+              .eq("id", payment.order_id)
+              .single();
+            
+            if (order?.customer_id) {
+              // Assign license keys
+              for (let i = 0; i < item.quantity; i++) {
                 await supabaseAdmin.rpc("claim_license", {
                   p_product_id: item.product_id,
                   p_user_id: order.customer_id,
