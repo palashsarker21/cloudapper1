@@ -10,15 +10,16 @@ export interface FulfillmentOptions {
 
 export async function processOrderFulfillment(orderId: string) {
   // 1. Fetch order and items
-  const { data: order, error: orderError } = await supabaseAdmin
+  const { data: orderData, error: orderError } = await (supabaseAdmin
     .from('orders' as any)
     .select(`
       *,
       order_items (*)
     `)
     .eq('id', orderId)
-    .single();
+    .single() as any);
 
+  const order = orderData;
   if (orderError || !order) {
     console.error(`[Fulfillment] Order ${orderId} not found`, orderError);
     return;
@@ -35,24 +36,26 @@ export async function processOrderFulfillment(orderId: string) {
     if (!item.product_id) continue;
 
     // Fetch product delivery info
-    const { data: product } = await supabaseAdmin
+    const { data: productData, error: productError } = await (supabaseAdmin
       .from('products' as any)
       .select('*')
       .eq('id', item.product_id)
-      .single();
+      .single() as any);
 
-    if (!product) continue;
+    const product = productData;
+    if (productError || !product) continue;
 
     const idempotencyKey = `fulfillment-${orderId}-${item.id}`;
     
     // Check if already fulfilled
-    const { data: existing } = await supabaseAdmin
+    const { data: existingData } = await (supabaseAdmin
       .from('fulfillments' as any)
       .select('*')
       .eq('idempotency_key', idempotencyKey)
-      .single();
+      .single() as any);
 
-    if (existing && (existing as any).status === 'completed') {
+    const existing = existingData;
+    if (existing && existing.status === 'completed') {
       console.log(`[Fulfillment] Item ${item.id} already fulfilled. Skipping.`);
       continue;
     }
@@ -60,7 +63,7 @@ export async function processOrderFulfillment(orderId: string) {
     // Create or get fulfillment record
     let fulfillment = existing;
     if (!fulfillment) {
-      const { data: created, error: createError } = await supabaseAdmin
+      const { data: createdData, error: createError } = await (supabaseAdmin
         .from('fulfillments' as any)
         .insert({
           order_id: orderId,
@@ -74,19 +77,19 @@ export async function processOrderFulfillment(orderId: string) {
           }
         })
         .select()
-        .single();
+        .single() as any);
       
       if (createError) {
         console.error(`[Fulfillment] Error creating record for ${item.id}`, createError);
         continue;
       }
-      fulfillment = created;
+      fulfillment = createdData;
     }
 
     try {
       // Update to processing
-      await updateFulfillmentStatus((fulfillment as any).id, 'processing');
-      await logFulfillmentEvent((fulfillment as any).id, 'started', { method: product.delivery_method });
+      await updateFulfillmentStatus(fulfillment.id, 'processing');
+      await logFulfillmentEvent(fulfillment.id, 'started', { method: product.delivery_method });
 
       // Execute delivery based on method
       if (product.delivery_method === 'license_key') {
@@ -95,20 +98,20 @@ export async function processOrderFulfillment(orderId: string) {
         await deliverDigitalFile(fulfillment, item, product, order.customer_id!);
       } else {
         // Manual delivery remains in processing/pending for admin
-        await logFulfillmentEvent((fulfillment as any).id, 'manual_required', { product: product.name });
+        await logFulfillmentEvent(fulfillment.id, 'manual_required', { product: product.name });
         continue; // Don't mark completed yet
       }
 
       // Mark completed
-      await updateFulfillmentStatus((fulfillment as any).id, 'completed');
-      await logFulfillmentEvent((fulfillment as any).id, 'completed');
+      await updateFulfillmentStatus(fulfillment.id, 'completed');
+      await logFulfillmentEvent(fulfillment.id, 'completed');
       
       console.log(`[Fulfillment] Completed fulfillment for item ${item.id}`);
 
     } catch (err: any) {
       console.error(`[Fulfillment] Failed for item ${item.id}`, err);
-      await updateFulfillmentStatus((fulfillment as any).id, 'failed', err.message);
-      await logFulfillmentEvent((fulfillment as any).id, 'failed', { error: err.message });
+      await updateFulfillmentStatus(fulfillment.id, 'failed', err.message);
+      await logFulfillmentEvent(fulfillment.id, 'failed', { error: err.message });
     }
   }
 }
