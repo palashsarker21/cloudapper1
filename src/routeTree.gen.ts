@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
+import { Route as AdminHealthRouteImport } from './routes/admin.health'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const TrackOrderRoute = TrackOrderRouteImport.update({
   path: '/track-order',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminHealthRoute = AdminHealthRouteImport.update({
+  id: '/admin/health',
+  path: '/admin/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductProductIdRoute = ProductProductIdRouteImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
+  '/admin/health': typeof AdminHealthRoute
   '/product/$productId': typeof ProductProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
+  '/admin/health': typeof AdminHealthRoute
   '/product/$productId': typeof ProductProductIdRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,29 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
+  '/admin/health': typeof AdminHealthRoute
   '/product/$productId': typeof ProductProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/track-order' | '/product/$productId'
+  fullPaths:
+    '/' | '/login' | '/track-order' | '/admin/health' | '/product/$productId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/track-order' | '/product/$productId'
-  id: '__root__' | '/' | '/login' | '/track-order' | '/product/$productId'
+  to: '/' | '/login' | '/track-order' | '/admin/health' | '/product/$productId'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/track-order'
+    | '/admin/health'
+    | '/product/$productId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   TrackOrderRoute: typeof TrackOrderRoute
+  AdminHealthRoute: typeof AdminHealthRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
 }
 
@@ -92,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackOrderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/health': {
+      id: '/admin/health'
+      path: '/admin/health'
+      fullPath: '/admin/health'
+      preLoaderRoute: typeof AdminHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$productId': {
       id: '/product/$productId'
       path: '/product/$productId'
@@ -106,6 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   TrackOrderRoute: TrackOrderRoute,
+  AdminHealthRoute: AdminHealthRoute,
   ProductProductIdRoute: ProductProductIdRoute,
 }
 export const routeTree = rootRouteImport
