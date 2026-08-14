@@ -20,6 +20,7 @@ export const Header = () => {
     { label: "Credits", href: "/" },
     { label: "Extensions", href: "/" },
     { label: "Digital Products", href: "/" },
+    { label: "Track Order", href: "/track-order" },
     { label: "Pricing", href: "/" },
     { label: "Support", href: "/" },
   ];
