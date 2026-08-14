@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as AdminHealthRouteImport } from './routes/admin.health'
+import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin/products.$productId'
@@ -21,6 +23,11 @@ import { Route as AdminProductsNewRouteImport } from './routes/admin/products.ne
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -36,6 +43,11 @@ const TrackOrderRoute = TrackOrderRouteImport.update({
 const AdminHealthRoute = AdminHealthRouteImport.update({
   id: '/admin/health',
   path: '/admin/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/admin/orders',
+  path: '/admin/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
@@ -61,9 +73,11 @@ const AdminProductsNewRoute = AdminProductsNewRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/health': typeof AdminHealthRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/product/$productId': typeof ProductProductIdRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
@@ -71,9 +85,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/health': typeof AdminHealthRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/product/$productId': typeof ProductProductIdRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
@@ -82,9 +98,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/health': typeof AdminHealthRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/product/$productId': typeof ProductProductIdRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
@@ -94,9 +112,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/checkout'
     | '/login'
     | '/track-order'
     | '/admin/health'
+    | '/admin/orders'
     | '/admin/products'
     | '/product/$productId'
     | '/admin/products/$productId'
@@ -104,9 +124,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/checkout'
     | '/login'
     | '/track-order'
     | '/admin/health'
+    | '/admin/orders'
     | '/admin/products'
     | '/product/$productId'
     | '/admin/products/$productId'
@@ -114,9 +136,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/checkout'
     | '/login'
     | '/track-order'
     | '/admin/health'
+    | '/admin/orders'
     | '/admin/products'
     | '/product/$productId'
     | '/admin/products/$productId'
@@ -125,9 +149,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CheckoutRoute: typeof CheckoutRoute
   LoginRoute: typeof LoginRoute
   TrackOrderRoute: typeof TrackOrderRoute
   AdminHealthRoute: typeof AdminHealthRoute
+  AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   ProductProductIdRoute: typeof ProductProductIdRoute
 }
@@ -139,6 +165,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -160,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/health'
       fullPath: '/admin/health'
       preLoaderRoute: typeof AdminHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/admin/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/products': {
@@ -209,9 +249,11 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CheckoutRoute: CheckoutRoute,
   LoginRoute: LoginRoute,
   TrackOrderRoute: TrackOrderRoute,
   AdminHealthRoute: AdminHealthRoute,
+  AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
   ProductProductIdRoute: ProductProductIdRoute,
 }

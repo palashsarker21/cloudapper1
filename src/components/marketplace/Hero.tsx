@@ -34,7 +34,7 @@ export const Hero = () => {
               </Link>
             </Button>
             <Button variant="outline" size="lg" className="h-12 px-8 text-base" asChild>
-              <Link to="/track-order">
+              <Link to="/track-order" search={{ orderId: undefined }}>
                 <PackageSearch className="mr-2 h-4 w-4" />
                 Track Order
               </Link>

@@ -10,9 +10,13 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { useCart } from "@/contexts/CartContext";
+import { Badge } from "@/components/ui/badge";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { itemCount } = useCart();
+
 
   const navLinks = [
     { label: "Marketplace", href: "/" },
@@ -20,7 +24,7 @@ export const Header = () => {
     { label: "Credits", href: "/" },
     { label: "Extensions", href: "/" },
     { label: "Digital Products", href: "/" },
-    { label: "Track Order", href: "/track-order" },
+    { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
     { label: "Pricing", href: "/" },
     { label: "Support", href: "/" },
   ];
@@ -40,7 +44,7 @@ export const Header = () => {
               <NavigationMenuList>
                 {navLinks.map((link) => (
                   <NavigationMenuItem key={link.href}>
-                    <Link to={link.href as any} className={navigationMenuTriggerStyle()}>
+                    <Link to={link.href as any} search={(link as any).search} className={navigationMenuTriggerStyle()}>
                       {link.label}
                     </Link>
                   </NavigationMenuItem>
@@ -58,8 +62,15 @@ export const Header = () => {
                 className="pl-8 bg-muted/50 focus-visible:bg-background transition-colors"
               />
             </div>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="relative" asChild>
+              <Link to="/checkout">
+                <ShoppingCart className="h-5 w-5" />
+                {itemCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px]" variant="destructive">
+                    {itemCount}
+                  </Badge>
+                )}
+              </Link>
             </Button>
             <Button variant="default" className="hidden sm:flex" asChild>
               <Link to="/login">
@@ -95,6 +106,7 @@ export const Header = () => {
               <Link
                 key={link.href}
                 to={link.href as any}
+                search={(link as any).search}
                 className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
                 onClick={() => setIsMenuOpen(false)}
               >

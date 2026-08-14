@@ -19,8 +19,13 @@ import {
   CheckCircle2,
   Share2,
   Heart,
-  Loader2
+  Loader2,
+  Check
 } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
+import { useState } from 'react';
+import { toast } from 'sonner';
+
 
 
 export const Route = createFileRoute('/product/$productId')({
@@ -37,6 +42,9 @@ export const Route = createFileRoute('/product/$productId')({
 
 function ProductDetailPage() {
   const { productId } = Route.useParams();
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', productId],
@@ -167,9 +175,24 @@ function ProductDetailPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="flex-1 h-14 text-base gap-2">
-                <ShoppingCart className="h-5 w-5" />
-                Add to Cart
+              <Button 
+                size="lg" 
+                className="flex-1 h-14 text-base gap-2"
+                onClick={() => {
+                  addItem({
+                    id: product.id,
+                    name: product.name,
+                    price: Number(product.price.replace(/[^0-9.-]+/g,"")),
+                    image_url: product.image ?? null,
+                    quantity: 1
+                  });
+                  setAdded(true);
+                  toast.success("Added to cart");
+                  setTimeout(() => setAdded(false), 2000);
+                }}
+              >
+                {added ? <Check className="h-5 w-5" /> : <ShoppingCart className="h-5 w-5" />}
+                {added ? "Added" : "Add to Cart"}
               </Button>
               <div className="flex gap-2">
                 <Button variant="outline" size="icon" className="h-14 w-14">

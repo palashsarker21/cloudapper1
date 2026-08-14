@@ -5,6 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
+
 
 
 export interface Product {
@@ -22,7 +25,10 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const { addItem } = useCart();
+
   return (
+
     <Card className="group overflow-hidden border bg-background transition-all hover:shadow-lg flex flex-col">
       <CardHeader className="p-0">
         <Link to="/product/$productId" params={{ productId: product.id }} className="block relative aspect-[4/3] overflow-hidden bg-muted">
@@ -59,7 +65,20 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full" variant="outline">
+        <Button 
+          className="w-full" 
+          variant="outline"
+          onClick={() => {
+            addItem({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              image_url: product.image,
+              quantity: 1
+            });
+            toast.success("Added to cart");
+          }}
+        >
           <ShoppingCart className="mr-2 h-4 w-4" />
           Add to Cart
         </Button>
