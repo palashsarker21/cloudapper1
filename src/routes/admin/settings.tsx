@@ -146,7 +146,7 @@ function AdminSettings() {
               description="Borderless, contactless crypto payment technology."
               data={localSettings.binance_pay}
               onToggle={() => handleToggle('binance_pay')}
-              onChange={(field, val) => handleChange('binance_pay', field, val)}
+              onChange={(field: string, val: string) => handleChange('binance_pay', field, val)}
               configured={isConfigured(localSettings.binance_pay)}
               fields={[
                 { id: 'api_key', label: 'API Key', type: 'password' },
