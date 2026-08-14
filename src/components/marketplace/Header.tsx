@@ -61,9 +61,11 @@ export const Header = () => {
             <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="h-5 w-5" />
             </Button>
-            <Button variant="default" className="hidden sm:flex">
-              <User className="mr-2 h-4 w-4" />
-              Login
+            <Button variant="default" className="hidden sm:flex" asChild>
+              <Link to="/login">
+                <User className="mr-2 h-4 w-4" />
+                Login
+              </Link>
             </Button>
             <Button
               variant="ghost"
@@ -99,9 +101,11 @@ export const Header = () => {
                 {link.label}
               </Link>
             ))}
-            <Button variant="default" className="w-full mt-4">
-              <User className="mr-2 h-4 w-4" />
-              Login
+            <Button variant="default" className="w-full mt-4" asChild>
+              <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                <User className="mr-2 h-4 w-4" />
+                Login
+              </Link>
             </Button>
           </div>
         </div>
