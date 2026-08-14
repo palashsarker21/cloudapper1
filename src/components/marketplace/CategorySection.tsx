@@ -27,15 +27,16 @@ const iconMap: Record<string, any> = {
 };
 
 const categoryColors: Record<string, string> = {
-  'AI Credits': "bg-blue-50 text-blue-600",
-  'AI Tools': "bg-purple-50 text-purple-600",
-  'Browser Extensions': "bg-orange-50 text-orange-600",
-  'SaaS Products': "bg-green-50 text-green-600",
-  'Digital Products': "bg-pink-50 text-pink-600",
-  'Templates': "bg-indigo-50 text-indigo-600",
-  'Prompts': "bg-yellow-50 text-yellow-600",
-  'Automation Tools': "bg-red-50 text-red-600",
+  'AI Credits': "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  'AI Tools': "bg-purple-500/10 text-purple-400 border-purple-500/20",
+  'Browser Extensions': "bg-orange-500/10 text-orange-400 border-orange-500/20",
+  'SaaS Products': "bg-green-500/10 text-green-400 border-green-500/20",
+  'Digital Products': "bg-pink-500/10 text-pink-400 border-pink-500/20",
+  'Templates': "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+  'Prompts': "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+  'Automation Tools': "bg-red-500/10 text-red-400 border-red-500/20",
 };
+
 
 export const CategorySection = () => {
   const { data, isLoading } = useQuery({
@@ -77,9 +78,10 @@ export const CategorySection = () => {
                   href={`/category/${category.slug}`}
                   className="group flex flex-col items-center justify-center rounded-xl border bg-background p-6 text-center transition-all hover:border-primary/50 hover:shadow-md"
                 >
-                  <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg ${colorClass} transition-transform group-hover:scale-110`}>
-                    <Icon className="h-6 w-6" />
+                  <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border ${colorClass} transition-all group-hover:scale-110 shadow-sm`}>
+                    <Icon className="h-7 w-7" />
                   </div>
+
                   <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                     {category.name}
                   </h3>
