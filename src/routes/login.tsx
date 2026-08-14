@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
-import { Github, Mail, ArrowLeft, Loader2 } from 'lucide-react';
+import { Mail, ArrowLeft, Loader2, LogIn } from 'lucide-react';
 
 export const Route = createFileRoute('/login')({
   head: () => ({
@@ -77,8 +77,8 @@ function LoginPage() {
           <CardContent className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <Button variant="outline" className="w-full" disabled={isLoading}>
-                <Github className="mr-2 h-4 w-4" />
-                Github
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign In
               </Button>
               <Button variant="outline" className="w-full" disabled={isLoading}>
                 <Mail className="mr-2 h-4 w-4" />
