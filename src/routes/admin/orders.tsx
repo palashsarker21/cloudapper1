@@ -39,8 +39,12 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/orders')({
+  head: () => ({
+    meta: [{ title: 'Order Management | Admin | CloudApper' }],
+  }),
   component: AdminOrdersPage,
 });
+
 
 function AdminOrdersPage() {
   const getOrders = useServerFn(getAdminOrders);

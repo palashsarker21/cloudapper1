@@ -32,10 +32,12 @@ export const Route = createFileRoute('/product/$productId')({
   head: ({ params }) => ({
     title: `Product Detail | CloudApper`,
     meta: [
-      { name: 'description', content: 'View details and purchase this AI product on CloudApper.' },
+      { name: 'description', content: 'View details and purchase this AI product on CloudApper with secure delivery.' },
       { property: 'og:title', content: 'Product Detail | CloudApper' },
-      { property: 'og:description', content: 'Discover high-quality AI tools and digital products.' },
+      { property: 'og:description', content: 'Discover high-quality AI tools and digital products with instant delivery.' },
+      { name: 'twitter:card', content: 'summary_large_image' },
     ],
+
   }),
   component: ProductDetailPage,
 });

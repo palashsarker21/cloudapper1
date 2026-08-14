@@ -9,8 +9,12 @@ import { Footer } from '@/components/marketplace/Footer';
 import { Plus, Package, Edit, Trash2 } from 'lucide-react';
 
 export const Route = createFileRoute('/admin/products')({
+  head: () => ({
+    meta: [{ title: 'Product Management | Admin | CloudApper' }],
+  }),
   component: AdminProductsPage,
 });
+
 
 function AdminProductsPage() {
   const { data: products, isLoading } = useQuery({
