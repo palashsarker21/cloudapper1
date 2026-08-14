@@ -183,7 +183,7 @@ function ProductDetailPage() {
                     id: product.id,
                     name: product.name,
                     price: Number(product.price.replace(/[^0-9.-]+/g,"")),
-                    image_url: product.image || undefined,
+                    image_url: product.image ?? null,
                     quantity: 1
                   });
                   setAdded(true);
