@@ -129,3 +129,60 @@ export const verifyPayment = createServerFn({ method: "POST" })
 
     return { success: true };
   });
+
+export const getSettings = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { userId, supabase } = context;
+
+    // Check admin role
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) {
+      throw new Error("Unauthorized: Admin access required.");
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from("settings")
+      .select("*");
+
+    if (error) throw error;
+    
+    // Convert array to object for easier consumption
+    return data.reduce((acc: any, curr) => {
+      acc[curr.id] = curr.value;
+      return acc;
+    }, {});
+  });
+
+export const updateSettings = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    id: z.string(),
+    value: z.any(),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { id, value } = data;
+    const { userId, supabase } = context;
+
+    // Check admin role
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) {
+      throw new Error("Unauthorized: Admin access required.");
+    }
+
+    const { error } = await supabaseAdmin
+      .from("settings")
+      .upsert({ id, value, updated_at: new Date().toISOString() });
+
+    if (error) throw error;
+    return { success: true };
+  });
+
