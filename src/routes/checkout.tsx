@@ -13,7 +13,17 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
 export const Route = createFileRoute('/checkout')({
+  head: () => ({
+    title: 'Checkout | CloudApper',
+    meta: [
+      { name: 'description', content: 'Complete your purchase securely on CloudApper.' },
+      { property: 'og:title', content: 'Checkout | CloudApper' },
+      { property: 'og:description', content: 'Complete your purchase securely on CloudApper.' },
+      { name: 'twitter:card', content: 'summary' },
+    ],
+  }),
   component: CheckoutPage,
+
 });
 
 type PaymentProvider = 'bkash' | 'nagad' | 'binance_pay' | 'manual';

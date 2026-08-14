@@ -10,11 +10,12 @@ export const Route = createFileRoute('/login')({
   head: () => ({
     title: 'Login | CloudApper',
     meta: [
-      { name: 'description', content: 'Sign in to your CloudApper account to access your AI tools and digital products.' },
+      { name: 'description', content: 'Sign in to your CloudApper account to access your AI tools, credits, and digital products.' },
       { property: 'og:title', content: 'Login | CloudApper' },
       { property: 'og:description', content: 'Sign in to your CloudApper account.' },
       { name: 'twitter:card', content: 'summary' },
     ],
+
   }),
   component: LoginPage,
 });
