@@ -89,6 +89,7 @@ function ProductDetailPage() {
         product_type: data.product_type,
         license_duration: data.license_duration,
         sku: data.sku,
+        category_id: data.category_id,
         delivery_instructions: data.delivery_instructions,
         features,
         specs: [
