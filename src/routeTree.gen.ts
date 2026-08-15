@@ -28,6 +28,7 @@ import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin/products.$productId'
 import { Route as AdminProductsNewRouteImport } from './routes/admin/products.new'
 import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
+import { Route as AdminSettingsCryptoWalletsRouteImport } from './routes/admin/settings/crypto-wallets'
 import { Route as AdminSettingsPaymentsRouteImport } from './routes/admin/settings/payments'
 import { Route as AdminSettingsSecurityRouteImport } from './routes/admin/settings/security'
 import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
@@ -132,6 +133,12 @@ const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminSettingsRoute,
 } as any)
+const AdminSettingsCryptoWalletsRoute =
+  AdminSettingsCryptoWalletsRouteImport.update({
+    id: '/crypto-wallets',
+    path: '/crypto-wallets',
+    getParentRoute: () => AdminSettingsRoute,
+  } as any)
 const AdminSettingsPaymentsRoute = AdminSettingsPaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
@@ -189,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/settings/crypto-wallets': typeof AdminSettingsCryptoWalletsRoute
   '/admin/settings/payments': typeof AdminSettingsPaymentsRoute
   '/admin/settings/security': typeof AdminSettingsSecurityRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
@@ -215,6 +223,7 @@ export interface FileRoutesByTo {
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/settings/crypto-wallets': typeof AdminSettingsCryptoWalletsRoute
   '/admin/settings/payments': typeof AdminSettingsPaymentsRoute
   '/admin/settings/security': typeof AdminSettingsSecurityRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
@@ -244,6 +253,7 @@ export interface FileRoutesById {
   '/_authenticated/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/settings/crypto-wallets': typeof AdminSettingsCryptoWalletsRoute
   '/admin/settings/payments': typeof AdminSettingsPaymentsRoute
   '/admin/settings/security': typeof AdminSettingsSecurityRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
@@ -273,6 +283,7 @@ export interface FileRouteTypes {
     | '/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
+    | '/admin/settings/crypto-wallets'
     | '/admin/settings/payments'
     | '/admin/settings/security'
     | '/api/public/webhook'
@@ -299,6 +310,7 @@ export interface FileRouteTypes {
     | '/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
+    | '/admin/settings/crypto-wallets'
     | '/admin/settings/payments'
     | '/admin/settings/security'
     | '/api/public/webhook'
@@ -327,6 +339,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
+    | '/admin/settings/crypto-wallets'
     | '/admin/settings/payments'
     | '/admin/settings/security'
     | '/api/public/webhook'
@@ -492,6 +505,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsIndexRouteImport
       parentRoute: typeof AdminSettingsRoute
     }
+    '/admin/settings/crypto-wallets': {
+      id: '/admin/settings/crypto-wallets'
+      path: '/crypto-wallets'
+      fullPath: '/admin/settings/crypto-wallets'
+      preLoaderRoute: typeof AdminSettingsCryptoWalletsRouteImport
+      parentRoute: typeof AdminSettingsRoute
+    }
     '/admin/settings/payments': {
       id: '/admin/settings/payments'
       path: '/payments'
@@ -588,12 +608,14 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
 )
 
 interface AdminSettingsRouteChildren {
+  AdminSettingsCryptoWalletsRoute: typeof AdminSettingsCryptoWalletsRoute
   AdminSettingsPaymentsRoute: typeof AdminSettingsPaymentsRoute
   AdminSettingsSecurityRoute: typeof AdminSettingsSecurityRoute
   AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
 }
 
 const AdminSettingsRouteChildren: AdminSettingsRouteChildren = {
+  AdminSettingsCryptoWalletsRoute: AdminSettingsCryptoWalletsRoute,
   AdminSettingsPaymentsRoute: AdminSettingsPaymentsRoute,
   AdminSettingsSecurityRoute: AdminSettingsSecurityRoute,
   AdminSettingsIndexRoute: AdminSettingsIndexRoute,

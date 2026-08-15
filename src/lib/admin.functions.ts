@@ -143,3 +143,91 @@ export const updateSettings = createServerFn({ method: "POST" })
     return { success: true };
   });
 
+export const getCryptoWallets = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { userId, supabase } = context;
+
+    // Check admin role
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) {
+      throw new Error("Unauthorized: Admin access required.");
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from("crypto_wallets")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data;
+  });
+
+export const updateCryptoWallet = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    id: z.string().uuid().optional(),
+    asset: z.string(),
+    network: z.string(),
+    wallet_address: z.string(),
+    minimum_amount: z.number().default(0),
+    is_active: z.boolean().default(true),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId, supabase } = context;
+
+    // Check admin role
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) {
+      throw new Error("Unauthorized: Admin access required.");
+    }
+
+    const { error } = await supabaseAdmin
+      .from("crypto_wallets")
+      .upsert({
+        id: data.id as any,
+        asset: data.asset,
+        network: data.network,
+        wallet_address: data.wallet_address,
+        minimum_amount: data.minimum_amount,
+        is_active: data.is_active,
+        updated_at: new Date().toISOString()
+      });
+
+    if (error) throw error;
+    return { success: true };
+  });
+
+export const deleteCryptoWallet = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId, supabase } = context;
+
+    // Check admin role
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) {
+      throw new Error("Unauthorized: Admin access required.");
+    }
+
+    const { error } = await supabaseAdmin
+      .from("crypto_wallets")
+      .delete()
+      .eq("id", data.id);
+
+    if (error) throw error;
+    return { success: true };
+  });
+
