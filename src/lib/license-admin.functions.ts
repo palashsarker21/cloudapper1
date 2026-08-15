@@ -7,10 +7,10 @@ export const getPlatformStats = createServerFn({ method: "GET" })
   .handler(async () => {
     const { count: users } = await supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true });
     const { count: orders } = await supabaseAdmin.from('orders').select('*', { count: 'exact', head: true });
-    const { data: revenue } = await supabaseAdmin.from('orders').select('total_amount').eq('status', 'paid');
+    const { data: revenue } = await (supabaseAdmin.from('orders').select('total') as any);
     const { count: licenses } = await supabaseAdmin.from('licenses' as any).select('*', { count: 'exact', head: true });
     
-    const totalRevenue = revenue?.reduce((acc, curr) => acc + (curr.total_amount || 0), 0) || 0;
+    const totalRevenue = revenue?.reduce((acc: number, curr: any) => acc + (Number(curr.total) || 0), 0) || 0;
 
     return {
       users: users || 0,
