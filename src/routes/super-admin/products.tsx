@@ -58,7 +58,7 @@ function SuperAdminProductsPage() {
             <Button variant="outline" className="glass-effect" asChild>
               <Link to="/admin/settings">System Settings</Link>
             </Button>
-            <Button variant="primary" asChild>
+            <Button variant="default" asChild>
               <Link to="/admin/products/new">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Product
