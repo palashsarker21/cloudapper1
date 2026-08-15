@@ -12,47 +12,45 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   Search, 
   UserPlus, 
-  MoreVertical, 
   Shield, 
+  MoreVertical, 
+  UserCheck, 
   UserX,
-  UserCheck,
-  Edit,
-  Loader2
+  ShieldAlert,
+  Mail,
+  Calendar
 } from 'lucide-react';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/super-admin/users')({
   component: SuperAdminUsersPage,
 });
 
 function SuperAdminUsersPage() {
-  const [searchTerm, setSearchTerm] = useState('');
   const fetchUsers = useServerFn(getSuperAdminUsers);
-  const changeRole = useServerFn(updateUserRole);
+  const updateRole = useServerFn(updateUserRole);
 
   const { data: users, isLoading, refetch } = useQuery({
-    queryKey: ['super-admin-users', searchTerm],
-    queryFn: () => fetchUsers({ data: { search: searchTerm, limit: 20, offset: 0 } }),
+    queryKey: ['super-admin-users'],
+    queryFn: () => fetchUsers(),
   });
 
-  const roleMutation = useMutation({
+  const mutation = useMutation({
     mutationFn: (variables: { userId: string, role: string }) => 
-      changeRole({ data: { targetUserId: variables.userId, role: variables.role } }),
+      updateRole({ data: { userId: variables.userId, role: variables.role as any } }),
     onSuccess: () => {
       toast.success("User role updated successfully");
       refetch();
@@ -66,101 +64,96 @@ function SuperAdminUsersPage() {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-black tracking-tighter">USER MANAGEMENT</h1>
-            <p className="text-muted-foreground">Manage platform accounts and permissions</p>
+            <h1 className="text-3xl font-black tracking-tighter uppercase">Citizen Records</h1>
+            <p className="text-muted-foreground">Manage platform access and role hierarchy</p>
           </div>
+          
           <Button variant="default">
-            <UserPlus className="mr-2 h-4 w-4" />
-            Add User
+            <UserPlus className="mr-2 h-4 w-4" /> Invite User
           </Button>
         </div>
 
-        <div className="glass-effect rounded-2xl border-none shadow-xl overflow-hidden mb-8">
-          <div className="p-4 border-b border-border/10 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="glass-effect rounded-2xl border-none shadow-xl overflow-hidden">
+          <div className="p-4 border-b border-border/10 flex flex-col md:flex-row gap-4 items-center justify-between bg-surface-1/30">
             <div className="relative w-full md:w-96">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
-                placeholder="Search by name, email, or ID..." 
+                placeholder="Search citizens by name or email..." 
                 className="pl-10 bg-surface-2 border-none focus-visible:ring-primary"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex gap-2 w-full md:w-auto">
-              <Button variant="outline" size="sm" className="glass-effect">Filters</Button>
-              <Button variant="outline" size="sm" className="glass-effect">Export CSV</Button>
+            <div className="flex gap-2">
+              <Badge variant="outline" className="px-3 py-1 bg-surface-2 border-none text-[10px] uppercase font-bold">
+                Total: {users?.length || 0}
+              </Badge>
             </div>
           </div>
 
           <div className="overflow-x-auto">
             {isLoading ? (
-              <div className="flex justify-center py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </div>
+              <div className="py-20 text-center text-muted-foreground italic">Decrypting user records...</div>
             ) : (
               <Table>
                 <TableHeader className="bg-surface-1/50">
                   <TableRow>
-                    <TableHead className="font-bold">User</TableHead>
+                    <TableHead className="font-bold">Identity</TableHead>
                     <TableHead className="font-bold">Role</TableHead>
                     <TableHead className="font-bold">Status</TableHead>
-                    <TableHead className="font-bold">Registered</TableHead>
-                    <TableHead className="font-bold text-right">Actions</TableHead>
+                    <TableHead className="font-bold">Joined</TableHead>
+                    <TableHead className="font-bold text-right">Access Control</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {users?.map((user: any) => (
                     <TableRow key={user.id} className="hover:bg-surface-1/30 transition-colors">
                       <TableCell>
-                        <div className="flex flex-col">
-                          <span className="font-bold text-sm">{user.full_name || 'Anonymous User'}</span>
-                          <span className="text-xs text-muted-foreground">{user.email}</span>
-                          <span className="text-[10px] text-muted-foreground/50 font-mono mt-1">{user.id}</span>
+                        <div className="flex items-center gap-3">
+                          <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center font-bold text-xs border border-border/10 shadow-inner">
+                            {user.email.substring(0, 2).toUpperCase()}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-bold text-sm tracking-tight">{user.full_name || 'Classified Identity'}</span>
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Mail className="h-3 w-3" /> {user.email}
+                            </span>
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-1 flex-wrap">
-                          {user.roles?.map((r: any) => (
-                            <Badge key={r.role} variant={r.role === 'super_admin' ? 'default' : 'outline'} className="text-[10px] uppercase tracking-wider">
-                              {r.role}
-                            </Badge>
-                          ))}
-                          {(!user.roles || user.roles.length === 0) && (
-                            <Badge variant="outline" className="text-[10px] uppercase tracking-wider">customer</Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="success" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px]">
-                          ACTIVE
+                        <Badge variant={user.role === 'super_admin' ? 'destructive' : 'outline'} className="text-[10px] font-black uppercase tracking-widest px-2">
+                          <Shield className="mr-1 h-3 w-3" /> {user.role}
                         </Badge>
                       </TableCell>
+                      <TableCell>
+                        <Badge variant="success" className="text-[8px] uppercase">Active</Badge>
+                      </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {new Date(user.created_at).toLocaleDateString()}
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(user.created_at).toLocaleDateString()}
+                        </div>
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-surface-2">
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48 glass-effect border-none shadow-2xl">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" /> View Details
+                          <DropdownMenuContent align="end" className="glass-effect border-none shadow-2xl min-w-[160px]">
+                            <div className="px-2 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Elevate Privileges</div>
+                            <DropdownMenuItem onClick={() => mutation.mutate({ userId: user.id, role: 'super_admin' })}>
+                              <ShieldAlert className="mr-2 h-4 w-4 text-destructive" /> Super Admin
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground">Assign Role</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => roleMutation.mutate({ userId: user.id, role: 'admin' })}>
-                              <Shield className="mr-2 h-4 w-4" /> Admin
+                            <DropdownMenuItem onClick={() => mutation.mutate({ userId: user.id, role: 'admin' })}>
+                              <Shield className="mr-2 h-4 w-4 text-primary" /> Administrator
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => roleMutation.mutate({ userId: user.id, role: 'support' })}>
-                              <Shield className="mr-2 h-4 w-4" /> Support
+                            <DropdownMenuItem onClick={() => mutation.mutate({ userId: user.id, role: 'user' })}>
+                              <UserCheck className="mr-2 h-4 w-4" /> Standard User
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
+                            <DropdownMenuSeparator className="bg-border/10" />
                             <DropdownMenuItem className="text-destructive focus:text-destructive">
-                              <UserX className="mr-2 h-4 w-4" /> Suspend User
+                              <UserX className="mr-2 h-4 w-4" /> Revoke Access
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -170,14 +163,6 @@ function SuperAdminUsersPage() {
                 </TableBody>
               </Table>
             )}
-          </div>
-          
-          <div className="p-4 border-t border-border/10 flex items-center justify-between text-xs text-muted-foreground">
-            <div>Showing {users?.length || 0} of {users?.length || 0} users</div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled className="glass-effect">Previous</Button>
-              <Button variant="outline" size="sm" disabled className="glass-effect">Next</Button>
-            </div>
           </div>
         </div>
       </main>
