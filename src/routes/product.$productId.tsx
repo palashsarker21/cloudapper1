@@ -323,14 +323,28 @@ function ProductDetailPage() {
                     </ul>
                   </div>
                   <div className="space-y-4">
-                    <h4 className="font-semibold text-primary">Potential Browsers</h4>
-                    <ul className="space-y-2">
-                      {product.compatibility.browsers?.map((browser: string, i: number) => (
-                        <li key={i} className="text-muted-foreground flex items-center gap-2">
-                          <Check className="h-4 w-4 text-success" />
-                          {browser}
+                    <h4 className="font-semibold text-primary">Browsers</h4>
+                    <ul className="grid grid-cols-2 gap-2">
+                      {product.compatibility?.chrome && (
+                        <li className="text-muted-foreground flex items-center gap-2">
+                          <Check className="h-4 w-4 text-success" /> Chrome
                         </li>
-                      ))}
+                      )}
+                      {product.compatibility?.firefox && (
+                        <li className="text-muted-foreground flex items-center gap-2">
+                          <Check className="h-4 w-4 text-success" /> Firefox
+                        </li>
+                      )}
+                      {product.compatibility?.edge && (
+                        <li className="text-muted-foreground flex items-center gap-2">
+                          <Check className="h-4 w-4 text-success" /> Edge
+                        </li>
+                      )}
+                      {product.compatibility?.safari && (
+                        <li className="text-muted-foreground flex items-center gap-2">
+                          <Check className="h-4 w-4 text-success" /> Safari
+                        </li>
+                      )}
                     </ul>
                   </div>
                   <div className="md:col-span-2 p-4 rounded-xl bg-muted/30 border text-sm italic text-muted-foreground">

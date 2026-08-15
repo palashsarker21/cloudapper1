@@ -205,7 +205,7 @@ export const ProductForm = ({ product }: { product?: any }) => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="sku">SKU</Label>
-                    <Input id="sku" {...register("sku")} placeholder="CP-GPT4-100" />
+                    <Input id="sku" {...register("sku")} placeholder="CP-EXT-24H" />
                   </div>
                 </div>
 
