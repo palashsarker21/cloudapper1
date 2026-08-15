@@ -20,7 +20,7 @@ export const getMarketplaceProducts = createServerFn({ method: "GET" })
     limit: z.number().default(12),
     availability: z.string().optional(),
     productType: z.string().optional(),
-  }).parse(data))
+  }).optional().parse(data) || { page: 1, limit: 12 })
   .handler(async ({ data }) => {
     let query = supabaseAdmin
       .from("products")
