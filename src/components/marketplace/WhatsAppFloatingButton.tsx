@@ -3,7 +3,7 @@ import { brand } from "@/lib/brand";
 import { Button } from "@/components/ui/button";
 
 export const WhatsAppFloatingButton = () => {
-  const whatsappUrl = new URL(brand.social.whatsapp.url);
+  const whatsappUrl = new URL("https://wa.me/8801557749217");
   whatsappUrl.searchParams.set("text", brand.social.whatsapp.message);
 
   return (

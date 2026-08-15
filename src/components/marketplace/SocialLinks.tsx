@@ -21,7 +21,7 @@ const FacebookIcon = (props: React.ComponentProps<"svg">) => (
 );
 
 export const SocialLinks = ({ className, iconOnly = false, showLabels = true }: SocialLinksProps) => {
-  const whatsappUrl = new URL(brand.social.whatsapp.url);
+  const whatsappUrl = new URL("https://wa.me/8801557749217");
   whatsappUrl.searchParams.set("text", brand.social.whatsapp.message);
 
   const links = [
