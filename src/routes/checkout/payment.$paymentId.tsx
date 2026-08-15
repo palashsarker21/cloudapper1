@@ -78,7 +78,7 @@ function PaymentProcessingPage() {
   if (!payment) return <div className="p-20 text-center">Payment not found</div>;
 
   const receiver = (payment as any).receiver;
-  const receiverNumber = receiver?.receiver_identifier || "+8801934857886";
+  const receiverNumber = receiver?.receiver_identifier || "";
   const isManual = payment.provider === 'bkash' || payment.provider === 'nagad' || receiver !== null;
   const isSubmitted = ['payment_submitted', 'under_review', 'ready_for_confirmation'].includes(payment.status);
 

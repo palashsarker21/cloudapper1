@@ -218,6 +218,20 @@ function CheckoutPage() {
                     }}
                   />
                 ))}
+
+                {!activeReceivers.some((r: any) => r.provider === 'bkash') && (
+                  <div className="p-4 rounded-xl border border-dashed border-destructive/20 bg-destructive/5 flex items-center justify-between grayscale opacity-60">
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 rounded-lg bg-muted">
+                        <Smartphone className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <div className="font-bold">bKash</div>
+                        <div className="text-xs text-destructive">Temporarily unavailable</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 <PaymentMethodButton 
                   id="binance_pay"
