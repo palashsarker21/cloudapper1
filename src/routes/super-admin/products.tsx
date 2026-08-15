@@ -40,12 +40,14 @@ export const Route = createFileRoute('/super-admin/products')({
 });
 
 function SuperAdminProductsPage() {
-  const fetchProducts = useServerFn(getAdminProducts);
+  const fetchProducts = useServerFn(getMarketplaceProducts);
 
-  const { data: products, isLoading } = useQuery({
+  const { data: result, isLoading } = useQuery({
     queryKey: ['super-admin-catalog'],
-    queryFn: () => fetchProducts(),
+    queryFn: () => fetchProducts({ data: { limit: 100 } }),
   });
+
+  const products = (result as any)?.products;
 
   return (
     <div className="min-h-screen flex flex-col bg-surface-0">
