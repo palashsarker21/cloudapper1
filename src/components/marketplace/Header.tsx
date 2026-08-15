@@ -292,16 +292,27 @@ export const Header = () => {
             </div>
             {navLinks.map((link) => (
               <div key={link.label} className="flex flex-col space-y-2">
-                <Link
-                  to={link.href as any}
-                  params={(link as any).params}
-                  search={(link as any).search}
-                  {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
+                {link.external ? (
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.href as any}
+                    params={(link as any).params}
+                    search={(link as any).search}
+                    className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )}
               </div>
             ))}
             <Button variant="default" className="w-full mt-4" asChild>
