@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/marketplace/Header';
@@ -7,6 +7,11 @@ import { ProductForm } from '@/components/admin/ProductForm';
 import { Loader2 } from 'lucide-react';
 
 export const Route = createFileRoute('/admin/products/$productId')({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   component: EditProductPage,
 });
 
