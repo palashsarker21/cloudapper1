@@ -27,6 +27,9 @@ import { Logo } from '@/components/marketplace/Logo';
 import { useCart } from '@/contexts/CartContext';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useServerFn } from '@tanstack/react-start';
+import { getRelatedProducts } from '@/lib/products.functions';
+import { ProductCard } from '@/components/marketplace/FeaturedProducts';
 
 
 
@@ -105,6 +108,13 @@ function ProductDetailPage() {
         backupNote: "Always keep a backup of your project and important data using services such as GitHub and Supabase."
       };
     }
+  });
+
+  const fetchRelated = useServerFn(getRelatedProducts);
+  const { data: relatedProducts } = useQuery({
+    queryKey: ['related-products', productId, product?.category_id],
+    queryFn: () => fetchRelated({ productId, categoryId: product?.category_id } as any),
+    enabled: !!product
   });
 
   if (isLoading) {
@@ -370,6 +380,38 @@ function ProductDetailPage() {
             </TabsContent>
           </Tabs>
         </div>
+        {/* Related Products */}
+        {relatedProducts && relatedProducts.length > 0 && (
+          <div className="mt-32 space-y-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-3xl font-bold">Related Products</h2>
+              <Button variant="ghost" asChild>
+                <Link to="/">View Marketplace</Link>
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((p: any) => (
+                <ProductCard 
+                  key={p.id} 
+                  product={{
+                    id: p.id,
+                    name: p.name,
+                    category: p.categories?.name || 'Product',
+                    price: Number(p.price),
+                    rating: 5.0,
+                    reviews: 0,
+                    image: p.image_url || "https://images.unsplash.com/photo-1675557009875-436f49d7af8f?auto=format&fit=crop&q=80&w=400",
+                    sku: p.sku,
+                    product_type: p.product_type,
+                    license_duration: p.license_duration,
+                    inventory_type: p.inventory_type,
+                    stock_status: p.stock_status,
+                  }} 
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       <Footer />
