@@ -82,6 +82,7 @@ export const Header = () => {
     { label: "AI Credits", href: "/category/$slug", params: { slug: 'ai-credits' }, search: { sort: 'newest', page: 1 } },
     { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
     { label: "Digital Products", href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
+    { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
     { label: "Support", href: "/login" },
   ];
 
