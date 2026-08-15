@@ -133,10 +133,10 @@ function SearchPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <h1 className="text-2xl font-bold">
-                  {search.q ? `Results for "${search.q}"` : "Browse Marketplace"}
+                  {search.q ? `${t.common.exploreMarketplace} for "${search.q}"` : t.nav.marketplace}
                 </h1>
                 <p className="text-muted-foreground text-sm">
-                  {isLoading ? "Searching..." : `${data?.count || 0} products found`}
+                  {isLoading ? "Searching..." : `${data?.count || 0} ${t.common.noProductsFound.toLowerCase().includes('no') ? 'products found' : 'টি পণ্য পাওয়া গেছে'}`}
                 </p>
               </div>
 
@@ -222,12 +222,12 @@ function SearchPage() {
                 <div className="h-20 w-20 rounded-full bg-surface-2 flex items-center justify-center mb-6">
                   <PackageX className="h-10 w-10 text-muted-foreground/30" />
                 </div>
-                <h2 className="text-xl font-bold mb-2">No products found</h2>
+                <h2 className="text-xl font-bold mb-2">{t.common.noProductsFound}</h2>
                 <p className="text-muted-foreground max-w-sm mb-8">
-                  We couldn't find any products matching your search criteria. Try adjusting your filters or search term.
+                  {t.common.noProductsYet}
                 </p>
                 <Button onClick={() => navigate({ search: { q: "", sort: 'newest', page: 1 } as any })}>
-                  Browse All Products
+                  {t.common.exploreMarketplace}
                 </Button>
               </div>
             )}

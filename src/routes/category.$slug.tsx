@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { Separator } from '@/components/ui/separator';
 import { PackageX, Loader2 } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const categorySearchSchema = z.object({
   sort: z.string().default('newest'),
@@ -24,6 +25,7 @@ export const Route = createFileRoute('/category/$slug')({
 function CategoryPage() {
   const { slug } = Route.useParams();
   const search = Route.useSearch() as any;
+  const { t } = useLanguage();
   
   const fetchCategory = useServerFn(getCategoryBySlug);
   const fetchProducts = useServerFn(getMarketplaceProducts);
@@ -117,7 +119,8 @@ function CategoryPage() {
         ) : (
           <div className="py-20 flex flex-col items-center text-center">
             <PackageX className="h-12 w-12 text-muted-foreground/20 mb-4" />
-            <h2 className="text-xl font-semibold">No products in this category yet</h2>
+            <h2 className="text-xl font-semibold">{t.common.noProductsYet}</h2>
+            <p className="text-sm text-muted-foreground mt-2">{t.common.exploreOtherCategories}</p>
           </div>
         )}
       </main>
