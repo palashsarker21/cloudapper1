@@ -6,7 +6,7 @@ on:
       - 'supabase/**'
 
 jobs:
-  test:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,3 +20,14 @@ jobs:
 
       - name: Verify migrations
         run: supabase db lint
+
+      - name: Check for destructive changes
+        run: |
+          # Use supabase db diff to detect potential destructive changes
+          # and fail if any are found without an "allow-destructive" label
+          DIFF_OUTPUT=$(supabase db diff)
+          if echo "$DIFF_OUTPUT" | grep -Ei "drop table|drop column|alter column.*type"; then
+            echo "::error::Destructive changes detected (DROP or TYPE change). Review carefully."
+            exit 1
+          fi
+
