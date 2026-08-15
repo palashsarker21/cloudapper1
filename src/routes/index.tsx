@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/marketplace/Header";
 import { Hero } from "@/components/marketplace/Hero";
 import { CategorySection } from "@/components/marketplace/CategorySection";
 import { FeaturedProducts } from "@/components/marketplace/FeaturedProducts";
 import { ProcessSection } from "@/components/marketplace/ProcessSection";
 import { Footer } from "@/components/marketplace/Footer";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: Index,
