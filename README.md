@@ -64,7 +64,7 @@ CloudApper follows a modern, full-stack React structure:
 
 ```text
 /
-├── .github/          # CI/CD Workflows (recommended)
+├── .github/          # CI/CD Workflows (Supabase CI, Vercel Deployment)
 ├── public/           # Static assets (favicons, robots.txt)
 ├── src/
 │   ├── components/   # Reusable UI (shadcn, marketplace)
@@ -81,21 +81,23 @@ CloudApper follows a modern, full-stack React structure:
 └── README.md         # Production setup guide
 ```
 
-## 5. Branch Strategy & Workflow
+## 5. Branch Strategy & CI/CD Workflow
 
-CloudApper uses a branch-based deployment strategy to ensure production stability.
+CloudApper uses a branch-based deployment strategy to ensure production stability, powered by **GitHub Actions**.
 
-*   **`main` Branch:** Represents the current production state. Only stable, reviewed code is merged here.
-*   **`feature/*` Branches:** Used for active development.
+*   **`main` Branch:** Represents the current production state. Only stable, reviewed code is merged here. Pushes to `main` trigger an automatic **Production Deployment** to Vercel.
+*   **`feature/*` Branches:** Used for active development. Opening a Pull Request triggers the following automation:
+    *   **Supabase CI:** Lints and verifies database migrations in the `supabase/` directory.
+    *   **Vercel Preview:** Builds and deploys a temporary preview environment for live testing.
 
 **Recommended Workflow:**
 1. Create a `feature/` branch for new changes.
 2. Submit a **Pull Request (PR)** to `main`.
-3. Vercel generates a **Preview Deployment** for testing.
+3. Wait for CI checks to pass and verify the **Vercel Preview** link in the PR comments.
 4. Review and approve the PR.
-5. Merge to `main` triggers **Production Deployment**.
+5. Merge to `main` triggers the final **Production Deployment**.
 
-*Note: Avoid deploying arbitrary feature branches directly to the production environment.*
+*Note: Required GitHub secrets (`VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`) must be configured in the repository settings to enable these workflows.*
 
 ## 6. Supabase Infrastructure
 
