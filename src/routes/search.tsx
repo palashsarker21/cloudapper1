@@ -224,7 +224,7 @@ function SearchPage() {
                 <p className="text-muted-foreground max-w-sm mb-8">
                   We couldn't find any products matching your search criteria. Try adjusting your filters or search term.
                 </p>
-                <Button onClick={() => navigate({ search: { q: "", page: 1 } })}>
+                <Button onClick={() => navigate({ search: { q: "", sort: 'newest', page: 1 } as any })}>
                   Browse All Products
                 </Button>
               </div>

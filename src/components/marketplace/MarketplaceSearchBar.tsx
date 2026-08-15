@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Search, Loader2, X, Clock, Zap } from "lucide-react";
+import { Search, Loader2, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useServerFn } from "@tanstack/react-start";
 import { getSearchSuggestions } from "@/lib/products.functions";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
-import { useDebounce } from "@/hooks/use-debounce"; // Assumed existing
+import { useDebounce } from "@/hooks/use-debounce";
 
 export const MarketplaceSearchBar = ({ className }: { className?: string }) => {
   const [query, setQuery] = useState("");
@@ -20,7 +20,7 @@ export const MarketplaceSearchBar = ({ className }: { className?: string }) => {
   
   const { data: suggestions, isLoading } = useQuery({
     queryKey: ['suggestions', debouncedQuery],
-    queryFn: () => fetchSuggestions({ q: debouncedQuery }),
+    queryFn: () => fetchSuggestions({ q: debouncedQuery } as any),
     enabled: debouncedQuery.length >= 2,
   });
 
@@ -28,7 +28,14 @@ export const MarketplaceSearchBar = ({ className }: { className?: string }) => {
     e.preventDefault();
     if (!query.trim()) return;
     setIsOpen(false);
-    navigate({ to: '/search', search: { q: query } });
+    navigate({ 
+      to: '/search', 
+      search: { 
+        q: query,
+        sort: 'newest',
+        page: 1
+      } as any 
+    });
   };
 
   useEffect(() => {
@@ -74,7 +81,7 @@ export const MarketplaceSearchBar = ({ className }: { className?: string }) => {
           ) : suggestions && suggestions.length > 0 ? (
             <div className="py-2">
               <div className="px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Suggestions</div>
-              {suggestions.map((s) => (
+              {suggestions.map((s: any) => (
                 <button
                   key={s.id}
                   className="w-full text-left px-4 py-2 hover:bg-surface-2 transition-colors flex items-center gap-3"
