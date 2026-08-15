@@ -192,7 +192,7 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
       .insert({
         order_id: orderId,
         user_id: userId,
-        provider,
+        provider: provider as any,
         receiver_id: receiverId || null,
         amount,
         currency,
