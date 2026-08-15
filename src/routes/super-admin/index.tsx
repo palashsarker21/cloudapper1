@@ -40,7 +40,7 @@ function SuperAdminDashboard() {
   });
 
   const bootstrapMutation = useMutation({
-    mutationFn: () => runBootstrap(),
+    mutationFn: () => runBootstrap({ data: undefined }),
     onSuccess: (data) => {
       if (data.success) {
         toast.success(data.message);
