@@ -18,10 +18,12 @@ import {
   AlertTriangle,
   Lock,
   Eye,
-  EyeOff
+  EyeOff,
+  Wallet
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/super-admin/settings')({
   component: SuperAdminSettingsPage,
