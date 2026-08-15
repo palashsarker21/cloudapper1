@@ -111,7 +111,8 @@ function AdminOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-surface-0">
+
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
@@ -137,7 +138,7 @@ function AdminOrdersPage() {
           </div>
         </div>
 
-        <Card>
+        <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
           <CardHeader>
             <CardTitle>Recent Orders</CardTitle>
           </CardHeader>

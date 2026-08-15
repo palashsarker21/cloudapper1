@@ -63,7 +63,7 @@ function AdminHealthPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
+    <div className="min-h-screen flex flex-col bg-surface-0">
       <Header />
       
       <main className="flex-grow container mx-auto px-4 py-12">
@@ -77,7 +77,8 @@ function AdminHealthPage() {
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
+          <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Database (PostgreSQL)</CardTitle>
               <Database className="h-4 w-4 text-muted-foreground" />
@@ -93,7 +94,8 @@ function AdminHealthPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Authentication</CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
@@ -108,7 +110,8 @@ function AdminHealthPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Storage</CardTitle>
               <Server className="h-4 w-4 text-muted-foreground" />
@@ -128,7 +131,7 @@ function AdminHealthPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Environment</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
@@ -151,7 +154,8 @@ function AdminHealthPage() {
             </CardContent>
           </Card>
 
-          <Card className="opacity-60">
+          <Card className="opacity-60 border-2 border-transparent bg-surface-1 shadow-sm">
+
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Payments (Stripe/BDT)</CardTitle>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
@@ -166,7 +170,7 @@ function AdminHealthPage() {
             </CardContent>
           </Card>
 
-          <Card className="opacity-60">
+          <Card className="opacity-60 border-2 border-transparent bg-surface-1 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Email (SMTP)</CardTitle>
               <Mail className="h-4 w-4 text-muted-foreground" />
