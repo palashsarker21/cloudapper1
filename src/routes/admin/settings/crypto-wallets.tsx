@@ -70,6 +70,9 @@ function AdminCryptoWallets() {
       queryClient.invalidateQueries({ queryKey: ["admin-crypto-wallets"] });
       toast.success("Wallet deleted");
     },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to delete wallet");
+    }
   });
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
