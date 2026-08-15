@@ -68,11 +68,10 @@ export const submitPaymentVerification = createServerFn({ method: "POST" })
       .from('payments')
       .update({
         customer_transaction_id: normalizedTxId,
-        sender_identifier: senderMobile ?? null, // use sender_identifier for broader mapping
+        sender_mobile: senderMobile ?? null,
         email_delivery_requested: emailDeliveryRequested,
         status: 'under_review' as any,
-        verification_status: 'pending',
-        risk_score: 'low'
+        verification_status: 'pending'
       })
       .eq('id', paymentId);
 
@@ -85,9 +84,8 @@ export const submitPaymentVerification = createServerFn({ method: "POST" })
     await supabaseAdmin.from('audit_logs').insert({
       actor_id: userId,
       action: 'PAYMENT_SUBMITTED',
-      payment_id: paymentId,
-      order_id: payment.order_id,
-      result: 'under_review',
+      target_type: 'payment',
+      target_id: paymentId,
       metadata: { transactionId: normalizedTxId, senderMobile, emailDeliveryRequested }
     });
 
