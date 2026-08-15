@@ -96,7 +96,9 @@ function CheckoutPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen bg-surface-0">
+      <div className="container mx-auto px-4 py-12">
+
       <div className="flex items-center mb-8">
         <Button variant="ghost" size="sm" onClick={() => navigate({ to: '/' })} className="mr-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -110,7 +112,8 @@ function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           {/* Customer Info */}
-          <Card>
+          <Card className="border-2 border-transparent bg-surface-2 shadow-sm">
+
             <CardHeader>
               <CardTitle>Customer Information</CardTitle>
               <CardDescription>Enter your details for the order delivery.</CardDescription>
@@ -154,7 +157,8 @@ function CheckoutPage() {
           </Card>
 
           {/* Payment Method */}
-          <Card>
+          <Card className="border-2 border-transparent bg-surface-2 shadow-sm">
+
             <CardHeader>
               <CardTitle>Payment Method</CardTitle>
               <CardDescription>Select your preferred payment provider.</CardDescription>
@@ -211,7 +215,7 @@ function CheckoutPage() {
 
         {/* Order Summary */}
         <div className="space-y-6">
-          <Card>
+          <Card className="border-2 border-transparent bg-surface-2 shadow-sm">
             <CardHeader>
               <CardTitle>Order Summary</CardTitle>
             </CardHeader>
@@ -258,6 +262,8 @@ function CheckoutPage() {
           </div>
         </div>
       </div>
+      </div>
     </div>
   );
 }
+
