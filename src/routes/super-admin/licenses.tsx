@@ -46,6 +46,7 @@ function LicenseCenterPage() {
   const fetchLicenses = useServerFn(getRecentLicenses);
   const retryFulfillment = useServerFn(retryLicenseFulfillment);
   const revokeFn = useServerFn(revokeLicense);
+  const reinstateFn = useServerFn(reinstateLicense);
   const exportLicenses = useServerFn(exportLicensesCsv);
 
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -275,44 +276,82 @@ function LicenseCenterPage() {
                                 <RefreshCcw className="h-3.5 w-3.5" />
                               </Button>
 
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                    disabled={license.status === 'revoked'}
-                                  >
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Revoke License?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      This will mark the license as revoked, fail the associated fulfillment, 
-                                      and invalidate the customer's entitlement. This action is logged and irreversible.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction 
-                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                      onClick={async () => {
-                                        try {
-                                          await revokeFn({ data: { licenseId: license.id, reason: 'Manual revocation via Admin' } });
-                                          toast.success("License revoked successfully");
-                                          refetchLicenses();
-                                        } catch (err: any) {
-                                          toast.error(err.message || "Revocation failed");
-                                        }
-                                      }}
+                              {license.status === 'revoked' ? (
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10"
                                     >
-                                      Revoke
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
+                                      <Undo2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Reinstate License?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This will restore the license to active status, mark the fulfillment as completed, 
+                                        and re-enable the customer's entitlement.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction 
+                                        onClick={async () => {
+                                          try {
+                                            await reinstateFn({ data: { licenseId: license.id, reason: 'Reinstated by Admin review' } });
+                                            toast.success("License reinstated successfully");
+                                            refetchLicenses();
+                                          } catch (err: any) {
+                                            toast.error(err.message || "Reinstatement failed");
+                                          }
+                                        }}
+                                      >
+                                        Reinstate
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              ) : (
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Revoke License?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This will mark the license as revoked, fail the associated fulfillment, 
+                                        and invalidate the customer's entitlement. This action is logged and irreversible.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction 
+                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                        onClick={async () => {
+                                          try {
+                                            await revokeFn({ data: { licenseId: license.id, reason: 'Manual revocation via Admin' } });
+                                            toast.success("License revoked successfully");
+                                            refetchLicenses();
+                                          } catch (err: any) {
+                                            toast.error(err.message || "Revocation failed");
+                                          }
+                                        }}
+                                      >
+                                        Revoke
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              )}
                             </td>
                           </tr>
                         ))
