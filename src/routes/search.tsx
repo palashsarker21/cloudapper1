@@ -31,7 +31,7 @@ export const Route = createFileRoute('/search')({
 });
 
 function SearchPage() {
-  const search = Route.useSearch();
+  const search = Route.useSearch() as any;
   const navigate = Route.useNavigate();
   const fetchProducts = useServerFn(getMarketplaceProducts);
   

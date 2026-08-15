@@ -23,7 +23,7 @@ export const Route = createFileRoute('/category/$slug')({
 
 function CategoryPage() {
   const { slug } = Route.useParams();
-  const search = Route.useSearch();
+  const search = Route.useSearch() as any;
   
   const fetchCategory = useServerFn(getCategoryBySlug);
   const fetchProducts = useServerFn(getMarketplaceProducts);
