@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
-import { getPlatformStats, getEklasProviderStatus, getRecentLicenses, retryLicenseFulfillment, revokeLicense } from '@/lib/license-admin.functions';
+import { getPlatformStats, getEklasProviderStatus, getRecentLicenses, retryLicenseFulfillment, revokeLicense, reinstateLicense } from '@/lib/license-admin.functions';
 import { exportLicensesCsv } from '@/lib/export.functions';
 import { DataExportDialog } from '@/components/admin/DataExportDialog';
 import { Header } from '@/components/marketplace/Header';
@@ -19,7 +19,8 @@ import {
   ExternalLink,
   ShieldCheck,
   History,
-  Trash2
+  Trash2,
+  Undo2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
