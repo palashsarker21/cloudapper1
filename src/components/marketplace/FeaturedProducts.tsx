@@ -122,7 +122,7 @@ export const FeaturedProducts = () => {
     queryFn: async () => {
       const data = await fetchFeatured();
       
-      return data.map(p => ({
+      return (data as any[]).map(p => ({
         id: p.id,
         name: p.name,
         category: (p.categories as any)?.name || 'Product',
@@ -167,7 +167,7 @@ export const FeaturedProducts = () => {
           </div>
         ) : products && products.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product) => (
+            {products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

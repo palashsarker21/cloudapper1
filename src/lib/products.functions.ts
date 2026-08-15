@@ -133,7 +133,7 @@ export const getCategoryBySlug = createServerFn({ method: "GET" })
 export const getRelatedProducts = createServerFn({ method: "GET" })
   .inputValidator((data) => z.object({
     productId: z.string(),
-    categoryId: z.string().optional(),
+    categoryId: z.string().optional().nullable(),
     limit: z.number().default(4)
   }).parse(data))
   .handler(async ({ data }) => {
