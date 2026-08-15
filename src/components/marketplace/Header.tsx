@@ -54,6 +54,9 @@ export const Header = () => {
     { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
     { label: "Admin", children: [
+      { label: "Dashboard", href: "/super-admin" },
+      { label: "Users", href: "/super-admin/users" },
+      { label: "Audit Logs", href: "/super-admin/audit-logs" },
       { label: "Fulfillment", href: "/admin/fulfillment" },
       { label: "Payments", href: "/admin/settings/payments" },
       { label: "Products", href: "/admin/products" },
