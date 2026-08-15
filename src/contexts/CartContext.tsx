@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 export interface CartItem {
   id: string;
+  package_id?: string; // Support for tiered packages
   name: string;
   price: number;
   image_url?: string | null;

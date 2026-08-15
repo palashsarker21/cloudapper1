@@ -3,15 +3,14 @@ import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useQuery } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
-import { getProductById, getMarketplaceProducts } from '@/lib/products.functions';
+import { getProductById } from '@/lib/products.functions';
 import { 
-  ShieldCheck, Zap, Clock, Smartphone, Globe, CheckCircle2, 
-  Chrome, LayoutGrid, Info, Download, ArrowRight, Star
+  ShieldCheck, Zap, Globe, CheckCircle2, 
+  LayoutGrid, Info, ArrowRight, Star
 } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -35,17 +34,6 @@ export const Route = createFileRoute('/extensions/lovable-unlimited-credits')({
 function LovableExtensionPage() {
   const { t, language } = useLanguage();
   const { addItem } = useCart();
-  const fetchProduct = useServerFn(getProductById);
-  const fetchPackages = useServerFn(async ({ productId }: { productId: string }) => {
-    const { data, error } = await supabase
-      .from('product_packages')
-      .select('*')
-      .eq('product_id', productId)
-      .eq('status', 'active')
-      .order('sort_order', { ascending: true });
-    if (error) throw error;
-    return data;
-  });
 
   // We know the slug, but we need the ID from the database first
   const { data: product, isLoading: productLoading } = useQuery({
@@ -63,7 +51,16 @@ function LovableExtensionPage() {
 
   const { data: packages, isLoading: packagesLoading } = useQuery({
     queryKey: ['product-packages', product?.id],
-    queryFn: () => fetchPackages({ productId: product!.id }),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('product_packages' as any)
+        .select('*')
+        .eq('product_id', product!.id)
+        .eq('status', 'active')
+        .order('sort_order', { ascending: true });
+      if (error) throw error;
+      return data as any[];
+    },
     enabled: !!product?.id
   });
 
@@ -92,7 +89,7 @@ function LovableExtensionPage() {
     );
   }
 
-  const features = (language === 'bn' && product.features_bn ? (product.features_bn as string[]) : (product.features as string[])) || [
+  const features = (language === 'bn' && (product as any).features_bn ? ((product as any).features_bn as string[]) : (product.features as string[])) || [
     "Unlimited Credit Access",
     "Fast Activation",
     "Simple License Activation",
@@ -117,10 +114,10 @@ function LovableExtensionPage() {
                 {language === 'bn' ? 'এআই এক্সটেনশন' : 'AI Extension'}
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-                {language === 'bn' && product.name_bn ? product.name_bn : product.name}
+                {language === 'bn' && (product as any).name_bn ? (product as any).name_bn : product.name}
               </h1>
               <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-                {language === 'bn' && product.short_description_bn ? product.short_description_bn : product.short_description}
+                {language === 'bn' && (product as any).short_description_bn ? (product as any).short_description_bn : (product.short_description || product.description)}
               </p>
               
               <div className="flex flex-wrap justify-center gap-4">
@@ -186,13 +183,13 @@ function LovableExtensionPage() {
                       </li>
                     </ul>
                   </CardContent>
-                  <CardFooter className="pt-0">
+                  <CardFooter className="pt-0 p-6">
                     <Button 
                       className="w-full h-12" 
                       onClick={() => {
                         addItem({
                           id: product.id,
-                          package_id: pkg.id, // Important: using package ID
+                          package_id: pkg.id,
                           name: `${product.name} - ${pkg.name}`,
                           price: Number(pkg.price),
                           image_url: product.image_url,
