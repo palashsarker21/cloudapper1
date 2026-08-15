@@ -28,6 +28,7 @@ import { Route as ProductProductIdRouteImport } from './routes/product.$productI
 import { Route as SuperAdminIndexRouteImport } from './routes/super-admin/index'
 import { Route as SuperAdminAuditLogsRouteImport } from './routes/super-admin/audit-logs'
 import { Route as SuperAdminProductsRouteImport } from './routes/super-admin/products'
+import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin/settings'
 import { Route as SuperAdminUsersRouteImport } from './routes/super-admin/users'
 import { Route as AuthenticatedAccountEntitlementsRouteImport } from './routes/_authenticated/account/entitlements'
 import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/_authenticated/account/notifications'
@@ -137,6 +138,11 @@ const SuperAdminProductsRoute = SuperAdminProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => SuperAdminRoute,
 } as any)
+const SuperAdminSettingsRoute = SuperAdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
 const SuperAdminUsersRoute = SuperAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -232,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/product/$productId': typeof ProductProductIdRoute
   '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
   '/super-admin/products': typeof SuperAdminProductsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
@@ -264,6 +271,7 @@ export interface FileRoutesByTo {
   '/product/$productId': typeof ProductProductIdRoute
   '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
   '/super-admin/products': typeof SuperAdminProductsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/super-admin': typeof SuperAdminIndexRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
@@ -300,6 +308,7 @@ export interface FileRoutesById {
   '/product/$productId': typeof ProductProductIdRoute
   '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
   '/super-admin/products': typeof SuperAdminProductsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/_authenticated/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
@@ -336,6 +345,7 @@ export interface FileRouteTypes {
     | '/product/$productId'
     | '/super-admin/audit-logs'
     | '/super-admin/products'
+    | '/super-admin/settings'
     | '/super-admin/users'
     | '/super-admin/'
     | '/account/entitlements'
@@ -368,6 +378,7 @@ export interface FileRouteTypes {
     | '/product/$productId'
     | '/super-admin/audit-logs'
     | '/super-admin/products'
+    | '/super-admin/settings'
     | '/super-admin/users'
     | '/super-admin'
     | '/account/entitlements'
@@ -403,6 +414,7 @@ export interface FileRouteTypes {
     | '/product/$productId'
     | '/super-admin/audit-logs'
     | '/super-admin/products'
+    | '/super-admin/settings'
     | '/super-admin/users'
     | '/super-admin/'
     | '/_authenticated/account/entitlements'
@@ -569,6 +581,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/super-admin/products'
       preLoaderRoute: typeof SuperAdminProductsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/settings': {
+      id: '/super-admin/settings'
+      path: '/settings'
+      fullPath: '/super-admin/settings'
+      preLoaderRoute: typeof SuperAdminSettingsRouteImport
       parentRoute: typeof SuperAdminRoute
     }
     '/super-admin/users': {
@@ -758,6 +777,7 @@ const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
 interface SuperAdminRouteChildren {
   SuperAdminAuditLogsRoute: typeof SuperAdminAuditLogsRoute
   SuperAdminProductsRoute: typeof SuperAdminProductsRoute
+  SuperAdminSettingsRoute: typeof SuperAdminSettingsRoute
   SuperAdminUsersRoute: typeof SuperAdminUsersRoute
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
 }
@@ -765,6 +785,7 @@ interface SuperAdminRouteChildren {
 const SuperAdminRouteChildren: SuperAdminRouteChildren = {
   SuperAdminAuditLogsRoute: SuperAdminAuditLogsRoute,
   SuperAdminProductsRoute: SuperAdminProductsRoute,
+  SuperAdminSettingsRoute: SuperAdminSettingsRoute,
   SuperAdminUsersRoute: SuperAdminUsersRoute,
   SuperAdminIndexRoute: SuperAdminIndexRoute,
 }
