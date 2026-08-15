@@ -44,6 +44,7 @@ import { Route as AdminSettingsSecurityRouteImport } from './routes/admin/settin
 import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
 import { Route as CheckoutPaymentPaymentIdRouteImport } from './routes/checkout/payment.$paymentId'
 import { Route as SuperAdminPaymentsPaymentIdRouteImport } from './routes/super-admin/payments.$paymentId'
+import { Route as SuperAdminSettingsManualPaymentsRouteImport } from './routes/super-admin/settings/manual-payments'
 import { Route as AuthenticatedAccountOrdersOrderIdRouteImport } from './routes/_authenticated/account/orders.$orderId'
 import { Route as ApiPublicWebhooksBinanceRouteImport } from './routes/api/public/webhooks/binance'
 import { Route as ApiPublicWebhooksBkashRouteImport } from './routes/api/public/webhooks/bkash'
@@ -227,6 +228,12 @@ const SuperAdminPaymentsPaymentIdRoute =
     path: '/$paymentId',
     getParentRoute: () => SuperAdminPaymentsRoute,
   } as any)
+const SuperAdminSettingsManualPaymentsRoute =
+  SuperAdminSettingsManualPaymentsRouteImport.update({
+    id: '/manual-payments',
+    path: '/manual-payments',
+    getParentRoute: () => SuperAdminSettingsRoute,
+  } as any)
 const AuthenticatedAccountOrdersOrderIdRoute =
   AuthenticatedAccountOrdersOrderIdRouteImport.update({
     id: '/account/orders/$orderId',
@@ -266,7 +273,7 @@ export interface FileRoutesByFullPath {
   '/super-admin/orders': typeof SuperAdminOrdersRoute
   '/super-admin/payments': typeof SuperAdminPaymentsRouteWithChildren
   '/super-admin/products': typeof SuperAdminProductsRoute
-  '/super-admin/settings': typeof SuperAdminSettingsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRouteWithChildren
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
@@ -279,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/super-admin/payments/$paymentId': typeof SuperAdminPaymentsPaymentIdRoute
+  '/super-admin/settings/manual-payments': typeof SuperAdminSettingsManualPaymentsRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
@@ -303,7 +311,7 @@ export interface FileRoutesByTo {
   '/super-admin/orders': typeof SuperAdminOrdersRoute
   '/super-admin/payments': typeof SuperAdminPaymentsRouteWithChildren
   '/super-admin/products': typeof SuperAdminProductsRoute
-  '/super-admin/settings': typeof SuperAdminSettingsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRouteWithChildren
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/super-admin': typeof SuperAdminIndexRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
@@ -316,6 +324,7 @@ export interface FileRoutesByTo {
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/super-admin/payments/$paymentId': typeof SuperAdminPaymentsPaymentIdRoute
+  '/super-admin/settings/manual-payments': typeof SuperAdminSettingsManualPaymentsRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
@@ -344,7 +353,7 @@ export interface FileRoutesById {
   '/super-admin/orders': typeof SuperAdminOrdersRoute
   '/super-admin/payments': typeof SuperAdminPaymentsRouteWithChildren
   '/super-admin/products': typeof SuperAdminProductsRoute
-  '/super-admin/settings': typeof SuperAdminSettingsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRouteWithChildren
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/_authenticated/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
@@ -357,6 +366,7 @@ export interface FileRoutesById {
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/super-admin/payments/$paymentId': typeof SuperAdminPaymentsPaymentIdRoute
+  '/super-admin/settings/manual-payments': typeof SuperAdminSettingsManualPaymentsRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
   '/_authenticated/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
@@ -398,6 +408,7 @@ export interface FileRouteTypes {
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
     | '/super-admin/payments/$paymentId'
+    | '/super-admin/settings/manual-payments'
     | '/admin/settings/'
     | '/account/orders/$orderId'
     | '/api/public/webhooks/binance'
@@ -435,6 +446,7 @@ export interface FileRouteTypes {
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
     | '/super-admin/payments/$paymentId'
+    | '/super-admin/settings/manual-payments'
     | '/admin/settings'
     | '/account/orders/$orderId'
     | '/api/public/webhooks/binance'
@@ -475,6 +487,7 @@ export interface FileRouteTypes {
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
     | '/super-admin/payments/$paymentId'
+    | '/super-admin/settings/manual-payments'
     | '/admin/settings/'
     | '/_authenticated/account/orders/$orderId'
     | '/api/public/webhooks/binance'
@@ -744,6 +757,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminPaymentsPaymentIdRouteImport
       parentRoute: typeof SuperAdminPaymentsRoute
     }
+    '/super-admin/settings/manual-payments': {
+      id: '/super-admin/settings/manual-payments'
+      path: '/manual-payments'
+      fullPath: '/super-admin/settings/manual-payments'
+      preLoaderRoute: typeof SuperAdminSettingsManualPaymentsRouteImport
+      parentRoute: typeof SuperAdminSettingsRoute
+    }
     '/_authenticated/account/orders/$orderId': {
       id: '/_authenticated/account/orders/$orderId'
       path: '/account/orders/$orderId'
@@ -862,13 +882,24 @@ const SuperAdminPaymentsRouteChildren: SuperAdminPaymentsRouteChildren = {
 const SuperAdminPaymentsRouteWithChildren =
   SuperAdminPaymentsRoute._addFileChildren(SuperAdminPaymentsRouteChildren)
 
+interface SuperAdminSettingsRouteChildren {
+  SuperAdminSettingsManualPaymentsRoute: typeof SuperAdminSettingsManualPaymentsRoute
+}
+
+const SuperAdminSettingsRouteChildren: SuperAdminSettingsRouteChildren = {
+  SuperAdminSettingsManualPaymentsRoute: SuperAdminSettingsManualPaymentsRoute,
+}
+
+const SuperAdminSettingsRouteWithChildren =
+  SuperAdminSettingsRoute._addFileChildren(SuperAdminSettingsRouteChildren)
+
 interface SuperAdminRouteChildren {
   SuperAdminAuditLogsRoute: typeof SuperAdminAuditLogsRoute
   SuperAdminLicensesRoute: typeof SuperAdminLicensesRoute
   SuperAdminOrdersRoute: typeof SuperAdminOrdersRoute
   SuperAdminPaymentsRoute: typeof SuperAdminPaymentsRouteWithChildren
   SuperAdminProductsRoute: typeof SuperAdminProductsRoute
-  SuperAdminSettingsRoute: typeof SuperAdminSettingsRoute
+  SuperAdminSettingsRoute: typeof SuperAdminSettingsRouteWithChildren
   SuperAdminUsersRoute: typeof SuperAdminUsersRoute
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
 }
@@ -879,7 +910,7 @@ const SuperAdminRouteChildren: SuperAdminRouteChildren = {
   SuperAdminOrdersRoute: SuperAdminOrdersRoute,
   SuperAdminPaymentsRoute: SuperAdminPaymentsRouteWithChildren,
   SuperAdminProductsRoute: SuperAdminProductsRoute,
-  SuperAdminSettingsRoute: SuperAdminSettingsRoute,
+  SuperAdminSettingsRoute: SuperAdminSettingsRouteWithChildren,
   SuperAdminUsersRoute: SuperAdminUsersRoute,
   SuperAdminIndexRoute: SuperAdminIndexRoute,
 }

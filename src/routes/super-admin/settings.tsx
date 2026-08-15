@@ -69,9 +69,13 @@ function SuperAdminSettingsPage() {
             <Card className="glass-effect border-none shadow-lg">
               <CardContent className="p-2">
                 <nav className="space-y-1">
-                  <SidebarItem icon={<Globe className="h-4 w-4" />} label="General" active />
+                  <Link to="/super-admin/settings">
+                    <SidebarItem icon={<Globe className="h-4 w-4" />} label="General" active />
+                  </Link>
                   <SidebarItem icon={<Shield className="h-4 w-4" />} label="Security" />
-                  <SidebarItem icon={<Mail className="h-4 w-4" />} label="Email & Notifications" />
+                  <Link to="/super-admin/settings/manual-payments">
+                    <SidebarItem icon={<Wallet className="h-4 w-4" />} label="Manual Payments" />
+                  </Link>
                   <SidebarItem icon={<Lock className="h-4 w-4" />} label="API Keys" />
                 </nav>
               </CardContent>
