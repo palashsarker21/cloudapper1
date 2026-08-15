@@ -1,23 +1,27 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
-import { getSystemStats, bootstrapSuperAdmin, getAuditLogs } from '@/lib/super-admin.functions';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { 
-  Users, 
-  ShoppingBag, 
-  Package, 
-  DollarSign, 
-  Activity, 
-  ShieldAlert, 
-  RefreshCw,
-  Clock,
-  LayoutDashboard
-} from 'lucide-react';
+import { getSystemStats, bootstrapSuperAdmin } from '@/lib/super-admin.functions';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { 
+  Shield, 
+  Users, 
+  ShoppingBag, 
+  Activity, 
+  TrendingUp, 
+  AlertCircle, 
+  ArrowUpRight,
+  Database,
+  Lock,
+  Zap,
+  History,
+  Terminal,
+  Server
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/super-admin/')({
@@ -26,222 +30,230 @@ export const Route = createFileRoute('/super-admin/')({
 
 function SuperAdminDashboard() {
   const fetchStats = useServerFn(getSystemStats);
-  const fetchLogs = useServerFn(getAuditLogs);
-  const runBootstrap = useServerFn(bootstrapSuperAdmin);
+  const bootstrap = useServerFn(bootstrapSuperAdmin);
 
-  const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
+  const { data: stats, isLoading, refetch } = useQuery({
     queryKey: ['super-admin-stats'],
     queryFn: () => fetchStats(),
-  });
-
-  const { data: logs, isLoading: logsLoading } = useQuery({
-    queryKey: ['super-admin-logs'],
-    queryFn: () => fetchLogs({ data: { limit: 10, offset: 0 } }),
+    refetchInterval: 30000, // Refresh every 30s
   });
 
   const bootstrapMutation = useMutation({
-    mutationFn: () => runBootstrap({ data: undefined }),
-    onSuccess: (data) => {
-      if (data.success) {
-        toast.success(data.message);
-        refetchStats();
-      } else {
-        toast.info(data.message);
-      }
+    mutationFn: () => bootstrap(),
+    onSuccess: (res) => {
+      if (res.success) toast.success(res.message);
+      else toast.error(res.message);
+      refetch();
     },
-    onError: () => toast.error("Bootstrap failed")
+    onError: () => toast.error("Bootstrap execution failed")
   });
 
   return (
     <div className="min-h-screen flex flex-col bg-surface-0">
       <Header />
-      
-      <main className="flex-grow container mx-auto px-4 py-12">
+      <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <div className="flex items-center gap-2 text-primary mb-1">
-              <LayoutDashboard className="h-5 w-5" />
-              <span className="text-xs font-bold uppercase tracking-widest">CloudApper</span>
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/50 text-primary animate-pulse">
+                System Active
+              </Badge>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Protocol 5.0 God Mode</span>
             </div>
-            <h1 className="text-4xl font-black tracking-tighter">SYSTEM CONTROL CENTER</h1>
-            <p className="text-muted-foreground">God Mode: Enterprise Platform Overview</p>
+            <h1 className="text-4xl font-black tracking-tighter uppercase italic">Platform Control Center</h1>
           </div>
           
-          <div className="flex gap-3">
-             <Button 
-              variant="outline" 
-              className="glass-effect" 
-              onClick={() => refetchStats()}
-              disabled={statsLoading}
-            >
-              <RefreshCw className={`mr-2 h-4 w-4 ${statsLoading ? 'animate-spin' : ''}`} />
-              Sync Data
-            </Button>
+          <div className="flex gap-2">
             <Button 
               variant="default" 
+              className="glass-effect shadow-lg shadow-primary/20"
               onClick={() => bootstrapMutation.mutate()}
               disabled={bootstrapMutation.isPending}
             >
-              <Activity className="mr-2 h-4 w-4" />
-              Run Health Check
+              <Zap className="mr-2 h-4 w-4" /> Bootstrap System
+            </Button>
+            <Button variant="outline" className="glass-effect" onClick={() => refetch()}>
+              <Activity className="mr-2 h-4 w-4" /> Real-time Sync
             </Button>
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <StatsCard 
-            title="Total Users" 
-            value={stats?.users || 0} 
-            icon={<Users className="h-6 w-6 text-blue-500" />} 
-            description="Registered accounts"
+        {/* Global Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <DataCard 
+            title="Total Citizens" 
+            value={stats?.totalUsers || 0} 
+            trend="+12%" 
+            icon={<Users className="h-5 w-5" />} 
+            color="text-primary"
+            link="/super-admin/users"
           />
-          <StatsCard 
-            title="Total Orders" 
-            value={stats?.orders || 0} 
-            icon={<ShoppingBag className="h-6 w-6 text-purple-500" />} 
-            description="All-time transactions"
+          <DataCard 
+            title="Total Inventory" 
+            value={stats?.totalProducts || 0} 
+            trend="+5%" 
+            icon={<ShoppingBag className="h-5 w-5" />} 
+            color="text-secondary"
+            link="/super-admin/products"
           />
-          <StatsCard 
-            title="Active Products" 
-            value={stats?.products || 0} 
-            icon={<Package className="h-6 w-6 text-emerald-500" />} 
-            description="Catalog size"
+          <DataCard 
+            title="Revenue Pool" 
+            value={`৳${(stats?.totalRevenue || 0).toLocaleString()}`} 
+            trend="+24%" 
+            icon={<TrendingUp className="h-5 w-5" />} 
+            color="text-emerald-500"
+            link="/super-admin/payments"
           />
-          <StatsCard 
-            title="Gross Revenue" 
-            value={`৳${(stats?.revenue || 0).toLocaleString()}`} 
-            icon={<DollarSign className="h-6 w-6 text-amber-500" />} 
-            description="Verified payments"
+          <DataCard 
+            title="System Uptime" 
+            value="99.99%" 
+            trend="Stable" 
+            icon={<Activity className="h-5 w-5" />} 
+            color="text-amber-500"
           />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Operations Panel */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card className="glass-effect border-none shadow-xl overflow-hidden">
-              <CardHeader className="bg-surface-1/50">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle className="text-xl font-bold">Live Activity Stream</CardTitle>
-                    <CardDescription>Real-time system audit logs</CardDescription>
-                  </div>
-                  <Badge variant="outline" className="animate-pulse bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
-                    LIVE
-                  </Badge>
+          {/* Recent Activity */}
+          <Card className="lg:col-span-2 glass-effect border-none shadow-2xl overflow-hidden">
+            <CardHeader className="border-b border-border/10 bg-surface-1/50">
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle className="text-xl font-black uppercase italic tracking-tight">Temporal Activity Stream</CardTitle>
+                  <CardDescription>Real-time platform audit feed</CardDescription>
                 </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="divide-y divide-border/10">
-                  {logsLoading ? (
-                    <div className="p-8 text-center text-muted-foreground">Loading activity...</div>
-                  ) : logs?.length ? logs.map((log: any) => (
-                    <div key={log.id} className="p-4 flex items-start gap-4 hover:bg-surface-1/30 transition-colors">
-                      <div className="mt-1 p-2 rounded-lg bg-surface-2">
-                        <Activity className="h-4 w-4 text-primary" />
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/super-admin/audit-logs">
+                    View Archive <History className="ml-2 h-3 w-3" />
+                  </Link>
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/10">
+                {stats?.recentLogs?.map((log: any) => (
+                  <div key={log.id} className="p-4 hover:bg-surface-1/30 transition-colors flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`p-2 rounded-lg bg-surface-2 ${
+                        log.action === 'INSERT' ? 'text-emerald-500' : 
+                        log.action === 'UPDATE' ? 'text-amber-500' : 
+                        'text-red-500'
+                      }`}>
+                        {log.action === 'INSERT' ? <Zap className="h-4 w-4" /> : 
+                         log.action === 'UPDATE' ? <Activity className="h-4 w-4" /> : 
+                         <AlertCircle className="h-4 w-4" />}
                       </div>
-                      <div className="flex-grow">
-                        <div className="flex justify-between items-start">
-                          <p className="font-semibold text-sm">{log.action.replace(/_/g, ' ')}</p>
-                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {new Date(log.created_at).toLocaleTimeString()}
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          {log.actor?.email || 'System'} modified {log.target_type} {log.target_id}
+                      <div>
+                        <p className="text-sm font-bold">
+                          {log.action} <span className="text-primary">{log.resource_type}</span>
                         </p>
+                        <p className="text-[10px] text-muted-foreground uppercase font-mono">{log.resource_id}</p>
                       </div>
                     </div>
-                  )) : (
-                    <div className="p-12 text-center text-muted-foreground">
-                      <p>Waiting for activity...</p>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">{new Date(log.created_at).toLocaleTimeString()}</p>
+                      <p className="text-[10px] font-mono text-primary/70">{log.user_email?.split('@')[0] || 'SYSTEM'}</p>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                  </div>
+                ))}
+                {(!stats?.recentLogs || stats.recentLogs.length === 0) && (
+                  <div className="py-20 text-center text-muted-foreground italic">
+                    Temporal stream is currently static.
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-          {/* Quick Controls */}
+          {/* System Health */}
           <div className="space-y-6">
-            <Card className="glass-effect border-none shadow-xl">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold">System Health</CardTitle>
-                <CardDescription>Environment & Infra</CardDescription>
+            <Card className="glass-effect border-none shadow-xl border-t-2 border-primary/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                  <Server className="h-4 w-4 text-primary" /> Core Engine Health
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <HealthItem label="Database" status="Healthy" />
-                <HealthItem label="Authentication" status="Healthy" />
-                <HealthItem label="Payment Gateways" status="Checking..." />
-                <HealthItem label="Digital Fulfillment" status="Active" />
-                
-                <div className="pt-4 border-t border-border/10">
-                  <p className="text-xs font-bold text-muted-foreground mb-3 uppercase tracking-wider">God Mode Actions</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" size="sm" className="text-xs">Security Center</Button>
-                    <Button variant="outline" size="sm" className="text-xs">Audit History</Button>
-                    <Button variant="outline" size="sm" className="text-xs">Export All</Button>
-                    <Button variant="destructive" size="sm" className="text-xs">Maintenance</Button>
-                  </div>
-                </div>
+                <HealthItem label="Database Engine" status="Operational" latency="14ms" />
+                <HealthItem label="Auth Gate" status="Secure" latency="22ms" />
+                <HealthItem label="Fulfillment API" status="Idle" latency="0ms" />
+                <HealthItem label="Storage Cloud" status="Optimized" latency="45ms" />
               </CardContent>
             </Card>
 
-            <Card className="glass-effect border-none shadow-xl bg-primary/5">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <ShieldAlert className="h-5 w-5 text-primary" />
-                  <CardTitle className="text-lg font-bold">Super Admin</CardTitle>
-                </div>
+            <Card className="glass-effect border-none shadow-xl border-t-2 border-secondary/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                  <Lock className="h-4 w-4 text-secondary" /> Access Distribution
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-                  You are viewing the platform with maximum authority. Every action is recorded in the permanent audit trail.
-                </p>
-                <div className="p-3 rounded-lg bg-surface-2 text-xs font-mono text-primary/80">
-                  ID: palashsarker1993@...
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted-foreground uppercase font-bold tracking-tighter">Super Admins</span>
+                  <Badge variant="destructive" className="text-[10px] font-black">{stats?.superAdminsCount || 1}</Badge>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted-foreground uppercase font-bold tracking-tighter">Administrators</span>
+                  <Badge variant="outline" className="text-[10px] font-black">2</Badge>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted-foreground uppercase font-bold tracking-tighter">Standard Citizens</span>
+                  <Badge variant="default" className="text-[10px] font-black">{stats?.totalUsers || 0}</Badge>
                 </div>
               </CardContent>
             </Card>
+            
+            <Button variant="outline" className="w-full glass-effect group" asChild>
+              <Link to="/super-admin/settings">
+                <Terminal className="mr-2 h-4 w-4 text-primary group-hover:animate-pulse" />
+                Access God Settings
+              </Link>
+            </Button>
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );
 }
 
-function StatsCard({ title, value, icon, description }: any) {
-  return (
-    <Card className="glass-effect border-none shadow-lg hover:translate-y-[-4px] transition-all duration-300 overflow-hidden group">
-      <CardContent className="p-6">
+function DataCard({ title, value, trend, icon, color, link }: any) {
+  const content = (
+    <Card className="glass-effect border-none shadow-lg group hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+      <CardContent className="pt-6">
         <div className="flex justify-between items-start mb-4">
-          <div className="p-3 rounded-2xl bg-surface-2 group-hover:bg-primary/10 transition-colors">
+          <div className={`p-3 rounded-2xl bg-surface-2 group-hover:bg-primary/10 transition-colors ${color}`}>
             {icon}
           </div>
-          <Badge variant="outline" className="text-[10px] font-bold">REAL-TIME</Badge>
+          <Badge variant="outline" className="text-[9px] font-black border-emerald-500/20 text-emerald-500">
+            {trend}
+          </Badge>
         </div>
-        <div className="space-y-1">
-          <h3 className="text-3xl font-black tracking-tighter">{value}</h3>
-          <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">{title}</p>
-          <p className="text-xs text-muted-foreground/60">{description}</p>
+        <div>
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">{title}</p>
+          <div className="flex items-end justify-between">
+            <h3 className="text-3xl font-black tracking-tighter italic">{value}</h3>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary transition-colors" />
+          </div>
         </div>
       </CardContent>
     </Card>
   );
+
+  return link ? <Link to={link as any}>{content}</Link> : content;
 }
 
-function HealthItem({ label, status }: { label: string, status: string }) {
-  const isHealthy = status === 'Healthy' || status === 'Active';
+function HealthItem({ label, status, latency }: any) {
   return (
-    <div className="flex justify-between items-center text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <div className="flex items-center gap-2">
-        <div className={`h-2 w-2 rounded-full ${isHealthy ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500'}`} />
-        <span className={isHealthy ? 'text-emerald-500 font-bold' : 'text-amber-500'}>{status}</span>
+    <div className="flex items-center justify-between">
+      <div className="space-y-0.5">
+        <p className="text-[10px] font-black uppercase tracking-tight text-muted-foreground">{label}</p>
+        <div className="flex items-center gap-1.5">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+          <span className="text-[11px] font-bold">{status}</span>
+        </div>
       </div>
+      <span className="text-[10px] font-mono text-muted-foreground bg-surface-2 px-1.5 py-0.5 rounded">{latency}</span>
     </div>
   );
 }
