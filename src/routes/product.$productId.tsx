@@ -412,7 +412,7 @@ function ProductDetailPage() {
                   product={{
                     id: p.id,
                     name: p.name,
-                    category: p.categories?.name || 'Product',
+                    category: (p as any).categories?.name || 'Product',
                     price: Number(p.price),
                     rating: 5.0,
                     reviews: 0,
