@@ -6,6 +6,8 @@ import { FeaturedProducts } from "@/components/marketplace/FeaturedProducts";
 import { ProcessSection } from "@/components/marketplace/ProcessSection";
 import { Footer } from "@/components/marketplace/Footer";
 import { Button } from "@/components/ui/button";
+import { WhatsAppFloatingButton } from "@/components/marketplace/WhatsAppFloatingButton";
+import { SocialLinks } from "@/components/marketplace/SocialLinks";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -33,7 +35,10 @@ export const Route = createFileRoute("/")({
           "@type": "Organization",
           "name": "CloudApper",
           "url": "https://cloudapper.online",
-          "logo": "https://cloudapper.online/brand/cloudapper-logo.png"
+          "logo": "https://cloudapper.online/brand/cloudapper-logo.png",
+          "sameAs": [
+            "https://www.facebook.com/cloudapper"
+          ]
         }),
       },
     ],
@@ -54,9 +59,11 @@ function Index() {
         <ProductDiscoverySection />
         <OrderTrackingCTA />
         <AccountBenefitsSection />
+        <HelpSection />
         <FinalCTA />
       </main>
       <Footer />
+      <WhatsAppFloatingButton />
     </div>
   );
 }
@@ -78,6 +85,20 @@ const TrustSection = () => (
             <p className="font-medium text-foreground">{item}</p>
           </div>
         ))}
+      </div>
+    </div>
+  </section>
+);
+
+const HelpSection = () => (
+  <section className="py-24 bg-surface-1 border-t border-border">
+    <div className="container mx-auto px-4 text-center max-w-2xl">
+      <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">Need help?</h2>
+      <p className="text-lg text-muted-foreground mb-8">
+        Contact CloudApper directly through WhatsApp or follow our Facebook Page for updates.
+      </p>
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
+        <SocialLinks showLabels />
       </div>
     </div>
   </section>
@@ -108,9 +129,12 @@ const OrderTrackingCTA = () => (
     <div className="container mx-auto px-4 text-center">
       <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">Already placed an order?</h2>
       <p className="text-lg text-muted-foreground mb-8">Track payment verification, fulfillment and delivery status from one place.</p>
-      <div className="flex justify-center gap-4">
+      <div className="flex flex-wrap justify-center gap-4">
         <Button asChild size="lg"><Link to="/track-order" search={{ orderId: undefined }}>Track Order</Link></Button>
         <Button variant="outline" asChild size="lg"><Link to="/login">Sign In</Link></Button>
+        <Button variant="secondary" asChild size="lg">
+          <a href="https://wa.me/8801557749217" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
+        </Button>
       </div>
     </div>
   </section>

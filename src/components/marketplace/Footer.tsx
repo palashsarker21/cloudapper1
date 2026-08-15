@@ -3,6 +3,8 @@ import { Mail, Globe, MessageSquare, Info, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Logo } from "./Logo";
+import { SocialLinks } from "./SocialLinks";
+import { brand } from "@/lib/brand";
 
 
 export const Footer = () => {
@@ -23,24 +25,17 @@ export const Footer = () => {
             <p className="mt-2 text-sm text-muted-foreground">
               Discover trusted AI tools, software resources, and digital products through CloudApper, a secure marketplace for modern creators and developers.
             </p>
-            <div className="mt-6 flex gap-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Globe className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <MessageSquare className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Info className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <ShieldCheck className="h-5 w-5" />
-              </a>
+            <div className="mt-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60 mb-4">Official Channels</p>
+              <SocialLinks iconOnly />
             </div>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Marketplace</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Connect</h3>
+            <div className="mt-4">
+              <SocialLinks />
+            </div>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
               <li><Link to="/search" search={{ sort: 'newest', page: 1 }} className="hover:text-primary">AI Tools</Link></li>
               <li><Link to="/category/$slug" params={{ slug: 'ai-credits' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">AI Credits</Link></li>
