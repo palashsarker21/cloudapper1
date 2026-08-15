@@ -21,6 +21,7 @@ export const Route = createFileRoute('/checkout/payment/$paymentId')({
 
 function PaymentProcessingPage() {
   const { paymentId } = Route.useParams();
+  const navigate = useNavigate();
   const getDetailsFn = useServerFn(getPaymentDetails);
   const submitTxFn = useServerFn(submitCryptoTransaction);
   const submitManualFn = useServerFn(submitPaymentVerification);
@@ -33,11 +34,13 @@ function PaymentProcessingPage() {
   const { data: payment, isLoading, refetch } = useQuery({
     queryKey: ['payment', paymentId],
     queryFn: () => getDetailsFn({ data: { paymentId } }),
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
+      const data = query.state.data as any;
       if (data?.status === 'paid' || data?.status === 'payment_rejected') return false;
       return 10000;
     },
   });
+
 
   const submitManualMutation = useMutation({
     mutationFn: () => submitManualFn({ 
