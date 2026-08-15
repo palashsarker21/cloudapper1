@@ -33,20 +33,20 @@ export const getSystemStats = createServerFn({ method: "GET" })
   .handler(async () => {
     await validateSuperAdmin();
 
-    const [usersCount, productsCount, ordersCount, revenueSum, logs, saCount] = await Promise.all([
+    const [usersCount, productsCount, ordersCount, revenueSum, logsData, saCount] = await Promise.all([
       supabase.from('profiles').select('*', { count: 'exact', head: true }),
       supabase.from('products').select('*', { count: 'exact', head: true }),
       supabase.from('orders').select('*', { count: 'exact', head: true }),
       supabase.from('payments').select('amount').eq('status', 'paid'),
-      supabase.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(5),
-      supabase.from('user_roles').select('*', { count: 'exact', head: true }).eq('role', 'super_admin')
+      supabase.from('audit_logs' as any).select('*').order('created_at', { ascending: false }).limit(5),
+      supabase.from('user_roles' as any).select('*', { count: 'exact', head: true }).eq('role', 'super_admin')
     ]);
 
     // Enhance logs with emails
-    const enrichedLogs = await Promise.all((logs.data || []).map(async (log) => {
+    const enrichedLogs = await Promise.all(((logsData.data as any[]) || []).map(async (log) => {
       if (log.user_id) {
         const { data } = await supabase.from('profiles').select('email').eq('id', log.user_id).single();
-        return { ...log, user_email: data?.email };
+        return { ...log, user_email: (data as any)?.email };
       }
       return log;
     }));
@@ -55,7 +55,7 @@ export const getSystemStats = createServerFn({ method: "GET" })
       totalUsers: usersCount.count || 0,
       totalProducts: productsCount.count || 0,
       totalOrders: ordersCount.count || 0,
-      totalRevenue: revenueSum.data?.reduce((acc, curr) => acc + curr.amount, 0) || 0,
+      totalRevenue: (revenueSum.data as any[])?.reduce((acc, curr) => acc + curr.amount, 0) || 0,
       recentLogs: enrichedLogs,
       superAdminsCount: saCount.count || 1
     };
@@ -65,19 +65,19 @@ export const getAuditLogs = createServerFn({ method: "GET" })
   .handler(async () => {
     await validateSuperAdmin();
 
-    const { data: logs, error } = await supabase
-      .from('audit_logs')
+    const { data: logs, error } = await (supabase
+      .from('audit_logs' as any)
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(100);
+      .limit(100) as any);
 
     if (error) throw error;
 
     // Enhance logs with emails
-    const enrichedLogs = await Promise.all((logs || []).map(async (log) => {
+    const enrichedLogs = await Promise.all(((logs as any[]) || []).map(async (log) => {
       if (log.user_id) {
         const { data } = await supabase.from('profiles').select('email').eq('id', log.user_id).single();
-        return { ...log, user_email: data?.email };
+        return { ...log, user_email: (data as any)?.email };
       }
       return log;
     }));
@@ -90,7 +90,7 @@ export const getSuperAdminUsers = createServerFn({ method: "GET" })
     await validateSuperAdmin();
 
     const { data: roles, error } = await supabase
-      .from('user_roles')
+      .from('user_roles' as any)
       .select(`
         role,
         user_id,
@@ -100,7 +100,7 @@ export const getSuperAdminUsers = createServerFn({ method: "GET" })
 
     if (error) throw error;
 
-    return roles.map((r: any) => ({
+    return (roles as any[]).map((r: any) => ({
       id: r.user_id,
       role: r.role,
       created_at: r.created_at,
@@ -119,24 +119,24 @@ export const updateUserRole = createServerFn({ method: "POST" })
 
     // Prevent removing own super_admin role if only one exists
     if (actor.id === userId && role !== 'super_admin') {
-      const { count } = await supabase.from('user_roles').select('*', { count: 'exact', head: true }).eq('role', 'super_admin');
+      const { count } = await (supabase.from('user_roles' as any).select('*', { count: 'exact', head: true }).eq('role', 'super_admin') as any);
       if (count && count <= 1) throw new Error("Cannot remove the last super admin");
     }
 
     const { error } = await supabase
-      .from('user_roles')
+      .from('user_roles' as any)
       .upsert({ user_id: userId, role }, { onConflict: 'user_id,role' });
 
     if (error) throw error;
 
     // Log the change
-    await supabase.from('audit_logs').insert({
+    await supabase.from('audit_logs' as any).insert({
       user_id: actor.id,
       action: 'UPDATE',
       resource_type: 'user_roles',
       resource_id: userId,
       metadata: { new_role: role }
-    });
+    } as any);
 
     return { success: true };
   });
