@@ -66,8 +66,8 @@ function OrderDetailsPage() {
 
   const steps = [
     { label: 'Order Placed', status: 'completed' },
-    { label: 'Payment Processing', status: order.status === 'pending' ? 'current' : 'completed' },
-    { label: 'Payment Confirmed', status: order.status === 'paid' || order.status === 'processing' || order.status === 'completed' ? 'completed' : 'pending' },
+    { label: 'Payment Processing', status: order?.status === 'pending' ? 'current' : 'completed' },
+    { label: 'Payment Confirmed', status: order?.status === 'paid' || order?.status === 'processing' || order?.status === 'completed' ? 'completed' : 'pending' },
     { label: 'Preparing Delivery', status: order.status === 'processing' ? 'current' : (order.status === 'completed' ? 'completed' : 'pending') },
     { label: 'Delivered', status: order.status === 'completed' ? 'completed' : 'pending' },
     { label: 'Completed', status: order.status === 'completed' ? 'completed' : 'pending' },

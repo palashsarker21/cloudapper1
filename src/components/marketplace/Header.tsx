@@ -43,7 +43,7 @@ export const Header = () => {
     return () => subscription.unsubscribe();
   }, [refetch]);
 
-  const unreadCount = notifications?.filter(n => !n.read).length || 0;
+  const unreadCount = (notifications as any[])?.filter((n: any) => !n.read).length || 0;
 
 
   const navLinks = [
