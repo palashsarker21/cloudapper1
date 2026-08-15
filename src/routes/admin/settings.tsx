@@ -14,7 +14,7 @@ function AdminSettingsLayout() {
   const sidebarLinks = [
     { label: "Payment Infrastructure", href: "/admin/settings/payments", icon: CreditCard },
     { label: "Security & Access", href: "/admin/settings", icon: Shield },
-    { label: "General Settings", href: "/admin/settings", icon: Settings },
+    { label: "General Settings", href: "/admin/settings/", icon: Settings },
   ];
 
   return (
