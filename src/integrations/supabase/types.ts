@@ -86,6 +86,39 @@ export type Database = {
         }
         Relationships: []
       }
+      crypto_wallets: {
+        Row: {
+          asset: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          minimum_amount: number | null
+          network: string
+          updated_at: string | null
+          wallet_address: string
+        }
+        Insert: {
+          asset: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          minimum_amount?: number | null
+          network: string
+          updated_at?: string | null
+          wallet_address: string
+        }
+        Update: {
+          asset?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          minimum_amount?: number | null
+          network?: string
+          updated_at?: string | null
+          wallet_address?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -190,57 +223,167 @@ export type Database = {
           },
         ]
       }
+      payment_audit_log: {
+        Row: {
+          action: string
+          actor: string | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          new_status: Database["public"]["Enums"]["payment_status"] | null
+          order_id: string | null
+          payment_id: string | null
+          previous_status: Database["public"]["Enums"]["payment_status"] | null
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          new_status?: Database["public"]["Enums"]["payment_status"] | null
+          order_id?: string | null
+          payment_id?: string | null
+          previous_status?: Database["public"]["Enums"]["payment_status"] | null
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          new_status?: Database["public"]["Enums"]["payment_status"] | null
+          order_id?: string | null
+          payment_id?: string | null
+          previous_status?: Database["public"]["Enums"]["payment_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_audit_log_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_audit_log_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_events: {
+        Row: {
+          event_id: string
+          id: string
+          payload: Json
+          payment_id: string | null
+          processed_at: string | null
+          provider: Database["public"]["Enums"]["payment_provider"]
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          payload: Json
+          payment_id?: string | null
+          processed_at?: string | null
+          provider: Database["public"]["Enums"]["payment_provider"]
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          payload?: Json
+          payment_id?: string | null
+          processed_at?: string | null
+          provider?: Database["public"]["Enums"]["payment_provider"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_events_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
           created_at: string
           currency: string
           error_message: string | null
+          expires_at: string | null
           id: string
+          metadata: Json | null
+          network: string | null
           order_id: string
           paid_at: string | null
           provider: Database["public"]["Enums"]["payment_provider"]
+          provider_reference: string | null
           provider_transaction_id: string | null
           screenshot_url: string | null
           status: Database["public"]["Enums"]["payment_status"]
+          transaction_hash: string | null
+          updated_at: string | null
+          user_id: string | null
           verification_notes: string | null
           verification_status: string | null
           verified_at: string | null
           verified_by: string | null
+          wallet_address: string | null
         }
         Insert: {
           amount: number
           created_at?: string
           currency?: string
           error_message?: string | null
+          expires_at?: string | null
           id?: string
+          metadata?: Json | null
+          network?: string | null
           order_id: string
           paid_at?: string | null
           provider: Database["public"]["Enums"]["payment_provider"]
+          provider_reference?: string | null
           provider_transaction_id?: string | null
           screenshot_url?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
+          transaction_hash?: string | null
+          updated_at?: string | null
+          user_id?: string | null
           verification_notes?: string | null
           verification_status?: string | null
           verified_at?: string | null
           verified_by?: string | null
+          wallet_address?: string | null
         }
         Update: {
           amount?: number
           created_at?: string
           currency?: string
           error_message?: string | null
+          expires_at?: string | null
           id?: string
+          metadata?: Json | null
+          network?: string | null
           order_id?: string
           paid_at?: string | null
           provider?: Database["public"]["Enums"]["payment_provider"]
+          provider_reference?: string | null
           provider_transaction_id?: string | null
           screenshot_url?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
+          transaction_hash?: string | null
+          updated_at?: string | null
+          user_id?: string | null
           verification_notes?: string | null
           verification_status?: string | null
           verified_at?: string | null
           verified_by?: string | null
+          wallet_address?: string | null
         }
         Relationships: [
           {
@@ -549,7 +692,16 @@ export type Database = {
         | "failed"
         | "cancelled"
         | "refunded"
-      payment_provider: "bkash" | "nagad" | "binance_pay" | "manual"
+        | "pending_payment"
+        | "fulfilled"
+      payment_provider:
+        | "bkash"
+        | "nagad"
+        | "binance_pay"
+        | "manual"
+        | "bitget_pay"
+        | "crypto_wallet"
+        | "lemon_squeezy"
       payment_status:
         | "pending"
         | "processing"
@@ -558,6 +710,11 @@ export type Database = {
         | "cancelled"
         | "refunded"
         | "partially_refunded"
+        | "created"
+        | "expired"
+        | "underpaid"
+        | "overpaid"
+        | "manual_review"
       product_status: "draft" | "active" | "out_of_stock" | "archived"
       product_type:
         | "ai_credits"
@@ -721,8 +878,18 @@ export const Constants = {
         "failed",
         "cancelled",
         "refunded",
+        "pending_payment",
+        "fulfilled",
       ],
-      payment_provider: ["bkash", "nagad", "binance_pay", "manual"],
+      payment_provider: [
+        "bkash",
+        "nagad",
+        "binance_pay",
+        "manual",
+        "bitget_pay",
+        "crypto_wallet",
+        "lemon_squeezy",
+      ],
       payment_status: [
         "pending",
         "processing",
@@ -731,6 +898,11 @@ export const Constants = {
         "cancelled",
         "refunded",
         "partially_refunded",
+        "created",
+        "expired",
+        "underpaid",
+        "overpaid",
+        "manual_review",
       ],
       product_status: ["draft", "active", "out_of_stock", "archived"],
       product_type: [
