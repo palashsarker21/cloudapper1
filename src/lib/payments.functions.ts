@@ -65,11 +65,12 @@ export const submitPaymentVerification = createServerFn({ method: "POST" })
       .from('payments')
       .update({
         customer_transaction_id: transactionId,
-        sender_mobile: senderMobile,
+        sender_mobile: senderMobile ?? null,
         email_delivery_requested: emailDeliveryRequested,
         status: status as any,
         metadata
       })
+
       .eq('id', paymentId);
 
     if (error) {
@@ -290,9 +291,10 @@ export const confirmAndFulfillPayment = createServerFn({ method: "POST" })
         received_transaction_id: data.receivedTransactionId,
         verified_at: new Date().toISOString(),
         verified_by: userId,
-        admin_notes: data.notes,
+        admin_notes: data.notes ?? null,
         status: 'paid' as any
       })
+
       .eq('id', data.paymentId);
 
     return await manualVerifyPayment(data.paymentId, userId, true, data.notes);
