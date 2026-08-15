@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, CreditCard, Wallet, Smartphone, Banknote, ShieldCheck, ArrowLeft, Loader2 } from 'lucide-react';
+import { ShoppingCart, CreditCard, Wallet, Smartphone, Banknote, ShieldCheck, ArrowLeft, Loader2, Check } from 'lucide-react';
 import { Logo } from '@/components/marketplace/Logo';
 
 import { useState } from 'react';
@@ -302,4 +302,27 @@ function CheckoutPage() {
     </div>
   );
 }
+
+function PaymentMethodButton({ id, name, description, icon, selected, onClick }: any) {
+  return (
+    <Button
+      type="button"
+      variant={selected ? 'default' : 'outline'}
+      className={`h-auto py-4 px-6 flex items-center justify-between text-left border-2 transition-all ${selected ? 'border-primary ring-2 ring-primary/20' : 'border-transparent'}`}
+      onClick={onClick}
+    >
+      <div className="flex items-center gap-4">
+        <div className={`p-2 rounded-lg ${selected ? 'bg-primary-foreground/10' : 'bg-muted'}`}>
+          {icon}
+        </div>
+        <div>
+          <div className="font-bold">{name}</div>
+          <div className="text-xs opacity-70">{description}</div>
+        </div>
+      </div>
+      {selected && <Check className="h-5 w-5" />}
+    </Button>
+  );
+}
+
 
