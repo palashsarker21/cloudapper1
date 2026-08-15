@@ -27,6 +27,9 @@ import { Route as AuthenticatedAccountEntitlementsRouteImport } from './routes/_
 import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/_authenticated/account/notifications'
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin/products.$productId'
 import { Route as AdminProductsNewRouteImport } from './routes/admin/products.new'
+import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
+import { Route as AdminSettingsPaymentsRouteImport } from './routes/admin/settings/payments'
+import { Route as AdminSettingsSecurityRouteImport } from './routes/admin/settings/security'
 import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
 import { Route as CheckoutPaymentPaymentIdRouteImport } from './routes/checkout/payment.$paymentId'
 import { Route as AuthenticatedAccountOrdersOrderIdRouteImport } from './routes/_authenticated/account/orders.$orderId'
@@ -124,6 +127,21 @@ const AdminProductsNewRoute = AdminProductsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminProductsRoute,
 } as any)
+const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminSettingsRoute,
+} as any)
+const AdminSettingsPaymentsRoute = AdminSettingsPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminSettingsRoute,
+} as any)
+const AdminSettingsSecurityRoute = AdminSettingsSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AdminSettingsRoute,
+} as any)
 const ApiPublicWebhookRoute = ApiPublicWebhookRouteImport.update({
   id: '/api/public/webhook',
   path: '/api/public/webhook',
@@ -164,15 +182,18 @@ export interface FileRoutesByFullPath {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
-  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/settings': typeof AdminSettingsRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/settings/payments': typeof AdminSettingsPaymentsRoute
+  '/admin/settings/security': typeof AdminSettingsSecurityRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
+  '/admin/settings/': typeof AdminSettingsIndexRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
   '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
@@ -188,15 +209,17 @@ export interface FileRoutesByTo {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
-  '/admin/settings': typeof AdminSettingsRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/settings/payments': typeof AdminSettingsPaymentsRoute
+  '/admin/settings/security': typeof AdminSettingsSecurityRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
+  '/admin/settings': typeof AdminSettingsIndexRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
   '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
@@ -214,15 +237,18 @@ export interface FileRoutesById {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
-  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/settings': typeof AdminSettingsRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/_authenticated/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/_authenticated/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/settings/payments': typeof AdminSettingsPaymentsRoute
+  '/admin/settings/security': typeof AdminSettingsSecurityRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
+  '/admin/settings/': typeof AdminSettingsIndexRoute
   '/_authenticated/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
   '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
@@ -247,8 +273,11 @@ export interface FileRouteTypes {
     | '/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
+    | '/admin/settings/payments'
+    | '/admin/settings/security'
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
+    | '/admin/settings/'
     | '/account/orders/$orderId'
     | '/api/public/webhooks/binance'
     | '/api/public/webhooks/bkash'
@@ -264,15 +293,17 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/payments'
     | '/admin/products'
-    | '/admin/settings'
     | '/category/$slug'
     | '/product/$productId'
     | '/account/entitlements'
     | '/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
+    | '/admin/settings/payments'
+    | '/admin/settings/security'
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
+    | '/admin/settings'
     | '/account/orders/$orderId'
     | '/api/public/webhooks/binance'
     | '/api/public/webhooks/bkash'
@@ -296,8 +327,11 @@ export interface FileRouteTypes {
     | '/_authenticated/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
+    | '/admin/settings/payments'
+    | '/admin/settings/security'
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
+    | '/admin/settings/'
     | '/_authenticated/account/orders/$orderId'
     | '/api/public/webhooks/binance'
     | '/api/public/webhooks/bkash'
@@ -315,7 +349,7 @@ export interface RootRouteChildren {
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
-  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSettingsRoute: typeof AdminSettingsRouteWithChildren
   CategorySlugRoute: typeof CategorySlugRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
@@ -451,6 +485,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProductsNewRouteImport
       parentRoute: typeof AdminProductsRoute
     }
+    '/admin/settings/': {
+      id: '/admin/settings/'
+      path: '/'
+      fullPath: '/admin/settings/'
+      preLoaderRoute: typeof AdminSettingsIndexRouteImport
+      parentRoute: typeof AdminSettingsRoute
+    }
+    '/admin/settings/payments': {
+      id: '/admin/settings/payments'
+      path: '/payments'
+      fullPath: '/admin/settings/payments'
+      preLoaderRoute: typeof AdminSettingsPaymentsRouteImport
+      parentRoute: typeof AdminSettingsRoute
+    }
+    '/admin/settings/security': {
+      id: '/admin/settings/security'
+      path: '/security'
+      fullPath: '/admin/settings/security'
+      preLoaderRoute: typeof AdminSettingsSecurityRouteImport
+      parentRoute: typeof AdminSettingsRoute
+    }
     '/api/public/webhook': {
       id: '/api/public/webhook'
       path: '/api/public/webhook'
@@ -532,6 +587,22 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
   AdminProductsRouteChildren,
 )
 
+interface AdminSettingsRouteChildren {
+  AdminSettingsPaymentsRoute: typeof AdminSettingsPaymentsRoute
+  AdminSettingsSecurityRoute: typeof AdminSettingsSecurityRoute
+  AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
+}
+
+const AdminSettingsRouteChildren: AdminSettingsRouteChildren = {
+  AdminSettingsPaymentsRoute: AdminSettingsPaymentsRoute,
+  AdminSettingsSecurityRoute: AdminSettingsSecurityRoute,
+  AdminSettingsIndexRoute: AdminSettingsIndexRoute,
+}
+
+const AdminSettingsRouteWithChildren = AdminSettingsRoute._addFileChildren(
+  AdminSettingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -544,7 +615,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
-  AdminSettingsRoute: AdminSettingsRoute,
+  AdminSettingsRoute: AdminSettingsRouteWithChildren,
   CategorySlugRoute: CategorySlugRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   ApiPublicWebhookRoute: ApiPublicWebhookRoute,

@@ -138,7 +138,7 @@ function TrackOrderPage() {
               <CardHeader className="flex flex-row items-center justify-between border-b bg-muted/20">
                 <div>
                   <CardTitle className="text-lg">Order Details</CardTitle>
-                  <CardDescription className="font-mono text-xs">{order.id}</CardDescription>
+                  <CardDescription className="font-mono text-[10px] sm:text-xs truncate max-w-[200px] sm:max-w-none">{order.id}</CardDescription>
                 </div>
                 <Badge variant={order.status === 'paid' ? 'success' : 'secondary'} className="capitalize">
                   {order.status}

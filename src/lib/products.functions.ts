@@ -20,7 +20,7 @@ export const getMarketplaceProducts = createServerFn({ method: "GET" })
     limit: z.number().default(12),
     availability: z.string().optional(),
     productType: z.string().optional(),
-  }).parse(data))
+  }).optional().parse(data) || { page: 1, limit: 12 })
   .handler(async ({ data }) => {
     let query = supabaseAdmin
       .from("products")
@@ -133,7 +133,7 @@ export const getCategoryBySlug = createServerFn({ method: "GET" })
 export const getRelatedProducts = createServerFn({ method: "GET" })
   .inputValidator((data) => z.object({
     productId: z.string(),
-    categoryId: z.string().optional(),
+    categoryId: z.string().optional().nullable(),
     limit: z.number().default(4)
   }).parse(data))
   .handler(async ({ data }) => {
@@ -153,6 +153,33 @@ export const getRelatedProducts = createServerFn({ method: "GET" })
     return products;
   });
 
+
+export const getFeaturedProducts = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .select("*, categories(name)")
+      .eq("status", "active")
+      .eq("is_featured", true)
+      .limit(4);
+
+    if (error) throw error;
+    return data;
+  });
+
+export const getProductById = createServerFn({ method: "GET" })
+  .inputValidator((data) => z.string().parse(data))
+  .handler(async ({ data: id }) => {
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .select("*, categories(name)")
+      .eq("id", id)
+      .eq("status", "active")
+      .single();
+
+    if (error) throw error;
+    return data;
+  });
 
 export const syncExtensionsCatalog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

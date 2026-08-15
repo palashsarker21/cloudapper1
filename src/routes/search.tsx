@@ -38,15 +38,17 @@ function SearchPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['search-products', search],
     queryFn: () => fetchProducts({ 
-      q: search.q,
-      category: search.category,
-      minPrice: search.minPrice,
-      maxPrice: search.maxPrice,
-      sort: search.sort,
-      page: search.page,
-      productType: search.productType,
-      duration: search.duration
-    } as any),
+      data: {
+        q: search.q,
+        category: search.category,
+        minPrice: search.minPrice,
+        maxPrice: search.maxPrice,
+        sort: search.sort,
+        page: search.page,
+        productType: search.productType,
+        duration: search.duration
+      }
+    }),
   });
 
   const handlePriceRange = (range: [number, number | undefined]) => {

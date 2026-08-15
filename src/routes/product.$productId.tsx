@@ -28,7 +28,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useServerFn } from '@tanstack/react-start';
-import { getRelatedProducts } from '@/lib/products.functions';
+import { getRelatedProducts, getProductById } from '@/lib/products.functions';
 import { ProductCard } from '@/components/marketplace/FeaturedProducts';
 
 
@@ -54,17 +54,13 @@ function ProductDetailPage() {
   const [added, setAdded] = useState(false);
 
 
+  const fetchProduct = useServerFn(getProductById);
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*, categories(name)')
-        .eq('id', productId)
-        .eq('status', 'active')
-        .single();
+      const data = await fetchProduct({ data: productId });
       
-      if (error) throw error;
+      if (!data) throw new Error("Product not found");
 
       const isExtension = data.product_type === 'browser_extensions';
       const features = (data.features as string[]) || [
@@ -114,7 +110,12 @@ function ProductDetailPage() {
   const fetchRelated = useServerFn(getRelatedProducts);
   const { data: relatedProducts } = useQuery({
     queryKey: ['related-products', productId, (product as any)?.category_id],
-    queryFn: () => fetchRelated({ productId, categoryId: (product as any)?.category_id } as any),
+    queryFn: () => fetchRelated({ 
+      data: {
+        productId, 
+        categoryId: (product as any)?.category_id 
+      }
+    }),
     enabled: !!product
   });
 
@@ -411,7 +412,7 @@ function ProductDetailPage() {
                   product={{
                     id: p.id,
                     name: p.name,
-                    category: p.categories?.name || 'Product',
+                    category: (p as any).categories?.name || 'Product',
                     price: Number(p.price),
                     rating: 5.0,
                     reviews: 0,

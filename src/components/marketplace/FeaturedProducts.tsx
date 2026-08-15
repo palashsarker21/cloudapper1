@@ -8,6 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 
+import { useServerFn } from "@tanstack/react-start";
+import { getFeaturedProducts } from "@/lib/products.functions";
+
 export interface Product {
   id: string;
   name: string;
@@ -113,19 +116,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 };
 
 export const FeaturedProducts = () => {
+  const fetchFeatured = useServerFn(getFeaturedProducts);
   const { data: products, isLoading } = useQuery({
     queryKey: ['featured-products'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*, categories(name)')
-        .eq('status', 'active')
-        .eq('is_featured', true)
-        .limit(4);
+      const data = await fetchFeatured();
       
-      if (error) throw error;
-      
-      return data.map(p => ({
+      return (data as any[]).map(p => ({
         id: p.id,
         name: p.name,
         category: (p.categories as any)?.name || 'Product',
@@ -170,7 +167,7 @@ export const FeaturedProducts = () => {
           </div>
         ) : products && products.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product) => (
+            {products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

@@ -30,18 +30,20 @@ function CategoryPage() {
   
   const { data: category, isLoading: isCatLoading } = useQuery({
     queryKey: ['category', slug],
-    queryFn: () => fetchCategory(slug as any),
+    queryFn: () => fetchCategory({ data: slug }),
   });
 
   const { data, isLoading: isProductsLoading } = useQuery({
     queryKey: ['category-products', slug, search],
     queryFn: () => fetchProducts({ 
-      category: slug,
-      sort: search.sort,
-      page: search.page,
-      minPrice: search.minPrice,
-      maxPrice: search.maxPrice
-    } as any),
+      data: {
+        category: slug,
+        sort: search.sort,
+        page: search.page,
+        minPrice: search.minPrice,
+        maxPrice: search.maxPrice
+      }
+    }),
   });
 
   if (isCatLoading) {

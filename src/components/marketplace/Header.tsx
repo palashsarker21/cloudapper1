@@ -7,9 +7,11 @@ import { MarketplaceSearchBar } from "./MarketplaceSearchBar";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
+  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useCart } from "@/contexts/CartContext";
@@ -49,17 +51,15 @@ export const Header = () => {
   const navLinks = [
     { label: "Marketplace", href: "/search", search: { sort: 'newest', page: 1 } },
     { label: "AI Tools", href: "/category/$slug", params: { slug: 'ai-tools' }, search: { sort: 'newest', page: 1 } },
-    { label: "Credits", href: "/category/$slug", params: { slug: 'ai-credits' }, search: { sort: 'newest', page: 1 } },
     { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
-    { label: "Digital Products", href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
-    { label: "Pricing", href: "/" },
-    { label: "Fulfillment", href: "/admin/fulfillment" },
-    { label: "Settings", href: "/admin/settings" },
-    { label: "Products", href: "/admin/products" },
-    { label: "Orders", href: "/admin/orders" },
+    { label: "Admin", children: [
+      { label: "Fulfillment", href: "/admin/fulfillment" },
+      { label: "Payments", href: "/admin/settings/payments" },
+      { label: "Products", href: "/admin/products" },
+      { label: "Orders", href: "/admin/orders" },
+    ]},
     { label: "Support", href: "/" },
-
   ];
 
   return (
@@ -78,10 +78,37 @@ export const Header = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 {navLinks.map((link) => (
-                  <NavigationMenuItem key={link.href}>
-                    <Link to={link.href as any} params={(link as any).params} search={(link as any).search} className={navigationMenuTriggerStyle()}>
-                      {link.label}
-                    </Link>
+                  <NavigationMenuItem key={link.label}>
+                    {link.children ? (
+                      <>
+                        <NavigationMenuTrigger>{link.label}</NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <ul className="grid w-[200px] gap-2 p-4">
+                            {link.children.map((child) => (
+                              <li key={child.href}>
+                                <NavigationMenuLink asChild>
+                                  <Link
+                                    to={child.href as any}
+                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                  >
+                                    <div className="text-sm font-medium leading-none">{child.label}</div>
+                                  </Link>
+                                </NavigationMenuLink>
+                              </li>
+                            ))}
+                          </ul>
+                        </NavigationMenuContent>
+                      </>
+                    ) : (
+                      <Link
+                        to={link.href as any}
+                        params={(link as any).params}
+                        search={(link as any).search}
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </NavigationMenuItem>
                 ))}
               </NavigationMenuList>
@@ -136,16 +163,35 @@ export const Header = () => {
               <MarketplaceSearchBar />
             </div>
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href as any}
-                params={(link as any).params}
-                search={(link as any).search}
-                className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
+              <div key={link.label} className="flex flex-col space-y-2">
+                {link.children ? (
+                  <>
+                    <div className="px-2 py-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      {link.label}
+                    </div>
+                    {link.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        to={child.href as any}
+                        className="text-sm font-medium transition-colors hover:text-primary px-4 py-1"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </>
+                ) : (
+                  <Link
+                    to={link.href as any}
+                    params={(link as any).params}
+                    search={(link as any).search}
+                    className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )}
+              </div>
             ))}
             <Button variant="default" className="w-full mt-4" asChild>
               <Link to="/login" onClick={() => setIsMenuOpen(false)}>

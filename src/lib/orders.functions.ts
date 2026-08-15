@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const getOrderStatus = createServerFn({ method: "GET" })
   .inputValidator((data) => z.object({
-    orderId: z.string().uuid(),
+    orderId: z.string(),
   }).parse(data))
   .handler(async ({ data }) => {
     const { orderId } = data;
