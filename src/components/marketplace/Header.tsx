@@ -93,7 +93,7 @@ export const Header = () => {
     { label: t.nav.extensions, href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
     { label: t.nav.digitalProducts, href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
     { label: t.nav.trackOrder, href: "/track-order", search: { orderId: undefined } },
-    { label: "WhatsApp Support", href: brand.social.whatsapp.url, external: true },
+    { label: "WhatsApp Support", href: "https://wa.me/8801557749217", external: true },
     { label: "Facebook Page", href: brand.social.facebook.url, external: true },
     { label: t.nav.support, href: "/login" },
   ];
@@ -237,7 +237,7 @@ export const Header = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
-                    <a href={brand.social.whatsapp.url} target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/8801557749217" target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="h-5 w-5 text-[#25D366]" />
                     </a>
                   </Button>
@@ -316,7 +316,7 @@ export const Header = () => {
               <div key={link.label} className="flex flex-col space-y-2">
                 {link.external ? (
                   <a
-                    href={link.href}
+                    href="https://wa.me/8801557749217"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
