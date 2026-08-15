@@ -20,7 +20,8 @@ import {
   Share2,
   Heart,
   Loader2,
-  Check
+  Check,
+  Info
 } from 'lucide-react';
 import { Logo } from '@/components/marketplace/Logo';
 import { useCart } from '@/contexts/CartContext';
@@ -62,31 +63,46 @@ function ProductDetailPage() {
       
       if (error) throw error;
 
+      const isExtension = data.product_type === 'browser_extensions';
+      const features = (data.features as string[]) || [
+        "Secure delivery",
+        "Verified quality",
+        "Premium support",
+        "Instant access"
+      ];
+      
+      const compatibility = data.compatibility as any;
+
       return {
         id: data.id,
         name: data.name,
         category: (data.categories as any)?.name || 'Product',
-        price: `$${Number(data.price).toFixed(2)}`,
+        price: `৳${Number(data.price).toLocaleString()}`,
         rating: 5.0,
         reviews: 0,
-        description: data.description || "No description available.",
+        description: data.description || data.short_description || "No description available.",
+        fullDescription: data.full_description,
         image: data.image_url,
-        features: [
-          "Secure delivery",
-          "Verified quality",
-          "Premium support",
-          "Instant access"
-        ],
+        product_type: data.product_type,
+        license_duration: data.license_duration,
+        sku: data.sku,
+        delivery_instructions: data.delivery_instructions,
+        features,
         specs: [
-          { label: "Delivery", value: data.stock_status === 'in_stock' ? "Instant" : "Delayed" },
+          { label: "SKU", value: data.sku || 'N/A' },
+          { label: "Duration", value: data.license_duration ? (data.license_duration >= 9999 ? 'Lifetime' : `${data.license_duration} Days`) : 'N/A' },
+          { label: "Delivery", value: data.delivery_method?.replace('_', ' ') || "Instant" },
           { label: "Status", value: (data.stock_status || 'in_stock').replace('_', ' ') },
           { label: "Added", value: new Date(data.created_at).toLocaleDateString() }
         ],
         highlights: [
-          { icon: ShieldCheck, title: "Secure", description: "Fully encrypted delivery" },
-          { icon: Zap, title: "Fast", description: "Optimized fulfillment" },
-          { icon: Clock, title: "Support", description: "Priority help desk" }
-        ]
+          { icon: ShieldCheck, title: "Verified", description: isExtension ? "Lovable-Compatible" : "Secure access" },
+          { icon: Zap, title: "Instant", description: "Automatic delivery" },
+          { icon: Clock, title: "Support", description: "24/7 priority help" }
+        ],
+        compatibility,
+        importantNote: isExtension ? "Compatibility and availability may depend on the current extension, browser and third-party service environment. Please review the current product instructions before purchase." : null,
+        backupNote: "Always keep a backup of your project and important data using services such as GitHub and Supabase."
       };
     }
   });
@@ -178,9 +194,16 @@ function ProductDetailPage() {
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{product.name}</h1>
               <p className="text-2xl font-bold text-primary">{product.price}</p>
               
-              <p className="text-muted-foreground text-lg leading-relaxed">
+              <div className="text-muted-foreground text-lg leading-relaxed whitespace-pre-wrap">
                 {product.description}
-              </p>
+              </div>
+              
+              {product.importantNote && (
+                <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex gap-3 text-sm text-amber-700 dark:text-amber-400">
+                  <Info className="h-5 w-5 shrink-0 mt-0.5" />
+                  <p>{product.importantNote}</p>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -201,7 +224,7 @@ function ProductDetailPage() {
                 }}
               >
                 {added ? <Check className="h-5 w-5" /> : <ShoppingCart className="h-5 w-5" />}
-                {added ? "Added" : "Add to Cart"}
+                {added ? "Added" : (product.product_type === 'browser_extensions' ? "Get License" : "Add to Cart")}
               </Button>
               <div className="flex gap-2">
                 <Button variant="outline" size="icon" className="h-14 w-14">
@@ -242,16 +265,22 @@ function ProductDetailPage() {
                 Features
               </TabsTrigger>
               <TabsTrigger 
+                value="compatibility" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-8"
+              >
+                Compatibility
+              </TabsTrigger>
+              <TabsTrigger 
+                value="instructions" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-8"
+              >
+                Instructions
+              </TabsTrigger>
+              <TabsTrigger 
                 value="specs" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-8"
               >
                 Specifications
-              </TabsTrigger>
-              <TabsTrigger 
-                value="reviews" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-8"
-              >
-                Reviews
               </TabsTrigger>
             </TabsList>
             
@@ -267,12 +296,70 @@ function ProductDetailPage() {
               </ul>
             </TabsContent>
             
+            <TabsContent value="compatibility" className="py-8 space-y-6">
+              <h3 className="text-xl font-bold">Supported Environments</h3>
+              {product.compatibility ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-primary">System Environments</h4>
+                    <ul className="space-y-2">
+                      {product.compatibility.environments?.map((env: string, i: number) => (
+                        <li key={i} className="text-muted-foreground flex items-center gap-2">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          {env}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-primary">Potential Browsers</h4>
+                    <ul className="space-y-2">
+                      {product.compatibility.browsers?.map((browser: string, i: number) => (
+                        <li key={i} className="text-muted-foreground flex items-center gap-2">
+                          <Check className="h-4 w-4 text-success" />
+                          {browser}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="md:col-span-2 p-4 rounded-xl bg-muted/30 border text-sm italic text-muted-foreground">
+                    Note: {product.compatibility.mobile}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-muted-foreground">Compatibility details not specified.</p>
+              )}
+            </TabsContent>
+
+            <TabsContent value="instructions" className="py-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold">Delivery & Activation</h3>
+                  <div className="p-6 rounded-3xl border bg-surface-2 space-y-4">
+                    <div className="flex gap-4">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</div>
+                      <p className="text-sm text-muted-foreground">{product.delivery_instructions}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold">Important Notes</h3>
+                  <div className="p-6 rounded-3xl border bg-destructive/5 border-destructive/10 space-y-4">
+                    <div className="flex gap-4">
+                      <ShieldCheck className="h-6 w-6 text-destructive shrink-0" />
+                      <p className="text-sm text-muted-foreground">{product.backupNote}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+            
             <TabsContent value="specs" className="py-8">
-              <Card>
+              <Card className="rounded-[var(--brand-radius)] overflow-hidden border-2 border-transparent bg-surface-2">
                 <CardContent className="p-0">
-                  <div className="divide-y">
+                  <div className="divide-y border-t-0">
                     {product.specs.map((spec, i) => (
-                      <div key={i} className="flex items-center justify-between p-4">
+                      <div key={i} className="flex items-center justify-between p-4 hover:bg-muted/5 transition-colors">
                         <span className="font-medium text-muted-foreground">{spec.label}</span>
                         <span className="font-semibold">{spec.value}</span>
                       </div>
@@ -280,10 +367,6 @@ function ProductDetailPage() {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-
-            <TabsContent value="reviews" className="py-8 text-center text-muted-foreground italic">
-              User reviews will appear here once connected to the backend.
             </TabsContent>
           </Tabs>
         </div>

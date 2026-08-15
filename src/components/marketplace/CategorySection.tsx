@@ -30,6 +30,7 @@ const categoryColors: Record<string, string> = {
   'AI Credits': "bg-primary/10 text-primary border-primary/20",
   'AI Tools': "bg-accent/10 text-accent border-accent/20",
   'Browser Extensions': "bg-amber-500/10 text-amber-500 border-amber-500/20",
+  'Extensions': "bg-amber-500/10 text-amber-500 border-amber-500/20",
   'SaaS Products': "bg-green-500/10 text-green-500 border-green-500/20",
   'Digital Products': "bg-primary/10 text-primary border-primary/20",
   'Templates': "bg-accent/10 text-accent border-accent/20",
