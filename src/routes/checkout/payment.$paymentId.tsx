@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, Copy, Check, AlertTriangle, ExternalLink, CheckCircle2, Smartphone, Clock } from 'lucide-react';
+import { Loader2, Copy, Check, AlertTriangle, ExternalLink, CheckCircle2, Smartphone, Clock, Zap } from 'lucide-react';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { cn } from '@/lib/utils';
