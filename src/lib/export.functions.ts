@@ -89,7 +89,7 @@ export const exportLicensesCsv = createServerFn({ method: "POST" })
 
     const csvContent = [
       headers.map(escapeCsv).join(","),
-      ...rows.map(row => row.map(escapeCsv).join(","))
+      ...rows.map((row: any[]) => row.map(escapeCsv).join(","))
     ].join("\n");
 
     return { csv: csvContent, filename: `licenses_${new Date().toISOString().split('T')[0]}.csv` };
@@ -139,7 +139,7 @@ export const exportFulfillmentsCsv = createServerFn({ method: "POST" })
 
     const csvContent = [
       headers.map(escapeCsv).join(","),
-      ...rows.map(row => row.map(escapeCsv).join(","))
+      ...rows.map((row: any[]) => row.map(escapeCsv).join(","))
     ].join("\n");
 
     return { csv: csvContent, filename: `fulfillments_${new Date().toISOString().split('T')[0]}.csv` };

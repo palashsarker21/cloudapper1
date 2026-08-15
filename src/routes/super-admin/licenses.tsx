@@ -2,6 +2,8 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { getPlatformStats, getEklasProviderStatus, getRecentLicenses, retryLicenseFulfillment } from '@/lib/license-admin.functions';
+import { exportLicensesCsv } from '@/lib/export.functions';
+import { DataExportDialog } from '@/components/admin/DataExportDialog';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -30,6 +32,7 @@ function LicenseCenterPage() {
   const fetchProvider = useServerFn(getEklasProviderStatus);
   const fetchLicenses = useServerFn(getRecentLicenses);
   const retryFulfillment = useServerFn(retryLicenseFulfillment);
+  const exportLicenses = useServerFn(exportLicensesCsv);
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['admin-license-stats'],
@@ -68,6 +71,17 @@ function LicenseCenterPage() {
             <p className="text-muted-foreground">Monitor and manage Eklas production fulfillment</p>
           </div>
           <div className="flex gap-2">
+            <DataExportDialog 
+              title="Export Licenses"
+              description="Filter and export extension license records to CSV."
+              exportFn={exportLicenses}
+              statusOptions={[
+                { label: 'Active', value: 'active' },
+                { label: 'Expired', value: 'expired' },
+                { label: 'Revoked', value: 'revoked' },
+                { label: 'Suspended', value: 'suspended' },
+              ]}
+            />
             <Button variant="outline" className="glass-effect" onClick={() => refetchLicenses()}>
               <RefreshCcw className="mr-2 h-4 w-4" />
               Refresh Data
