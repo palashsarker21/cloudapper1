@@ -27,6 +27,6 @@ export const brand = {
     fontFamily: "Inter, system-ui, sans-serif",
   },
   social: {
-    ogImage: "https://cloudapper.online/brand/cloudapper-logo.png",
+    ogImage: "https://cloudapper.online/brand/og-image.png",
   }
 };
