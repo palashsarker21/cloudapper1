@@ -18,10 +18,15 @@ export function Logo({ className, variant = 'full', onClick }: LogoProps) {
         <img 
           src={brand.logo} 
           alt={brand.name} 
+          width={variant === 'full' ? 32 : 40}
+          height={variant === 'full' ? 32 : 40}
           className={cn(
             "object-contain transition-transform hover:scale-105",
             variant === 'full' ? "h-8 w-auto mr-2" : "h-10 w-10"
           )}
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
         />
       )}
       {(variant === 'full' || variant === 'wordmark') && (
