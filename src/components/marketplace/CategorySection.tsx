@@ -27,15 +27,16 @@ const iconMap: Record<string, any> = {
 };
 
 const categoryColors: Record<string, string> = {
-  'AI Credits': "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  'AI Tools': "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  'Browser Extensions': "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  'SaaS Products': "bg-green-500/10 text-green-400 border-green-500/20",
-  'Digital Products': "bg-pink-500/10 text-pink-400 border-pink-500/20",
-  'Templates': "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-  'Prompts': "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  'Automation Tools': "bg-red-500/10 text-red-400 border-red-500/20",
+  'AI Credits': "bg-primary/10 text-primary border-primary/20",
+  'AI Tools': "bg-accent/10 text-accent border-accent/20",
+  'Browser Extensions': "bg-amber-500/10 text-amber-500 border-amber-500/20",
+  'SaaS Products': "bg-green-500/10 text-green-500 border-green-500/20",
+  'Digital Products': "bg-primary/10 text-primary border-primary/20",
+  'Templates': "bg-accent/10 text-accent border-accent/20",
+  'Prompts': "bg-amber-500/10 text-amber-500 border-amber-500/20",
+  'Automation Tools': "bg-red-500/10 text-red-500 border-red-500/20",
 };
+
 
 
 export const CategorySection = () => {
@@ -52,7 +53,7 @@ export const CategorySection = () => {
   });
 
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-24 bg-surface-1">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -76,9 +77,10 @@ export const CategorySection = () => {
                 <a
                   key={category.id}
                   href={`/category/${category.slug}`}
-                  className="group flex flex-col items-center justify-center rounded-xl border bg-background p-6 text-center transition-all hover:border-primary/50 hover:shadow-md"
+                  className="group flex flex-col items-center justify-center rounded-3xl border-2 border-transparent bg-surface-2 p-8 text-center transition-all hover:border-primary/20 hover:shadow-[var(--shadow-elevated)] hover:-translate-y-1"
                 >
-                  <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border ${colorClass} transition-all group-hover:scale-110 shadow-sm`}>
+                  <div className={`mb-4 flex h-20 w-20 items-center justify-center rounded-3xl border-2 ${colorClass} transition-all group-hover:scale-110 shadow-sm group-hover:shadow-[var(--brand-glow)]`}>
+
                     <Icon className="h-7 w-7" />
                   </div>
 

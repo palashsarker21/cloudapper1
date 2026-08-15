@@ -94,7 +94,7 @@ export const ProductForm = ({ product }: { product?: any }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pb-20">
-      <div className="flex items-center justify-between sticky top-0 z-10 bg-background/95 backdrop-blur py-4 border-b">
+      <div className="flex items-center justify-between sticky top-0 z-10 bg-surface-0/95 backdrop-blur py-4 border-b">
         <div className="flex items-center gap-4">
           <Badge variant={watch("status") === 'active' ? 'default' : 'secondary'} className="uppercase">
             {watch("status")}
@@ -134,7 +134,8 @@ export const ProductForm = ({ product }: { product?: any }) => {
 
         <div className="py-6">
           <TabsContent value="basic" className="space-y-6">
-            <Card>
+            <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
               <CardHeader>
                 <CardTitle>General Information</CardTitle>
                 <CardDescription>Core product identity and classification.</CardDescription>
@@ -205,7 +206,8 @@ export const ProductForm = ({ product }: { product?: any }) => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
               <CardHeader>
                 <CardTitle>Features & Content</CardTitle>
               </CardHeader>
@@ -229,7 +231,8 @@ export const ProductForm = ({ product }: { product?: any }) => {
           </TabsContent>
 
           <TabsContent value="pricing" className="space-y-6">
-            <Card>
+            <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
               <CardHeader>
                 <CardTitle>Pricing Strategy</CardTitle>
                 <CardDescription>Configure how you charge for this product.</CardDescription>
@@ -262,7 +265,8 @@ export const ProductForm = ({ product }: { product?: any }) => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
               <CardHeader>
                 <CardTitle>Inventory Controls</CardTitle>
                 <CardDescription>Manage availability and stock levels.</CardDescription>
@@ -316,7 +320,8 @@ export const ProductForm = ({ product }: { product?: any }) => {
           </TabsContent>
 
           <TabsContent value="fulfillment" className="space-y-6">
-            <Card>
+            <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
               <CardHeader>
                 <CardTitle>Delivery Configuration</CardTitle>
               </CardHeader>
@@ -362,7 +367,8 @@ export const ProductForm = ({ product }: { product?: any }) => {
           </TabsContent>
 
           <TabsContent value="media" className="space-y-6">
-            <Card>
+            <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+
               <CardHeader>
                 <CardTitle>Product Media</CardTitle>
                 <CardDescription>Main image and gallery.</CardDescription>

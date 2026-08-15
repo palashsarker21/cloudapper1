@@ -37,9 +37,10 @@ export const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-surface-1/95 backdrop-blur supports-[backdrop-filter]:bg-surface-1/60 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4">
+        <div className="flex h-20 items-center justify-between gap-4">
+
           <div className="flex items-center gap-2">
             <Link to="/">
               <Logo />
@@ -67,8 +68,9 @@ export const Header = () => {
               <Input
                 type="search"
                 placeholder="Search products..."
-                className="pl-8 bg-muted/50 focus-visible:bg-background transition-colors"
+                className="pl-8 bg-surface-2 focus-visible:bg-background border-2 border-transparent focus-visible:border-primary/20 transition-all h-9"
               />
+
             </div>
             <Button variant="ghost" size="icon" className="relative" asChild>
               <Link to="/checkout">

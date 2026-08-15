@@ -32,7 +32,7 @@ function AdminProductsPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
+    <div className="min-h-screen flex flex-col bg-surface-0">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
@@ -64,7 +64,7 @@ function AdminProductsPage() {
           </div>
         </div>
 
-        <Card>
+        <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
           <CardHeader>
             <CardTitle>All Products</CardTitle>
           </CardHeader>

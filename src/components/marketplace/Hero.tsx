@@ -2,16 +2,19 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, PackageSearch } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
+import { cn } from "@/lib/utils";
+
 
 
 export const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-background py-20 sm:py-32">
+    <section className="relative overflow-hidden bg-surface-0 py-20 sm:py-32">
       {/* Background decoration */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-accent/5 blur-[120px]" />
       </div>
+
 
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center">
@@ -20,7 +23,7 @@ export const Hero = () => {
             New: GPT-4o Credits available now
           </div>
           
-          <Logo variant="icon" className="h-20 w-20 mb-6 drop-shadow-[0_0_15px_rgba(var(--primary),0.3)]" />
+          <Logo variant="icon" className="h-24 w-24 mb-8 drop-shadow-[0_0_30px_rgba(var(--primary),0.3)] animate-float" />
           
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
             AI Tools, Credits & <span className="bg-clip-text text-transparent bg-[var(--brand-gradient)]">Digital Products</span> — All in One Place
@@ -46,19 +49,20 @@ export const Hero = () => {
             </Button>
           </div>
 
-          <div className="mt-16 grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-8 w-full max-w-4xl">
+          <div className="mt-20 grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-8 w-full max-w-5xl">
             {[
-              { label: "Fast Delivery", icon: "⚡" },
-              { label: "Secure Payments", icon: "🔒" },
-              { label: "Verified Products", icon: "✅" },
-              { label: "24/7 Support", icon: "💬" },
+              { label: "Fast Delivery", icon: "⚡", color: "text-primary" },
+              { label: "Secure Payments", icon: "🔒", color: "text-accent" },
+              { label: "Verified Products", icon: "✅", color: "text-green-500" },
+              { label: "24/7 Support", icon: "💬", color: "text-primary" },
             ].map((feature) => (
-              <div key={feature.label} className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground">
-                <span className="text-lg">{feature.icon}</span>
-                {feature.label}
+              <div key={feature.label} className="flex flex-col items-center justify-center p-6 rounded-3xl bg-surface-1 border-2 border-transparent hover:border-primary/10 transition-all group">
+                <span className={cn("text-3xl mb-3 transform transition-transform group-hover:scale-110", feature.color)}>{feature.icon}</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">{feature.label}</span>
               </div>
             ))}
           </div>
+
         </div>
       </div>
     </section>

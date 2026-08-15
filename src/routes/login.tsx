@@ -85,7 +85,7 @@ function LoginPage() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-surface-1 px-4 py-12">
       <Link 
         to="/" 
         className="absolute top-8 left-8 flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
@@ -107,7 +107,7 @@ function LoginPage() {
           </p>
         </div>
 
-        <Card className="border-muted/60 shadow-lg">
+        <Card className="border-2 border-transparent bg-surface-2 shadow-2xl">
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl">Login</CardTitle>
             <CardDescription>
