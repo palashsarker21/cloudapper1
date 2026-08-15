@@ -99,7 +99,7 @@ export const Header = () => {
 
             </div>
             <Button variant="ghost" size="icon" className="relative" asChild>
-              <Link to="/_authenticated/account/notifications">
+              <Link to="/account/notifications">
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-primary animate-pulse" variant="default">

@@ -66,7 +66,7 @@ function NotificationsPage() {
     }
   };
 
-  const unreadCount = notifications?.filter(n => !n.read).length || 0;
+  const unreadCount = (notifications as any[])?.filter((n: any) => !n.read).length || 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-surface-0">
@@ -133,7 +133,7 @@ function NotificationsPage() {
                       <div className="flex items-center gap-3">
                         {notification.related_order_id && (
                           <Button variant="link" size="sm" className="h-auto p-0 text-xs text-primary" asChild>
-                            <Link to="/_authenticated/account/orders/$orderId" params={{ orderId: notification.related_order_id }}>
+                            <Link to="/account/orders/$orderId" params={{ orderId: notification.related_order_id }}>
                               View Order <ChevronRight className="ml-1 h-3 w-3" />
                             </Link>
                           </Button>

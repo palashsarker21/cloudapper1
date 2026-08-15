@@ -56,7 +56,7 @@ function OrderDetailsPage() {
           <h1 className="text-2xl font-bold mb-2">Order Not Found</h1>
           <p className="text-muted-foreground mb-8">We couldn't retrieve the details for this order.</p>
           <Button asChild>
-            <Link to="/_authenticated/account/entitlements">Back to Library</Link>
+            <Link to="/account/entitlements">Back to Library</Link>
           </Button>
         </div>
         <Footer />
@@ -99,7 +99,7 @@ function OrderDetailsPage() {
       <main className="flex-grow container max-w-5xl mx-auto px-4 py-12">
         <div className="mb-8 flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
-            <Link to="/_authenticated/account/entitlements">
+            <Link to="/account/entitlements">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
@@ -188,7 +188,7 @@ function OrderDetailsPage() {
                               Delivery Available
                             </div>
                             <Button size="sm" variant="default" className="h-8 px-3 text-xs" asChild>
-                              <Link to="/_authenticated/account/entitlements">
+                              <Link to="/account/entitlements">
                                 Access Product
                               </Link>
                             </Button>
