@@ -17,7 +17,7 @@ import { Footer } from "@/components/marketplace/Footer";
 
 export const Route = createFileRoute("/admin/settings/payments")({
   head: () => ({
-    title: 'Payment Settings | Admin | CloudApper',
+    meta: [{ title: 'Payment Settings | Admin | CloudApper' }],
   }),
   component: AdminPaymentSettings,
 });
