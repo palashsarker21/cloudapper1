@@ -114,10 +114,10 @@ function SuperAdminPaymentsPage() {
                 </TableHeader>
                 <TableBody>
                   {payments?.map((payment: any) => (
-                    <TableRow key={payment.id} className="hover:bg-surface-1/30 transition-colors">
+                    <TableRow key={payment.id} className="hover:bg-surface-1/30 transition-colors cursor-pointer" onClick={() => navigate({ to: '/super-admin/payments/$paymentId', params: { paymentId: payment.id } })}>
                       <TableCell>
                         <div className="flex flex-col">
-                          <span className="font-mono text-[10px] uppercase">{payment.provider_transaction_id || 'NO-TXID'}</span>
+                          <span className="font-mono text-[10px] uppercase">{payment.customer_transaction_id || payment.provider_transaction_id || 'NO-TXID'}</span>
                           <span className="text-[10px] text-muted-foreground">{new Date(payment.created_at).toLocaleString()}</span>
                         </div>
                       </TableCell>
@@ -136,43 +136,27 @@ function SuperAdminPaymentsPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={payment.verification_status === 'verified' ? 'success' : payment.verification_status === 'pending' ? 'outline' : 'destructive'} className="text-[10px] uppercase">
-                          {payment.verification_status || 'pending'}
+                        <Badge variant={payment.status === 'paid' ? 'success' : payment.status === 'payment_rejected' ? 'destructive' : 'outline'} className="text-[10px] uppercase">
+                          {payment.status.replace('_', ' ')}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        {payment.verification_status === 'pending' && (
-                          <div className="flex justify-end gap-1">
-                            <Button 
-                              variant="ghost" 
-                              size="icon" 
-                              className="h-8 w-8 text-emerald-500 hover:bg-emerald-500/10"
-                              onClick={() => mutation.mutate({ id: payment.id, status: 'verified' })}
-                              disabled={mutation.isPending}
-                            >
-                              <CheckCircle2 className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="icon" 
-                              className="h-8 w-8 text-red-500 hover:bg-red-500/10"
-                              onClick={() => mutation.mutate({ id: payment.id, status: 'rejected' })}
-                              disabled={mutation.isPending}
-                            >
-                              <XCircle className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        )}
-                        {payment.screenshot_url && (
-                          <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                            <a href={payment.screenshot_url} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="h-4 w-4" />
-                            </a>
-                          </Button>
-                        )}
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-8 gap-2 hover:bg-primary/10 hover:text-primary font-bold"
+                          asChild
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Link to="/super-admin/payments/$paymentId" params={{ paymentId: payment.id }}>
+                            Review
+                            <ExternalLink className="h-3 w-3" />
+                          </Link>
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
+
                 </TableBody>
               </Table>
             )}
