@@ -25,7 +25,7 @@ export const Route = createFileRoute('/category/$slug')({
 function CategoryPage() {
   const { slug } = Route.useParams();
   const search = Route.useSearch() as any;
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   const fetchCategory = useServerFn(getCategoryBySlug);
   const fetchProducts = useServerFn(getMarketplaceProducts);
@@ -78,10 +78,12 @@ function CategoryPage() {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4">{category.name}</h1>
-          {category.description && (
+          <h1 className="text-4xl font-bold mb-4">
+            {language === 'bn' && (category as any).name_bn ? (category as any).name_bn : category.name}
+          </h1>
+          {(category.description || (category as any).description_bn) && (
             <p className="text-lg text-muted-foreground max-w-3xl">
-              {category.description}
+              {language === 'bn' && (category as any).description_bn ? (category as any).description_bn : category.description}
             </p>
           )}
         </div>
@@ -101,8 +103,8 @@ function CategoryPage() {
                 key={p.id} 
                 product={{
                   id: p.id,
-                  name: p.name,
-                  category: p.categories?.name || category.name,
+                  name: language === 'bn' && p.name_bn ? p.name_bn : p.name,
+                  category: language === 'bn' && p.categories?.name_bn ? p.categories.name_bn : (p.categories?.name || category.name),
                   price: Number(p.price),
                   rating: 5.0,
                   reviews: 0,
