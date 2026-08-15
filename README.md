@@ -51,9 +51,31 @@ If an optional provider like **Eklas** is unconfigured, the system marks the ful
 
 ## 📦 Database & Migrations
 
-Migrations live in `supabase/migrations/`. 
-- **Workflow**: Create a new migration for changes. Never edit applied migrations.
-- **CI/CD**: GitHub Actions run `supabase db lint` to detect destructive changes.
+GitHub is the authoritative source of truth for the CloudApper database schema.
+
+### Supabase Production Migration Deployment
+
+1. **Schema Location**: All migration files live in `supabase/migrations/`.
+2. **Automated Deployment**: GitHub Actions automatically deploy pending migrations to the production Supabase project (`jyidtbyigdfeevkzjphy`) when changes are merged into the `main` branch.
+3. **Safety First**:
+   - **Never Reset Production**: The deployment pipeline uses `supabase db push`, which only applies new changes. It NEVER runs `db reset`.
+   - **No Historical Edits**: Once a migration is applied to production, never edit the file. Create a new migration for any further changes.
+   - **Conflict Detection**: If local and remote migration histories mismatch, the workflow will fail. Mismatches must be resolved manually via the Supabase CLI before the pipeline can continue.
+4. **Required GitHub Secrets**:
+   To enable automatic deployments, the repository owner must configure these secrets in **GitHub → Settings → Secrets and variables → Actions**:
+   - `SUPABASE_ACCESS_TOKEN`: A personal access token generated from the Supabase Dashboard.
+   - `SUPABASE_DB_PASSWORD`: The database password for the production project.
+5. **Verification**:
+   Successful deployments can be verified in the Supabase Dashboard under **Database → Migrations**.
+
+### Creating a New Migration
+To safely add a new schema change:
+1. Create a new migration file in `supabase/migrations/` using the naming convention `YYYYMMDDHHMMSS_name.sql`.
+2. Test locally if possible.
+3. Commit and push to a feature branch.
+4. Open a Pull Request (CI will lint the migration for destructive changes).
+5. Merge to `main` to trigger the production deployment.
+
 
 ## 🏥 Health & Monitoring
 Super Admins can monitor system health at `/super-admin/system/health`.
