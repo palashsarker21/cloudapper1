@@ -123,14 +123,14 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({
     orderId: z.string().uuid(),
-    provider: z.enum(['bkash', 'nagad', 'binance_pay', 'bitget_pay', 'crypto_wallet', 'lemon_squeezy', 'manual']),
-
+    provider: z.string(),
+    receiverId: z.string().uuid().optional(),
     currency: z.string().default('BDT'),
     metadata: z.any().optional()
   }).parse(data))
   .handler(async ({ data, context }) => {
     const { userId } = context;
-    const { orderId, provider, currency, metadata } = data;
+    const { orderId, provider, receiverId, currency, metadata } = data;
     
     // 0. Fetch Payment Settings & Validate Gateway/Currency
     const { data: settings, error: settingsError } = await supabaseAdmin
