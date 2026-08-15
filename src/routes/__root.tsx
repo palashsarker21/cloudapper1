@@ -85,10 +85,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "CloudApper" },
       { property: "og:title", content: "CloudApper | AI Tools & Digital Products Marketplace" },
       { property: "og:description", content: "Discover useful AI tools, software products and digital resources with fast and secure delivery." },
-      { property: "og:image", content: "https://cloudapper.online/brand/cloudapper-logo.png" },
+      { property: "og:image", content: "https://cloudapper.online/brand/og-image.png" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://cloudapper.online/brand/cloudapper-logo.png" },
+      { name: "twitter:image", content: "https://cloudapper.online/brand/og-image.png" },
+
 
     ],
     links: [
