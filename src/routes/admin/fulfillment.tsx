@@ -2,6 +2,8 @@ import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { getAdminFulfillments, retryFulfillment } from '@/lib/fulfillment-admin.functions';
+import { exportFulfillmentsCsv } from '@/lib/export.functions';
+import { DataExportDialog } from '@/components/admin/DataExportDialog';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { Button } from '@/components/ui/button';
@@ -45,6 +47,7 @@ export const Route = createFileRoute('/admin/fulfillment')({
 function AdminFulfillmentPage() {
   const fetchFulfillments = useServerFn(getAdminFulfillments);
   const retryFn = useServerFn(retryFulfillment);
+  const exportFulfillments = useServerFn(exportFulfillmentsCsv);
   const queryClient = useQueryClient();
 
   const { data: fulfillments, isLoading, error } = useQuery({
@@ -89,6 +92,17 @@ function AdminFulfillmentPage() {
           </div>
 
           <div className="flex gap-2">
+            <DataExportDialog 
+              title="Export Fulfillments"
+              description="Filter and export delivery records to CSV."
+              exportFn={exportFulfillments}
+              statusOptions={[
+                { label: 'Pending', value: 'pending' },
+                { label: 'Processing', value: 'processing' },
+                { label: 'Completed', value: 'completed' },
+                { label: 'Failed', value: 'failed' },
+              ]}
+            />
             <Button variant="outline" asChild>
               <Link to="/admin/orders">Orders</Link>
             </Button>
