@@ -29,7 +29,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
 
-    <Card className="group overflow-hidden border bg-background transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col rounded-2xl">
+    <Card className="group overflow-hidden border-2 border-transparent bg-surface-2 transition-all duration-300 hover:shadow-[var(--shadow-elevated)] hover:-translate-y-2 flex flex-col rounded-[var(--brand-radius)] hover:border-primary/20">
       <CardHeader className="p-0">
         <Link to="/product/$productId" params={{ productId: product.id }} className="block relative aspect-[4/3] overflow-hidden bg-muted">
           <img
@@ -38,9 +38,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
-          <Badge className="absolute left-3 top-3 bg-background/80 text-foreground backdrop-blur-sm">
+          <Badge className="absolute left-3 top-3 bg-surface-2/90 text-foreground backdrop-blur-md border-primary/20">
             {product.category}
           </Badge>
+
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <Button variant="secondary" size="sm" className="pointer-events-none">
               View Details
@@ -49,12 +50,19 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         </Link>
       </CardHeader>
-      <CardContent className="p-4 flex-grow">
-        <div className="mb-2 flex items-center gap-1 text-sm text-yellow-500">
-          <Star className="h-3.5 w-3.5 fill-current" />
-          <span className="font-medium text-foreground">{product.rating}</span>
-          <span className="text-muted-foreground">({product.reviews})</span>
+      <CardContent className="p-6 flex-grow">
+        <div className="mb-3 flex items-center justify-between text-sm">
+          <div className="flex items-center gap-1 text-amber-500">
+            <Star className="h-4 w-4 fill-current" />
+            <span className="font-bold text-foreground">{product.rating}</span>
+            <span className="text-muted-foreground text-xs">({product.reviews})</span>
+          </div>
+          <div className="flex items-center gap-1 text-primary text-[10px] font-bold uppercase tracking-widest">
+            <Zap className="h-3 w-3" />
+            Instant
+          </div>
         </div>
+
         <Link to="/product/$productId" params={{ productId: product.id }}>
           <h3 className="line-clamp-1 font-semibold text-foreground transition-colors group-hover:text-primary">
             {product.name}
@@ -114,7 +122,7 @@ export const FeaturedProducts = () => {
 
 
   return (
-    <section className="py-16">
+    <section className="py-24 bg-surface-0">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 flex items-end justify-between">
           <div>
