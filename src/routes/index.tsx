@@ -23,6 +23,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: "https://cloudapper.online/brand/og-image.png" },
       { name: "twitter:image", content: "https://cloudapper.online/brand/og-image.png" },
+      { name: "robots", content: "index, follow" },
     ],
     scripts: [
       {
