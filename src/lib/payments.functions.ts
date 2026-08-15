@@ -59,6 +59,34 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const { orderId, provider, currency, metadata } = data;
+    
+    // 0. Fetch Payment Settings & Validate Gateway/Currency
+    const { data: settings, error: settingsError } = await supabaseAdmin
+      .from('settings')
+      .select('*')
+      .in('id', ['payment_providers', 'payment_config']);
+
+    if (settingsError || !settings) throw new Error("Could not load payment settings");
+
+    const settingsObj = settings.reduce((acc: any, curr) => {
+      acc[curr.id] = curr.value;
+      return acc;
+    }, {});
+
+    const providers = settingsObj.payment_providers || {};
+    const config = settingsObj.payment_config || {};
+
+    // Check if provider is enabled
+    if (provider !== 'crypto_wallet' && (!providers[provider] || !providers[provider].enabled)) {
+      throw new Error(`Payment gateway ${provider} is not currently enabled`);
+    }
+
+    // Check if currency is allowed
+    // For now, BDT is hardcoded in some places, but let's check against config if available
+    const allowedCurrency = config.default_currency || 'BDT';
+    if (currency !== allowedCurrency) {
+      throw new Error(`Currency ${currency} is not supported for this transaction`);
+    }
 
     // 1. Verify Order & Price Server-Side
     const { data: order, error: orderError } = await supabaseAdmin
@@ -72,6 +100,11 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
 
     // Amount Protection: We use the total from the verified order record
     const amount = order.total;
+    
+    // Validate minimum amount if specified in config (generic check)
+    if (config.min_order_amount && amount < config.min_order_amount) {
+      throw new Error(`Order amount ${amount} is below the minimum required`);
+    }
 
     // 2. Determine Expiry (30 mins default)
     const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
