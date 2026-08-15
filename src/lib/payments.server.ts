@@ -1,8 +1,9 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { processOrderFulfillment } from "./fulfillment.server";
 
-export type PaymentProvider = 'bkash' | 'binance_pay' | 'bitget_pay' | 'crypto_wallet' | 'lemon_squeezy';
-export type PaymentStatus = 'created' | 'pending' | 'processing' | 'paid' | 'failed' | 'expired' | 'cancelled' | 'refunded' | 'underpaid' | 'overpaid' | 'manual_review';
+export type PaymentProvider = 'bkash' | 'nagad' | 'binance_pay' | 'bitget_pay' | 'crypto_wallet' | 'lemon_squeezy' | 'manual';
+export type PaymentStatus = 'created' | 'pending' | 'processing' | 'paid' | 'failed' | 'expired' | 'cancelled' | 'refunded' | 'underpaid' | 'overpaid' | 'manual_review' | 'awaiting_payment' | 'payment_submitted' | 'under_review' | 'ready_for_confirmation' | 'payment_verified' | 'payment_rejected';
+
 
 export async function logPaymentAudit(paymentId: string, orderId: string, action: string, previousStatus: PaymentStatus | null, newStatus: PaymentStatus, actor: string | null = 'system', metadata: any = {}) {
   await supabaseAdmin.from('payment_audit_log').insert({

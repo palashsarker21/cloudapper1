@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -548,9 +578,12 @@ export type Database = {
       }
       payments: {
         Row: {
+          admin_notes: string | null
           amount: number
           created_at: string
           currency: string
+          customer_transaction_id: string | null
+          email_delivery_requested: boolean | null
           error_message: string | null
           expires_at: string | null
           id: string
@@ -561,7 +594,11 @@ export type Database = {
           provider: Database["public"]["Enums"]["payment_provider"]
           provider_reference: string | null
           provider_transaction_id: string | null
+          received_amount: number | null
+          received_transaction_id: string | null
+          rejection_reason: string | null
           screenshot_url: string | null
+          sender_mobile: string | null
           status: Database["public"]["Enums"]["payment_status"]
           transaction_hash: string | null
           updated_at: string | null
@@ -573,9 +610,12 @@ export type Database = {
           wallet_address: string | null
         }
         Insert: {
+          admin_notes?: string | null
           amount: number
           created_at?: string
           currency?: string
+          customer_transaction_id?: string | null
+          email_delivery_requested?: boolean | null
           error_message?: string | null
           expires_at?: string | null
           id?: string
@@ -586,7 +626,11 @@ export type Database = {
           provider: Database["public"]["Enums"]["payment_provider"]
           provider_reference?: string | null
           provider_transaction_id?: string | null
+          received_amount?: number | null
+          received_transaction_id?: string | null
+          rejection_reason?: string | null
           screenshot_url?: string | null
+          sender_mobile?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
           transaction_hash?: string | null
           updated_at?: string | null
@@ -598,9 +642,12 @@ export type Database = {
           wallet_address?: string | null
         }
         Update: {
+          admin_notes?: string | null
           amount?: number
           created_at?: string
           currency?: string
+          customer_transaction_id?: string | null
+          email_delivery_requested?: boolean | null
           error_message?: string | null
           expires_at?: string | null
           id?: string
@@ -611,7 +658,11 @@ export type Database = {
           provider?: Database["public"]["Enums"]["payment_provider"]
           provider_reference?: string | null
           provider_transaction_id?: string | null
+          received_amount?: number | null
+          received_transaction_id?: string | null
+          rejection_reason?: string | null
           screenshot_url?: string | null
+          sender_mobile?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
           transaction_hash?: string | null
           updated_at?: string | null
@@ -908,7 +959,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "super_admin"
       delivery_method:
         | "instant_download"
         | "email_delivery"
@@ -921,6 +972,10 @@ export type Database = {
         | "completed"
         | "failed"
         | "cancelled"
+        | "fulfillment_pending"
+        | "fulfillment_processing"
+        | "fulfilled"
+        | "fulfillment_failed"
       inventory_type: "unlimited" | "finite" | "license"
       license_status:
         | "available"
@@ -959,6 +1014,12 @@ export type Database = {
         | "underpaid"
         | "overpaid"
         | "manual_review"
+        | "awaiting_payment"
+        | "payment_submitted"
+        | "under_review"
+        | "ready_for_confirmation"
+        | "payment_verified"
+        | "payment_rejected"
       product_status: "draft" | "active" | "out_of_stock" | "archived"
       product_type:
         | "ai_credits"
@@ -1098,7 +1159,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "super_admin"],
       delivery_method: [
         "instant_download",
         "email_delivery",
@@ -1112,6 +1173,10 @@ export const Constants = {
         "completed",
         "failed",
         "cancelled",
+        "fulfillment_pending",
+        "fulfillment_processing",
+        "fulfilled",
+        "fulfillment_failed",
       ],
       inventory_type: ["unlimited", "finite", "license"],
       license_status: [
@@ -1154,6 +1219,12 @@ export const Constants = {
         "underpaid",
         "overpaid",
         "manual_review",
+        "awaiting_payment",
+        "payment_submitted",
+        "under_review",
+        "ready_for_confirmation",
+        "payment_verified",
+        "payment_rejected",
       ],
       product_status: ["draft", "active", "out_of_stock", "archived"],
       product_type: [

@@ -1,0 +1,11 @@
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'super_admin';
+ALTER TYPE public.payment_status ADD VALUE IF NOT EXISTS 'awaiting_payment';
+ALTER TYPE public.payment_status ADD VALUE IF NOT EXISTS 'payment_submitted';
+ALTER TYPE public.payment_status ADD VALUE IF NOT EXISTS 'under_review';
+ALTER TYPE public.payment_status ADD VALUE IF NOT EXISTS 'ready_for_confirmation';
+ALTER TYPE public.payment_status ADD VALUE IF NOT EXISTS 'payment_verified';
+ALTER TYPE public.payment_status ADD VALUE IF NOT EXISTS 'payment_rejected';
+ALTER TYPE public.fulfillment_status ADD VALUE IF NOT EXISTS 'fulfillment_pending';
+ALTER TYPE public.fulfillment_status ADD VALUE IF NOT EXISTS 'fulfillment_processing';
+ALTER TYPE public.fulfillment_status ADD VALUE IF NOT EXISTS 'fulfilled';
+ALTER TYPE public.fulfillment_status ADD VALUE IF NOT EXISTS 'fulfillment_failed';

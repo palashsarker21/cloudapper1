@@ -25,6 +25,71 @@ export const getPaymentDetails = createServerFn({ method: "GET" })
     return payment as any;
   });
 
+export const submitPaymentVerification = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    paymentId: z.string().uuid(),
+    transactionId: z.string().min(3),
+    senderMobile: z.string().optional(),
+    emailDeliveryRequested: z.boolean().default(false)
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { paymentId, transactionId, senderMobile, emailDeliveryRequested } = data;
+    
+    const { data: payment } = await supabaseAdmin
+      .from('payments')
+      .select('provider, status')
+      .eq('id', paymentId)
+      .eq('user_id', userId)
+      .single();
+      
+    if (!payment) throw new Error("Payment not found");
+
+    // Check for duplicate TXID
+    const { data: duplicate } = await supabaseAdmin
+      .from('payments')
+      .select('id')
+      .eq('provider', payment.provider)
+      .eq('customer_transaction_id', transactionId)
+      .neq('id', paymentId)
+      .maybeSingle();
+
+    const status = duplicate ? 'manual_review' : 'payment_submitted';
+    const metadata: any = { 
+      duplicate_txid: !!duplicate,
+      original_status: payment.status 
+    };
+
+    const { error } = await supabaseAdmin
+      .from('payments')
+      .update({
+        customer_transaction_id: transactionId,
+        sender_mobile: senderMobile ?? null,
+        email_delivery_requested: emailDeliveryRequested,
+        status: status as any,
+        metadata
+      })
+
+      .eq('id', paymentId);
+
+    if (error) {
+      if (error.code === '23505') throw new Error("This transaction ID has already been used.");
+      throw error;
+    }
+
+    // Audit log
+    await supabaseAdmin.from('audit_logs').insert({
+      actor_id: userId,
+      action: duplicate ? 'DUPLICATE_TRANSACTION_SUBMITTED' : 'PAYMENT_SUBMITTED',
+      target_type: 'payment',
+      target_id: paymentId,
+      metadata: { transactionId, senderMobile }
+    });
+
+    return { status };
+  });
+
 export const submitCryptoTransaction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({
@@ -35,6 +100,7 @@ export const submitCryptoTransaction = createServerFn({ method: "POST" })
     const { verifyCryptoTransaction } = await import("./payments.server");
     return await verifyCryptoTransaction(data.paymentId, data.transactionHash);
   });
+
 
 export const getActiveCryptoWallets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -52,7 +118,8 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({
     orderId: z.string().uuid(),
-    provider: z.enum(['bkash', 'binance_pay', 'bitget_pay', 'crypto_wallet', 'lemon_squeezy']),
+    provider: z.enum(['bkash', 'nagad', 'binance_pay', 'bitget_pay', 'crypto_wallet', 'lemon_squeezy', 'manual']),
+
     currency: z.string().default('BDT'),
     metadata: z.any().optional()
   }).parse(data))
@@ -130,6 +197,109 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
     return { paymentId: payment.id };
   });
 
+export const getAdminPaymentDetails = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ paymentId: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { data: hasRole } = await supabaseAdmin.rpc('has_role', { _user_id: userId, _role: 'super_admin' });
+    if (!hasRole) throw new Error("Unauthorized");
+
+    const { data: payment, error } = await supabaseAdmin
+      .from('payments')
+      .select(`
+        *,
+        user:user_id (email),
+        orders (
+          *,
+          order_items (*)
+        )
+      `)
+      .eq('id', data.paymentId)
+      .single();
+
+    if (error || !payment) throw new Error("Payment not found");
+    return payment as any;
+  });
+
+export const getPaymentVerificationAnalysis = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    paymentId: z.string().uuid(),
+    receivedAmount: z.number(),
+    receivedTransactionId: z.string()
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { data: hasRole } = await supabaseAdmin.rpc('has_role', { _user_id: userId, _role: 'super_admin' });
+    if (!hasRole) throw new Error("Unauthorized");
+
+    const { data: payment } = await supabaseAdmin
+      .from('payments')
+      .select('*, orders(total)')
+      .eq('id', data.paymentId)
+      .single();
+
+    if (!payment) throw new Error("Payment not found");
+
+    const expectedAmount = Number(payment.amount);
+    const receivedAmount = data.receivedAmount;
+    
+    let result = 'READY_FOR_CONFIRMATION';
+    const matches = {
+      amount: receivedAmount === expectedAmount,
+      transaction: payment.customer_transaction_id === data.receivedTransactionId,
+      provider: true
+    };
+
+    if (receivedAmount < expectedAmount) result = 'MISMATCH';
+    else if (receivedAmount > expectedAmount) result = 'NEEDS_REVIEW';
+
+    // Check received transaction uniqueness
+    const { data: duplicate } = await supabaseAdmin
+      .from('payments')
+      .select('id')
+      .eq('received_transaction_id', data.receivedTransactionId)
+      .neq('id', data.paymentId)
+      .maybeSingle();
+
+    if (duplicate) result = 'DUPLICATE_TRANSACTION';
+
+    return { result, matches, expectedAmount, receivedAmount };
+  });
+
+export const confirmAndFulfillPayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    paymentId: z.string().uuid(),
+    receivedAmount: z.number(),
+    receivedTransactionId: z.string(),
+    notes: z.string().optional()
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { data: hasRole } = await supabaseAdmin.rpc('has_role', { _user_id: userId, _role: 'super_admin' });
+    if (!hasRole) throw new Error("Unauthorized");
+
+    const { manualVerifyPayment } = await import("./payments.server");
+    
+    // Update payment to paid
+    await supabaseAdmin
+      .from('payments')
+      .update({
+        received_amount: data.receivedAmount,
+        received_transaction_id: data.receivedTransactionId,
+        verified_at: new Date().toISOString(),
+        verified_by: userId,
+        admin_notes: data.notes ?? null,
+        status: 'paid' as any
+      })
+
+      .eq('id', data.paymentId);
+
+    return await manualVerifyPayment(data.paymentId, userId, true, data.notes);
+  });
+
 export const adminVerifyPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({
@@ -151,3 +321,4 @@ export const adminVerifyPayment = createServerFn({ method: "POST" })
     const { manualVerifyPayment } = await import("./payments.server");
     return await manualVerifyPayment(data.paymentId, userId, data.approved, data.notes);
   });
+
