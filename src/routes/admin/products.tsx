@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,11 @@ import { Logo } from '@/components/marketplace/Logo';
 
 
 export const Route = createFileRoute('/admin/products')({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   head: () => ({
     meta: [{ title: 'Product Management | Admin | CloudApper' }],
   }),
