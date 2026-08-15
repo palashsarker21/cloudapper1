@@ -13,12 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as AdminFulfillmentRouteImport } from './routes/admin/fulfillment'
 import { Route as AdminHealthRouteImport } from './routes/admin.health'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
 import { Route as AuthenticatedAccountEntitlementsRouteImport } from './routes/_authenticated/account/entitlements'
 import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/_authenticated/account/notifications'
@@ -44,6 +46,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrackOrderRoute = TrackOrderRouteImport.update({
@@ -74,6 +81,11 @@ const AdminProductsRoute = AdminProductsRouteImport.update({
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/admin/settings',
   path: '/admin/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategorySlugRoute = CategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductProductIdRoute = ProductProductIdRouteImport.update({
@@ -119,12 +131,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
+  '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
@@ -137,12 +151,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
+  '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
@@ -157,12 +173,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
+  '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/_authenticated/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/_authenticated/account/notifications': typeof AuthenticatedAccountNotificationsRoute
@@ -177,12 +195,14 @@ export interface FileRouteTypes {
     | '/'
     | '/checkout'
     | '/login'
+    | '/search'
     | '/track-order'
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
     | '/admin/products'
     | '/admin/settings'
+    | '/category/$slug'
     | '/product/$productId'
     | '/account/entitlements'
     | '/account/notifications'
@@ -195,12 +215,14 @@ export interface FileRouteTypes {
     | '/'
     | '/checkout'
     | '/login'
+    | '/search'
     | '/track-order'
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
     | '/admin/products'
     | '/admin/settings'
+    | '/category/$slug'
     | '/product/$productId'
     | '/account/entitlements'
     | '/account/notifications'
@@ -214,12 +236,14 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/checkout'
     | '/login'
+    | '/search'
     | '/track-order'
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
     | '/admin/products'
     | '/admin/settings'
+    | '/category/$slug'
     | '/product/$productId'
     | '/_authenticated/account/entitlements'
     | '/_authenticated/account/notifications'
@@ -234,12 +258,14 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   CheckoutRoute: typeof CheckoutRoute
   LoginRoute: typeof LoginRoute
+  SearchRoute: typeof SearchRoute
   TrackOrderRoute: typeof TrackOrderRoute
   AdminFulfillmentRoute: typeof AdminFulfillmentRoute
   AdminHealthRoute: typeof AdminHealthRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   AdminSettingsRoute: typeof AdminSettingsRoute
+  CategorySlugRoute: typeof CategorySlugRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
 }
@@ -272,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/track-order': {
@@ -314,6 +347,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/settings'
       fullPath: '/admin/settings'
       preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/category/$slug': {
+      id: '/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/category/$slug'
+      preLoaderRoute: typeof CategorySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/product/$productId': {
@@ -404,12 +444,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   CheckoutRoute: CheckoutRoute,
   LoginRoute: LoginRoute,
+  SearchRoute: SearchRoute,
   TrackOrderRoute: TrackOrderRoute,
   AdminFulfillmentRoute: AdminFulfillmentRoute,
   AdminHealthRoute: AdminHealthRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminSettingsRoute: AdminSettingsRoute,
+  CategorySlugRoute: CategorySlugRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   ApiPublicWebhookRoute: ApiPublicWebhookRoute,
 }

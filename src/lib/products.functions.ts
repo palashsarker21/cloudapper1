@@ -9,21 +9,36 @@ type ProductUpdate = Database['public']['Tables']['products']['Update'];
 
 export const getMarketplaceProducts = createServerFn({ method: "GET" })
   .inputValidator((data) => z.object({
+    q: z.string().optional(),
     category: z.string().optional(),
     duration: z.string().optional(),
     minPrice: z.number().optional(),
     maxPrice: z.number().optional(),
     sort: z.string().optional(),
     isFeatured: z.boolean().optional(),
+    page: z.number().default(1),
+    limit: z.number().default(12),
+    availability: z.string().optional(),
+    productType: z.string().optional(),
   }).parse(data))
   .handler(async ({ data }) => {
     let query = supabaseAdmin
       .from("products")
-      .select("*, categories(name)")
+      .select("*, categories!inner(name, slug)", { count: 'exact' })
       .eq("status", "active");
 
+    // Search logic (Relevance ranking via TSVector if available, or simple ILIKE)
+    if (data.q) {
+      const searchTerm = `%${data.q}%`;
+      query = query.or(`name.ilike.${searchTerm},description.ilike.${searchTerm},sku.ilike.${searchTerm}`);
+    }
+
     if (data.category) {
-      query = query.eq("category_id", data.category);
+      query = query.eq("categories.slug", data.category);
+    }
+
+    if (data.productType) {
+      query = query.eq("product_type", data.productType as any);
     }
     
     if (data.isFeatured !== undefined) {
@@ -38,19 +53,106 @@ export const getMarketplaceProducts = createServerFn({ method: "GET" })
       query = query.lte("price", data.maxPrice);
     }
 
+    if (data.duration) {
+      query = query.eq("license_duration", parseInt(data.duration));
+    }
+
+    if (data.availability === 'in_stock') {
+      query = query.eq("stock_status", "in_stock");
+    }
+
     // Apply sorting
     if (data.sort) {
-      const [field, order] = data.sort.split(":");
-      query = query.order(field as any, { ascending: order === "asc" });
+      switch (data.sort) {
+        case 'price:asc':
+          query = query.order('price', { ascending: true });
+          break;
+        case 'price:desc':
+          query = query.order('price', { ascending: false });
+          break;
+        case 'newest':
+          query = query.order('created_at', { ascending: false });
+          break;
+        case 'rating:desc':
+          // Placeholder for rating until real data exists
+          query = query.order('created_at', { ascending: false });
+          break;
+        default:
+          query = query.order('created_at', { ascending: false });
+      }
     } else {
       query = query.order("created_at", { ascending: false });
     }
 
-    const { data: products, error } = await query;
+    // Pagination
+    const from = (data.page - 1) * data.limit;
+    const to = from + data.limit - 1;
+    query = query.range(from, to);
+
+    const { data: products, count, error } = await query;
     if (error) throw error;
 
+    return {
+      products,
+      count: count || 0,
+      page: data.page,
+      limit: data.limit,
+      totalPages: Math.ceil((count || 0) / data.limit)
+    };
+  });
+
+export const getSearchSuggestions = createServerFn({ method: "GET" })
+  .inputValidator((data) => z.object({
+    q: z.string().min(1)
+  }).parse(data))
+  .handler(async ({ data }) => {
+    const { data: products, error } = await supabaseAdmin
+      .from("products")
+      .select("name, slug, id")
+      .eq("status", "active")
+      .ilike("name", `%${data.q}%`)
+      .limit(5);
+
+    if (error) throw error;
     return products;
   });
+
+export const getCategoryBySlug = createServerFn({ method: "GET" })
+  .inputValidator((data) => z.string().parse(data))
+  .handler(async ({ data: slug }) => {
+    const { data: category, error } = await supabaseAdmin
+      .from("categories")
+      .select("*")
+      .eq("slug", slug)
+      .single();
+
+    if (error) throw error;
+    return category;
+  });
+
+export const getRelatedProducts = createServerFn({ method: "GET" })
+  .inputValidator((data) => z.object({
+    productId: z.string(),
+    categoryId: z.string().optional(),
+    limit: z.number().default(4)
+  }).parse(data))
+  .handler(async ({ data }) => {
+    let query = supabaseAdmin
+      .from("products")
+      .select("*, categories(name)")
+      .eq("status", "active")
+      .neq("id", data.productId)
+      .limit(data.limit);
+
+    if (data.categoryId) {
+      query = query.eq("category_id", data.categoryId);
+    }
+
+    const { data: products, error } = await query;
+    if (error) throw error;
+    return products;
+  });
+
 
 export const syncExtensionsCatalog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

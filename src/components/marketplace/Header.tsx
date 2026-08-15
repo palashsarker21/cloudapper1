@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Search, ShoppingCart, User, Menu, X, Bell } from "lucide-react";
-import { useState } from "react";
+import { ShoppingCart, User, Menu, X, Bell } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Logo } from "./Logo";
+import { MarketplaceSearchBar } from "./MarketplaceSearchBar";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getUserNotifications } from "@/lib/notifications.functions";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
+
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,11 +47,11 @@ export const Header = () => {
 
 
   const navLinks = [
-    { label: "Marketplace", href: "/" },
-    { label: "AI Tools", href: "/" },
-    { label: "Credits", href: "/" },
-    { label: "Extensions", href: "/" },
-    { label: "Digital Products", href: "/" },
+    { label: "Marketplace", href: "/search", search: { sort: 'newest', page: 1 } },
+    { label: "AI Tools", href: "/category/$slug", params: { slug: 'ai-tools' }, search: { sort: 'newest', page: 1 } },
+    { label: "Credits", href: "/category/$slug", params: { slug: 'ai-credits' }, search: { sort: 'newest', page: 1 } },
+    { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
+    { label: "Digital Products", href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
     { label: "Pricing", href: "/" },
     { label: "Fulfillment", href: "/admin/fulfillment" },
@@ -79,7 +79,7 @@ export const Header = () => {
               <NavigationMenuList>
                 {navLinks.map((link) => (
                   <NavigationMenuItem key={link.href}>
-                    <Link to={link.href as any} search={(link as any).search} className={navigationMenuTriggerStyle()}>
+                    <Link to={link.href as any} params={(link as any).params} search={(link as any).search} className={navigationMenuTriggerStyle()}>
                       {link.label}
                     </Link>
                   </NavigationMenuItem>
@@ -89,15 +89,7 @@ export const Header = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="hidden md:flex relative w-64">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search products..."
-                className="pl-8 bg-surface-2 focus-visible:bg-background border-2 border-transparent focus-visible:border-primary/20 transition-all h-9"
-              />
-
-            </div>
+            <MarketplaceSearchBar className="hidden md:block w-48 lg:w-64" />
             <Button variant="ghost" size="icon" className="relative" asChild>
               <Link to="/account/notifications">
                 <Bell className="h-5 w-5" />
@@ -140,18 +132,14 @@ export const Header = () => {
       {isMenuOpen && (
         <div className="lg:hidden border-t bg-background p-4 animate-in slide-in-from-top duration-300">
           <div className="flex flex-col space-y-3">
-            <div className="relative mb-4">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search products..."
-                className="pl-8 bg-muted/50"
-              />
+            <div className="mb-4">
+              <MarketplaceSearchBar />
             </div>
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href as any}
+                params={(link as any).params}
                 search={(link as any).search}
                 className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
                 onClick={() => setIsMenuOpen(false)}
