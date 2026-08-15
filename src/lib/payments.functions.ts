@@ -238,38 +238,50 @@ export const getPaymentVerificationAnalysis = createServerFn({ method: "POST" })
     const { data: hasRole } = await supabaseAdmin.rpc('has_role', { _user_id: userId, _role: 'super_admin' });
     if (!hasRole) throw new Error("Unauthorized");
 
-    const { data: payment } = await supabaseAdmin
-      .from('payments')
+    const { data: payment } = await (supabaseAdmin
+      .from('payments' as any)
       .select('*, orders(total)')
       .eq('id', data.paymentId)
-      .single();
+      .single() as any);
 
     if (!payment) throw new Error("Payment not found");
 
     const expectedAmount = Number(payment.amount);
     const receivedAmount = data.receivedAmount;
+    const normalizedReceivedTxId = data.receivedTransactionId.trim();
     
     let result = 'READY_FOR_CONFIRMATION';
     const matches = {
-      amount: receivedAmount === expectedAmount,
-      transaction: payment.customer_transaction_id === data.receivedTransactionId,
+      amount: Math.abs(receivedAmount - expectedAmount) < 0.01,
+      transaction: payment.customer_transaction_id === normalizedReceivedTxId,
       provider: true
     };
 
-    if (receivedAmount < expectedAmount) result = 'MISMATCH';
-    else if (receivedAmount > expectedAmount) result = 'NEEDS_REVIEW';
+    const riskFlags = [];
+
+    if (!matches.amount) {
+      result = 'MISMATCH';
+      riskFlags.push({ type: 'amount_mismatch', label: 'Amount Mismatch', severity: 'medium' });
+    }
+
+    if (!matches.transaction) {
+      riskFlags.push({ type: 'txid_mismatch', label: 'TXID Mismatch', severity: 'low' });
+    }
 
     // Check received transaction uniqueness
-    const { data: duplicate } = await supabaseAdmin
-      .from('payments')
+    const { data: duplicate } = await (supabaseAdmin
+      .from('payments' as any)
       .select('id')
-      .eq('received_transaction_id', data.receivedTransactionId)
+      .eq('received_transaction_id', normalizedReceivedTxId)
       .neq('id', data.paymentId)
-      .maybeSingle();
+      .maybeSingle() as any);
 
-    if (duplicate) result = 'DUPLICATE_TRANSACTION';
+    if (duplicate) {
+      result = 'DUPLICATE_TRANSACTION';
+      riskFlags.push({ type: 'duplicate_received_txid', label: 'Duplicate Received TXID', severity: 'high' });
+    }
 
-    return { result, matches, expectedAmount, receivedAmount };
+    return { result, matches, expectedAmount, receivedAmount, riskFlags };
   });
 
 export const confirmAndFulfillPayment = createServerFn({ method: "POST" })
