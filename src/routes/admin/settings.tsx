@@ -1,10 +1,15 @@
-import { createFileRoute, Outlet, Link, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link, useLocation, redirect } from "@tanstack/react-router";
 import { Header } from "@/components/marketplace/Header";
 import { Footer } from "@/components/marketplace/Footer";
 import { cn } from "@/lib/utils";
 import { Settings, CreditCard, Shield, Globe } from "lucide-react";
 
 export const Route = createFileRoute("/admin/settings")({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   component: AdminSettingsLayout,
 });
 

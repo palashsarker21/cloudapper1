@@ -1,8 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Globe } from "lucide-react";
 
 export const Route = createFileRoute("/admin/settings/")({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   component: AdminGeneralSettings,
 });
 

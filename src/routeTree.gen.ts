@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SearchRouteImport } from './routes/search'
@@ -46,6 +47,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
@@ -67,34 +73,34 @@ const TrackOrderRoute = TrackOrderRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminFulfillmentRoute = AdminFulfillmentRouteImport.update({
-  id: '/admin/fulfillment',
-  path: '/admin/fulfillment',
-  getParentRoute: () => rootRouteImport,
+  id: '/fulfillment',
+  path: '/fulfillment',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminHealthRoute = AdminHealthRouteImport.update({
-  id: '/admin/health',
-  path: '/admin/health',
-  getParentRoute: () => rootRouteImport,
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
-  id: '/admin/orders',
-  path: '/admin/orders',
-  getParentRoute: () => rootRouteImport,
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
-  id: '/admin/payments',
-  path: '/admin/payments',
-  getParentRoute: () => rootRouteImport,
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
-  id: '/admin/products',
-  path: '/admin/products',
-  getParentRoute: () => rootRouteImport,
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/admin/settings',
-  path: '/admin/settings',
-  getParentRoute: () => rootRouteImport,
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
@@ -180,6 +186,7 @@ const ApiPublicWebhooksBkashRoute = ApiPublicWebhooksBkashRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
@@ -208,6 +215,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
@@ -237,6 +245,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
@@ -267,6 +276,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/checkout'
     | '/login'
     | '/search'
@@ -295,6 +305,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/checkout'
     | '/login'
     | '/search'
@@ -323,6 +334,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/admin'
     | '/checkout'
     | '/login'
     | '/search'
@@ -353,16 +365,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   CheckoutRoute: typeof CheckoutRouteWithChildren
   LoginRoute: typeof LoginRoute
   SearchRoute: typeof SearchRoute
   TrackOrderRoute: typeof TrackOrderRoute
-  AdminFulfillmentRoute: typeof AdminFulfillmentRoute
-  AdminHealthRoute: typeof AdminHealthRoute
-  AdminOrdersRoute: typeof AdminOrdersRoute
-  AdminPaymentsRoute: typeof AdminPaymentsRoute
-  AdminProductsRoute: typeof AdminProductsRouteWithChildren
-  AdminSettingsRoute: typeof AdminSettingsRouteWithChildren
   CategorySlugRoute: typeof CategorySlugRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
@@ -384,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -416,45 +430,45 @@ declare module '@tanstack/react-router' {
     }
     '/admin/fulfillment': {
       id: '/admin/fulfillment'
-      path: '/admin/fulfillment'
+      path: '/fulfillment'
       fullPath: '/admin/fulfillment'
       preLoaderRoute: typeof AdminFulfillmentRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/health': {
       id: '/admin/health'
-      path: '/admin/health'
+      path: '/health'
       fullPath: '/admin/health'
       preLoaderRoute: typeof AdminHealthRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/orders': {
       id: '/admin/orders'
-      path: '/admin/orders'
+      path: '/orders'
       fullPath: '/admin/orders'
       preLoaderRoute: typeof AdminOrdersRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/payments': {
       id: '/admin/payments'
-      path: '/admin/payments'
+      path: '/payments'
       fullPath: '/admin/payments'
       preLoaderRoute: typeof AdminPaymentsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/products': {
       id: '/admin/products'
-      path: '/admin/products'
+      path: '/products'
       fullPath: '/admin/products'
       preLoaderRoute: typeof AdminProductsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/settings': {
       id: '/admin/settings'
-      path: '/admin/settings'
+      path: '/settings'
       fullPath: '/admin/settings'
       preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/category/$slug': {
       id: '/category/$slug'
@@ -581,18 +595,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface CheckoutRouteChildren {
-  CheckoutPaymentPaymentIdRoute: typeof CheckoutPaymentPaymentIdRoute
-}
-
-const CheckoutRouteChildren: CheckoutRouteChildren = {
-  CheckoutPaymentPaymentIdRoute: CheckoutPaymentPaymentIdRoute,
-}
-
-const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
-  CheckoutRouteChildren,
-)
-
 interface AdminProductsRouteChildren {
   AdminProductsProductIdRoute: typeof AdminProductsProductIdRoute
   AdminProductsNewRoute: typeof AdminProductsNewRoute
@@ -625,19 +627,48 @@ const AdminSettingsRouteWithChildren = AdminSettingsRoute._addFileChildren(
   AdminSettingsRouteChildren,
 )
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  CheckoutRoute: CheckoutRouteWithChildren,
-  LoginRoute: LoginRoute,
-  SearchRoute: SearchRoute,
-  TrackOrderRoute: TrackOrderRoute,
+interface AdminRouteRouteChildren {
+  AdminFulfillmentRoute: typeof AdminFulfillmentRoute
+  AdminHealthRoute: typeof AdminHealthRoute
+  AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AdminProductsRoute: typeof AdminProductsRouteWithChildren
+  AdminSettingsRoute: typeof AdminSettingsRouteWithChildren
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminFulfillmentRoute: AdminFulfillmentRoute,
   AdminHealthRoute: AdminHealthRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminSettingsRoute: AdminSettingsRouteWithChildren,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
+interface CheckoutRouteChildren {
+  CheckoutPaymentPaymentIdRoute: typeof CheckoutPaymentPaymentIdRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutPaymentPaymentIdRoute: CheckoutPaymentPaymentIdRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  CheckoutRoute: CheckoutRouteWithChildren,
+  LoginRoute: LoginRoute,
+  SearchRoute: SearchRoute,
+  TrackOrderRoute: TrackOrderRoute,
   CategorySlugRoute: CategorySlugRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   ApiPublicWebhookRoute: ApiPublicWebhookRoute,

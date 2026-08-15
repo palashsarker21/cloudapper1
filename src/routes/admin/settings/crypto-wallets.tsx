@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { getCryptoWallets, updateCryptoWallet, deleteCryptoWallet } from "@/lib/admin.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,13 @@ import {
 } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/admin/settings/crypto-wallets")({
+  beforeLoad: ({ context }: any) => {
+    // This route is under /admin layout which already checks for admin role.
+    // We can also double-check here if needed, but the parent gate is primary.
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   head: () => ({
     meta: [{ title: 'Crypto Wallets | Admin | CloudApper' }],
   }),

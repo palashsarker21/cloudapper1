@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, Link, redirect } from '@tanstack/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getAdminOrders, verifyPayment } from '@/lib/admin.functions';
 import { useServerFn } from '@tanstack/react-start';
@@ -41,6 +41,11 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/orders')({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   head: () => ({
     meta: [{ title: 'Order Management | Admin | CloudApper' }],
   }),

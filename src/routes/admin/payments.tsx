@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/marketplace/Header';
@@ -26,6 +26,11 @@ import { useServerFn } from '@tanstack/react-start';
 import { adminVerifyPayment } from '@/lib/payments.functions';
 
 export const Route = createFileRoute('/admin/payments')({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   component: AdminPaymentsPage,
 });
 

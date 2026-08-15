@@ -1,9 +1,14 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { ProductForm } from '@/components/admin/ProductForm';
 
 export const Route = createFileRoute('/admin/products/new')({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   component: NewProductPage,
 });
 

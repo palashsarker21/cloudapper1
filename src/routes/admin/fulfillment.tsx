@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { getAdminFulfillments, retryFulfillment } from '@/lib/fulfillment-admin.functions';
@@ -29,6 +29,11 @@ import { toast } from 'sonner';
 
 
 export const Route = createFileRoute('/admin/fulfillment')({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   head: () => ({
     meta: [{ title: 'Fulfillment Management | Admin | CloudApper' }],
   }),

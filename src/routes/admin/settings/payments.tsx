@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { getSettings, updateSettings } from "@/lib/admin.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,11 @@ import { Loader2, Save, CheckCircle2, XCircle, ShieldCheck, Clock, Coins, Globe 
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/admin/settings/payments")({
+  beforeLoad: ({ context }: any) => {
+    if (!context.isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   head: () => ({
     meta: [{ title: 'Payment Settings | Admin | CloudApper' }],
   }),
