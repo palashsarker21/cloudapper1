@@ -18,6 +18,7 @@ import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as AdminFulfillmentRouteImport } from './routes/admin/fulfillment'
 import { Route as AdminHealthRouteImport } from './routes/admin.health'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
+import { Route as AdminPaymentsRouteImport } from './routes/admin/payments'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
@@ -27,7 +28,10 @@ import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin/products.$productId'
 import { Route as AdminProductsNewRouteImport } from './routes/admin/products.new'
 import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
+import { Route as CheckoutPaymentPaymentIdRouteImport } from './routes/checkout/payment.$paymentId'
 import { Route as AuthenticatedAccountOrdersOrderIdRouteImport } from './routes/_authenticated/account/orders.$orderId'
+import { Route as ApiPublicWebhooksBinanceRouteImport } from './routes/api/public/webhooks/binance'
+import { Route as ApiPublicWebhooksBkashRouteImport } from './routes/api/public/webhooks/bkash'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -71,6 +75,11 @@ const AdminHealthRoute = AdminHealthRouteImport.update({
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
   id: '/admin/orders',
   path: '/admin/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/admin/payments',
+  path: '/admin/payments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
@@ -120,22 +129,40 @@ const ApiPublicWebhookRoute = ApiPublicWebhookRouteImport.update({
   path: '/api/public/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutPaymentPaymentIdRoute =
+  CheckoutPaymentPaymentIdRouteImport.update({
+    id: '/payment/$paymentId',
+    path: '/payment/$paymentId',
+    getParentRoute: () => CheckoutRoute,
+  } as any)
 const AuthenticatedAccountOrdersOrderIdRoute =
   AuthenticatedAccountOrdersOrderIdRouteImport.update({
     id: '/account/orders/$orderId',
     path: '/account/orders/$orderId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicWebhooksBinanceRoute =
+  ApiPublicWebhooksBinanceRouteImport.update({
+    id: '/api/public/webhooks/binance',
+    path: '/api/public/webhooks/binance',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksBkashRoute = ApiPublicWebhooksBkashRouteImport.update({
+  id: '/api/public/webhooks/bkash',
+  path: '/api/public/webhooks/bkash',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -145,17 +172,21 @@ export interface FileRoutesByFullPath {
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
+  '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
+  '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -165,19 +196,23 @@ export interface FileRoutesByTo {
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
+  '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
+  '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -187,7 +222,10 @@ export interface FileRoutesById {
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/_authenticated/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
+  '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
+  '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -200,6 +238,7 @@ export interface FileRouteTypes {
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
+    | '/admin/payments'
     | '/admin/products'
     | '/admin/settings'
     | '/category/$slug'
@@ -209,7 +248,10 @@ export interface FileRouteTypes {
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/checkout/payment/$paymentId'
     | '/account/orders/$orderId'
+    | '/api/public/webhooks/binance'
+    | '/api/public/webhooks/bkash'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -220,6 +262,7 @@ export interface FileRouteTypes {
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
+    | '/admin/payments'
     | '/admin/products'
     | '/admin/settings'
     | '/category/$slug'
@@ -229,7 +272,10 @@ export interface FileRouteTypes {
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/checkout/payment/$paymentId'
     | '/account/orders/$orderId'
+    | '/api/public/webhooks/binance'
+    | '/api/public/webhooks/bkash'
   id:
     | '__root__'
     | '/'
@@ -241,6 +287,7 @@ export interface FileRouteTypes {
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
+    | '/admin/payments'
     | '/admin/products'
     | '/admin/settings'
     | '/category/$slug'
@@ -250,24 +297,30 @@ export interface FileRouteTypes {
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/checkout/payment/$paymentId'
     | '/_authenticated/account/orders/$orderId'
+    | '/api/public/webhooks/binance'
+    | '/api/public/webhooks/bkash'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  CheckoutRoute: typeof CheckoutRoute
+  CheckoutRoute: typeof CheckoutRouteWithChildren
   LoginRoute: typeof LoginRoute
   SearchRoute: typeof SearchRoute
   TrackOrderRoute: typeof TrackOrderRoute
   AdminFulfillmentRoute: typeof AdminFulfillmentRoute
   AdminHealthRoute: typeof AdminHealthRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   AdminSettingsRoute: typeof AdminSettingsRoute
   CategorySlugRoute: typeof CategorySlugRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
+  ApiPublicWebhooksBinanceRoute: typeof ApiPublicWebhooksBinanceRoute
+  ApiPublicWebhooksBkashRoute: typeof ApiPublicWebhooksBkashRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -335,6 +388,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/admin/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/products': {
       id: '/admin/products'
       path: '/admin/products'
@@ -398,12 +458,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/payment/$paymentId': {
+      id: '/checkout/payment/$paymentId'
+      path: '/payment/$paymentId'
+      fullPath: '/checkout/payment/$paymentId'
+      preLoaderRoute: typeof CheckoutPaymentPaymentIdRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
     '/_authenticated/account/orders/$orderId': {
       id: '/_authenticated/account/orders/$orderId'
       path: '/account/orders/$orderId'
       fullPath: '/account/orders/$orderId'
       preLoaderRoute: typeof AuthenticatedAccountOrdersOrderIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/webhooks/binance': {
+      id: '/api/public/webhooks/binance'
+      path: '/api/public/webhooks/binance'
+      fullPath: '/api/public/webhooks/binance'
+      preLoaderRoute: typeof ApiPublicWebhooksBinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/bkash': {
+      id: '/api/public/webhooks/bkash'
+      path: '/api/public/webhooks/bkash'
+      fullPath: '/api/public/webhooks/bkash'
+      preLoaderRoute: typeof ApiPublicWebhooksBkashRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -425,6 +506,18 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface CheckoutRouteChildren {
+  CheckoutPaymentPaymentIdRoute: typeof CheckoutPaymentPaymentIdRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutPaymentPaymentIdRoute: CheckoutPaymentPaymentIdRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
 interface AdminProductsRouteChildren {
   AdminProductsProductIdRoute: typeof AdminProductsProductIdRoute
   AdminProductsNewRoute: typeof AdminProductsNewRoute
@@ -442,18 +535,21 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  CheckoutRoute: CheckoutRoute,
+  CheckoutRoute: CheckoutRouteWithChildren,
   LoginRoute: LoginRoute,
   SearchRoute: SearchRoute,
   TrackOrderRoute: TrackOrderRoute,
   AdminFulfillmentRoute: AdminFulfillmentRoute,
   AdminHealthRoute: AdminHealthRoute,
   AdminOrdersRoute: AdminOrdersRoute,
+  AdminPaymentsRoute: AdminPaymentsRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminSettingsRoute: AdminSettingsRoute,
   CategorySlugRoute: CategorySlugRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   ApiPublicWebhookRoute: ApiPublicWebhookRoute,
+  ApiPublicWebhooksBinanceRoute: ApiPublicWebhooksBinanceRoute,
+  ApiPublicWebhooksBkashRoute: ApiPublicWebhooksBkashRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
