@@ -120,7 +120,21 @@ function CheckoutPage() {
     } catch (err) {
       console.error(err);
     }
+  const loadPaymentReceivers = async () => {
+    try {
+      const receivers = await getPaymentReceiversFn();
+      setPaymentReceivers(receivers.filter(r => r.enabled));
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  const { data: initialReceivers } = useQuery({
+    queryKey: ['payment-receivers-checkout'],
+    queryFn: () => getPaymentReceiversFn(),
+  });
+
+  const activeReceivers = initialReceivers?.filter(r => r.enabled) || [];
 
   return (
     <div className="min-h-screen bg-surface-0">
