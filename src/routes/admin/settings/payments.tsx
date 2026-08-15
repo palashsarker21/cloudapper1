@@ -12,8 +12,6 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Loader2, Save, CheckCircle2, XCircle, ShieldCheck, Clock, Coins, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Header } from "@/components/marketplace/Header";
-import { Footer } from "@/components/marketplace/Footer";
 
 export const Route = createFileRoute("/admin/settings/payments")({
   head: () => ({
@@ -94,25 +92,19 @@ function AdminPaymentSettings() {
 
   if (isLoading || !localProviders || !localConfig) {
     return (
-      <div className="min-h-screen flex flex-col bg-surface-0">
-        <Header />
-        <div className="flex-grow flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-        <Footer />
+      <div className="flex items-center justify-center p-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface-0">
-      <Header />
-      <main className="flex-grow container mx-auto py-10 px-4 space-y-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Payment Infrastructure</h1>
-            <p className="text-muted-foreground">Configure gateways, crypto networks, and payment rules.</p>
-          </div>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Payment Infrastructure</h1>
+          <p className="text-muted-foreground">Configure gateways, crypto networks, and payment rules.</p>
+        </div>
           <Button onClick={handleSave} disabled={updateProvidersMutation.isPending || updateConfigMutation.isPending}>
             {(updateProvidersMutation.isPending || updateConfigMutation.isPending) ? 
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 
@@ -232,9 +224,7 @@ function AdminPaymentSettings() {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
-      </main>
-      <Footer />
+      </Tabs>
     </div>
   );
 }
