@@ -108,7 +108,7 @@ const OrderTrackingCTA = () => (
       <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">Already placed an order?</h2>
       <p className="text-lg text-muted-foreground mb-8">Track payment verification, fulfillment and delivery status from one place.</p>
       <div className="flex justify-center gap-4">
-        <Button asChild size="lg"><Link to="/track-order">Track Order</Link></Button>
+        <Button asChild size="lg"><Link to="/track-order" search={{ orderId: undefined }}>Track Order</Link></Button>
         <Button variant="outline" asChild size="lg"><Link to="/login">Sign In</Link></Button>
       </div>
     </div>
@@ -120,7 +120,7 @@ const AccountBenefitsSection = () => (
     <div className="container mx-auto px-4 text-center">
       <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">Your CloudApper account</h2>
       <p className="text-lg text-muted-foreground mb-12">Manage everything from your orders and license keys to fulfillment statuses.</p>
-      <Button asChild size="lg"><Link to="/account/orders">View My Orders</Link></Button>
+      <Button asChild size="lg"><Link to="/login">View My Orders</Link></Button>
     </div>
   </section>
 );
@@ -131,8 +131,8 @@ const FinalCTA = () => (
       <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">Find your next digital tool.</h2>
       <p className="text-lg text-muted-foreground mb-8">Explore AI tools, credits, extensions and digital products in one marketplace.</p>
       <div className="flex justify-center gap-4">
-        <Button asChild size="lg"><Link to="/search">Explore Marketplace</Link></Button>
-        <Button variant="outline" asChild size="lg"><Link to="/track-order">Track Order</Link></Button>
+        <Button asChild size="lg"><Link to="/search" search={{ sort: 'newest', page: 1 }}>Explore Marketplace</Link></Button>
+        <Button variant="outline" asChild size="lg"><Link to="/track-order" search={{ orderId: undefined }}>Track Order</Link></Button>
       </div>
     </div>
   </section>
