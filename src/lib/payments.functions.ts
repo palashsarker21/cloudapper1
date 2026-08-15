@@ -15,7 +15,8 @@ export const getPaymentDetails = createServerFn({ method: "GET" })
         orders (
           *,
           order_items (*)
-        )
+        ),
+        receiver:receiver_id (*)
       `)
       .eq('id', data.paymentId)
       .eq('user_id', userId)
@@ -147,9 +148,14 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
     const providers = settingsObj.payment_providers || {};
     const config = settingsObj.payment_config || {};
 
-    // Check if provider is enabled
-    if (provider !== 'crypto_wallet' && (!providers[provider] || !providers[provider].enabled)) {
-      throw new Error(`Payment gateway ${provider} is not currently enabled`);
+    // Check if provider/receiver is enabled
+    if (provider !== 'crypto_wallet') {
+      if (receiverId) {
+        const { data: receiver } = await supabaseAdmin.from('payment_receivers').select('enabled').eq('id', receiverId).single();
+        if (!receiver || !receiver.enabled) throw new Error("This payment destination is not currently active");
+      } else if (!providers[provider] || !providers[provider].enabled) {
+        throw new Error(`Payment gateway ${provider} is not currently enabled`);
+      }
     }
 
     // Check if currency is allowed
@@ -187,6 +193,7 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
         order_id: orderId,
         user_id: userId,
         provider,
+        receiver_id: receiverId || null,
         amount,
         currency,
         status: 'pending',
