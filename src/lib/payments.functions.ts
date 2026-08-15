@@ -14,7 +14,10 @@ export const getPaymentDetails = createServerFn({ method: "GET" })
         *,
         orders (
           *,
-          order_items (*)
+          order_items (
+            *,
+            product:product_id (*)
+          )
         ),
         receiver:receiver_id (*)
       `)
@@ -223,7 +226,10 @@ export const getAdminPaymentDetails = createServerFn({ method: "GET" })
         user:user_id (email),
         orders (
           *,
-          order_items (*)
+          order_items (
+            *,
+            product:product_id (*)
+          )
         )
       `)
       .eq('id', data.paymentId)
