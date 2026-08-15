@@ -80,7 +80,7 @@ export async function processOrderFulfillment(orderId: string) {
     }
 
     // Create or get fulfillment record
-    let fulfillment = existing;
+    let fulfillment = existingFulfillment;
     if (!fulfillment) {
       const { data: createdData, error: createError } = await (supabaseAdmin
         .from('fulfillments' as any)
