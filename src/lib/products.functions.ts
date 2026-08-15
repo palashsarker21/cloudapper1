@@ -30,7 +30,7 @@ export const getMarketplaceProducts = createServerFn({ method: "GET" })
     // Search logic (Relevance ranking via TSVector if available, or simple ILIKE)
     if (data.q) {
       const searchTerm = `%${data.q}%`;
-      query = query.or(`name.ilike.${searchTerm},description.ilike.${searchTerm},sku.ilike.${searchTerm},short_description.ilike.${searchTerm}`);
+      query = query.or(`name.ilike.${searchTerm},description.ilike.${searchTerm},sku.ilike.${searchTerm}`);
     }
 
     if (data.category) {
