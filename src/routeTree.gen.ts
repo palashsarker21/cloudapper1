@@ -30,6 +30,8 @@ import { Route as AdminProductsNewRouteImport } from './routes/admin/products.ne
 import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
 import { Route as CheckoutPaymentPaymentIdRouteImport } from './routes/checkout/payment.$paymentId'
 import { Route as AuthenticatedAccountOrdersOrderIdRouteImport } from './routes/_authenticated/account/orders.$orderId'
+import { Route as ApiPublicWebhooksBinanceRouteImport } from './routes/api/public/webhooks/binance'
+import { Route as ApiPublicWebhooksBkashRouteImport } from './routes/api/public/webhooks/bkash'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -139,6 +141,17 @@ const AuthenticatedAccountOrdersOrderIdRoute =
     path: '/account/orders/$orderId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicWebhooksBinanceRoute =
+  ApiPublicWebhooksBinanceRouteImport.update({
+    id: '/api/public/webhooks/binance',
+    path: '/api/public/webhooks/binance',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksBkashRoute = ApiPublicWebhooksBkashRouteImport.update({
+  id: '/api/public/webhooks/bkash',
+  path: '/api/public/webhooks/bkash',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -161,6 +174,8 @@ export interface FileRoutesByFullPath {
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
+  '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
+  '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -183,6 +198,8 @@ export interface FileRoutesByTo {
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
+  '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
+  '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -207,6 +224,8 @@ export interface FileRoutesById {
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/_authenticated/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
+  '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
+  '/api/public/webhooks/bkash': typeof ApiPublicWebhooksBkashRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -231,6 +250,8 @@ export interface FileRouteTypes {
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
     | '/account/orders/$orderId'
+    | '/api/public/webhooks/binance'
+    | '/api/public/webhooks/bkash'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -253,6 +274,8 @@ export interface FileRouteTypes {
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
     | '/account/orders/$orderId'
+    | '/api/public/webhooks/binance'
+    | '/api/public/webhooks/bkash'
   id:
     | '__root__'
     | '/'
@@ -276,6 +299,8 @@ export interface FileRouteTypes {
     | '/api/public/webhook'
     | '/checkout/payment/$paymentId'
     | '/_authenticated/account/orders/$orderId'
+    | '/api/public/webhooks/binance'
+    | '/api/public/webhooks/bkash'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -294,6 +319,8 @@ export interface RootRouteChildren {
   CategorySlugRoute: typeof CategorySlugRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
+  ApiPublicWebhooksBinanceRoute: typeof ApiPublicWebhooksBinanceRoute
+  ApiPublicWebhooksBkashRoute: typeof ApiPublicWebhooksBkashRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -445,6 +472,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountOrdersOrderIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/webhooks/binance': {
+      id: '/api/public/webhooks/binance'
+      path: '/api/public/webhooks/binance'
+      fullPath: '/api/public/webhooks/binance'
+      preLoaderRoute: typeof ApiPublicWebhooksBinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/bkash': {
+      id: '/api/public/webhooks/bkash'
+      path: '/api/public/webhooks/bkash'
+      fullPath: '/api/public/webhooks/bkash'
+      preLoaderRoute: typeof ApiPublicWebhooksBkashRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -507,6 +548,8 @@ const rootRouteChildren: RootRouteChildren = {
   CategorySlugRoute: CategorySlugRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   ApiPublicWebhookRoute: ApiPublicWebhookRoute,
+  ApiPublicWebhooksBinanceRoute: ApiPublicWebhooksBinanceRoute,
+  ApiPublicWebhooksBkashRoute: ApiPublicWebhooksBkashRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
