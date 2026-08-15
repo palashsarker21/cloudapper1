@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
-import { getPlatformStats, getEklasProviderStatus, getRecentLicenses, retryLicenseFulfillment } from '@/lib/license-admin.functions';
+import { getPlatformStats, getEklasProviderStatus, getRecentLicenses, retryLicenseFulfillment, revokeLicense } from '@/lib/license-admin.functions';
 import { exportLicensesCsv } from '@/lib/export.functions';
 import { DataExportDialog } from '@/components/admin/DataExportDialog';
 import { Header } from '@/components/marketplace/Header';
@@ -18,10 +18,22 @@ import {
   Server,
   ExternalLink,
   ShieldCheck,
-  History
+  History,
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute('/super-admin/licenses')({
   component: LicenseCenterPage,
@@ -32,6 +44,7 @@ function LicenseCenterPage() {
   const fetchProvider = useServerFn(getEklasProviderStatus);
   const fetchLicenses = useServerFn(getRecentLicenses);
   const retryFulfillment = useServerFn(retryLicenseFulfillment);
+  const revokeFn = useServerFn(revokeLicense);
   const exportLicenses = useServerFn(exportLicensesCsv);
 
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -233,25 +246,72 @@ function LicenseCenterPage() {
                               {license.profiles?.email}
                             </td>
                             <td className="px-6 py-4">
-                              <Badge variant="secondary" className="font-mono text-[10px]">
-                                ****{license.license_key_last4}
-                              </Badge>
+                              <div className="flex flex-col gap-1">
+                                <Badge variant={license.status === 'revoked' ? 'destructive' : 'secondary'} className="font-mono text-[10px] w-fit">
+                                  ****{license.license_key_last4}
+                                </Badge>
+                                {license.status === 'revoked' && (
+                                  <span className="text-[8px] font-bold text-destructive uppercase tracking-tighter">Revoked</span>
+                                )}
+                              </div>
                             </td>
                             <td className="px-6 py-4 text-xs text-muted-foreground">
                               {format(new Date(license.created_at), 'MMM d, HH:mm')}
                             </td>
-                            <td className="px-6 py-4 text-right">
+                            <td className="px-6 py-4 text-right flex justify-end gap-2">
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
                                 className="h-8 w-8 p-0"
                                 onClick={() => {
-                                  // In a real app, this would get the fulfillment ID associated with the license
-                                  toast.info("Fulfillment lookup not implemented for this view");
+                                  toast.promise(retryFulfillment({ data: { fulfillmentId: license.id } }), {
+                                    loading: 'Retrying fulfillment...',
+                                    success: 'Fulfillment retried',
+                                    error: 'Retry failed'
+                                  });
                                 }}
                               >
                                 <RefreshCcw className="h-3.5 w-3.5" />
                               </Button>
+
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    disabled={license.status === 'revoked'}
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Revoke License?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will mark the license as revoked, fail the associated fulfillment, 
+                                      and invalidate the customer's entitlement. This action is logged and irreversible.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      onClick={async () => {
+                                        try {
+                                          await revokeFn({ data: { licenseId: license.id, reason: 'Manual revocation via Admin' } });
+                                          toast.success("License revoked successfully");
+                                          refetchLicenses();
+                                        } catch (err: any) {
+                                          toast.error(err.message || "Revocation failed");
+                                        }
+                                      }}
+                                    >
+                                      Revoke
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </td>
                           </tr>
                         ))
