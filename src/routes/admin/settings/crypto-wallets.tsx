@@ -52,7 +52,7 @@ function AdminCryptoWallets() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: any) => mutateWallet(data),
+    mutationFn: (data: any) => mutateWallet({ data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-crypto-wallets"] });
       toast.success(editingWallet?.id ? "Wallet updated" : "Wallet added");
@@ -65,7 +65,7 @@ function AdminCryptoWallets() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => removeWallet({ id }),
+    mutationFn: (id: string) => removeWallet({ data: { id } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-crypto-wallets"] });
       toast.success("Wallet deleted");
