@@ -45,6 +45,7 @@ import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhoo
 import { Route as CheckoutPaymentPaymentIdRouteImport } from './routes/checkout/payment.$paymentId'
 import { Route as SuperAdminPaymentsPaymentIdRouteImport } from './routes/super-admin/payments.$paymentId'
 import { Route as SuperAdminSettingsManualPaymentsRouteImport } from './routes/super-admin/settings/manual-payments'
+import { Route as SuperAdminSystemHealthRouteImport } from './routes/super-admin/system/health'
 import { Route as AuthenticatedAccountOrdersOrderIdRouteImport } from './routes/_authenticated/account/orders.$orderId'
 import { Route as ApiPublicWebhooksBinanceRouteImport } from './routes/api/public/webhooks/binance'
 import { Route as ApiPublicWebhooksBkashRouteImport } from './routes/api/public/webhooks/bkash'
@@ -234,6 +235,11 @@ const SuperAdminSettingsManualPaymentsRoute =
     path: '/manual-payments',
     getParentRoute: () => SuperAdminSettingsRoute,
   } as any)
+const SuperAdminSystemHealthRoute = SuperAdminSystemHealthRouteImport.update({
+  id: '/system/health',
+  path: '/system/health',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
 const AuthenticatedAccountOrdersOrderIdRoute =
   AuthenticatedAccountOrdersOrderIdRouteImport.update({
     id: '/account/orders/$orderId',
@@ -287,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/super-admin/payments/$paymentId': typeof SuperAdminPaymentsPaymentIdRoute
   '/super-admin/settings/manual-payments': typeof SuperAdminSettingsManualPaymentsRoute
+  '/super-admin/system/health': typeof SuperAdminSystemHealthRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
@@ -325,6 +332,7 @@ export interface FileRoutesByTo {
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/super-admin/payments/$paymentId': typeof SuperAdminPaymentsPaymentIdRoute
   '/super-admin/settings/manual-payments': typeof SuperAdminSettingsManualPaymentsRoute
+  '/super-admin/system/health': typeof SuperAdminSystemHealthRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/super-admin/payments/$paymentId': typeof SuperAdminPaymentsPaymentIdRoute
   '/super-admin/settings/manual-payments': typeof SuperAdminSettingsManualPaymentsRoute
+  '/super-admin/system/health': typeof SuperAdminSystemHealthRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
   '/_authenticated/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
   '/api/public/webhooks/binance': typeof ApiPublicWebhooksBinanceRoute
@@ -409,6 +418,7 @@ export interface FileRouteTypes {
     | '/checkout/payment/$paymentId'
     | '/super-admin/payments/$paymentId'
     | '/super-admin/settings/manual-payments'
+    | '/super-admin/system/health'
     | '/admin/settings/'
     | '/account/orders/$orderId'
     | '/api/public/webhooks/binance'
@@ -447,6 +457,7 @@ export interface FileRouteTypes {
     | '/checkout/payment/$paymentId'
     | '/super-admin/payments/$paymentId'
     | '/super-admin/settings/manual-payments'
+    | '/super-admin/system/health'
     | '/admin/settings'
     | '/account/orders/$orderId'
     | '/api/public/webhooks/binance'
@@ -488,6 +499,7 @@ export interface FileRouteTypes {
     | '/checkout/payment/$paymentId'
     | '/super-admin/payments/$paymentId'
     | '/super-admin/settings/manual-payments'
+    | '/super-admin/system/health'
     | '/admin/settings/'
     | '/_authenticated/account/orders/$orderId'
     | '/api/public/webhooks/binance'
@@ -764,6 +776,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminSettingsManualPaymentsRouteImport
       parentRoute: typeof SuperAdminSettingsRoute
     }
+    '/super-admin/system/health': {
+      id: '/super-admin/system/health'
+      path: '/system/health'
+      fullPath: '/super-admin/system/health'
+      preLoaderRoute: typeof SuperAdminSystemHealthRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
     '/_authenticated/account/orders/$orderId': {
       id: '/_authenticated/account/orders/$orderId'
       path: '/account/orders/$orderId'
@@ -902,6 +921,7 @@ interface SuperAdminRouteChildren {
   SuperAdminSettingsRoute: typeof SuperAdminSettingsRouteWithChildren
   SuperAdminUsersRoute: typeof SuperAdminUsersRoute
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
+  SuperAdminSystemHealthRoute: typeof SuperAdminSystemHealthRoute
 }
 
 const SuperAdminRouteChildren: SuperAdminRouteChildren = {
@@ -913,6 +933,7 @@ const SuperAdminRouteChildren: SuperAdminRouteChildren = {
   SuperAdminSettingsRoute: SuperAdminSettingsRouteWithChildren,
   SuperAdminUsersRoute: SuperAdminUsersRoute,
   SuperAdminIndexRoute: SuperAdminIndexRoute,
+  SuperAdminSystemHealthRoute: SuperAdminSystemHealthRoute,
 }
 
 const SuperAdminRouteWithChildren = SuperAdminRoute._addFileChildren(

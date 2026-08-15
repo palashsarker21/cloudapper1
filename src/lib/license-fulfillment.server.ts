@@ -5,7 +5,7 @@ const EKLAS_API_BASE = "https://io.eklas.dev/api/v1";
 export async function generateEklasLicense(orderId: string, orderItemId: string, product: any, customerEmail: string) {
   const apiKey = process.env['EKLAS_LICENSE_API_KEY'];
   if (!apiKey) {
-    throw new Error("EKLAS_LICENSE_API_KEY is not configured on the server.");
+    throw new Error("CONFIGURATION_MISSING: EKLAS_LICENSE_API_KEY is not configured.");
   }
 
   const durationValue = product.license_duration || 1;

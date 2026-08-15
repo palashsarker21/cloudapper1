@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-export type FulfillmentStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+export type FulfillmentStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled' | 'pending_configuration';
 
 export interface FulfillmentOptions {
   orderId: string;
@@ -141,8 +141,12 @@ export async function processOrderFulfillment(orderId: string) {
 
     } catch (err: any) {
       console.error(`[Fulfillment] Failed for item ${item.id}`, err);
-      await updateFulfillmentStatus(fulfillment.id, 'failed', err.message);
-      await logFulfillmentEvent(fulfillment.id, 'failed', { error: err.message });
+      
+      const isConfigMissing = err.message?.includes('CONFIGURATION_MISSING');
+      const newStatus = isConfigMissing ? 'pending_configuration' : 'failed';
+      
+      await updateFulfillmentStatus(fulfillment.id, newStatus, err.message);
+      await logFulfillmentEvent(fulfillment.id, newStatus, { error: err.message });
       
       // Log to system audit logs if available
       try {
