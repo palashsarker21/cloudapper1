@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Search, ShoppingCart, User, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, X, Bell } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "./Logo";
 
@@ -14,10 +14,36 @@ import {
 } from "@/components/ui/navigation-menu";
 import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getUserNotifications } from "@/lib/notifications.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { itemCount } = useCart();
+  const fetchNotifications = useServerFn(getUserNotifications);
+  
+  const { data: notifications, refetch } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => fetchNotifications(),
+    enabled: false, // Will enable manually based on session
+  });
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) refetch();
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') refetch();
+    });
+
+    return () => subscription.unsubscribe();
+  }, [refetch]);
+
+  const unreadCount = notifications?.filter(n => !n.read).length || 0;
 
 
   const navLinks = [
@@ -72,6 +98,16 @@ export const Header = () => {
               />
 
             </div>
+            <Button variant="ghost" size="icon" className="relative" asChild>
+              <Link to="/_authenticated/account/notifications">
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-primary animate-pulse" variant="default">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </Link>
+            </Button>
             <Button variant="ghost" size="icon" className="relative" asChild>
               <Link to="/checkout">
                 <ShoppingCart className="h-5 w-5" />
