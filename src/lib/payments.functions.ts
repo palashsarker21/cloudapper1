@@ -96,3 +96,25 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
 
     return { paymentId: payment.id };
   });
+
+export const adminVerifyPayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    paymentId: z.string().uuid(),
+    approved: z.boolean(),
+    notes: z.string().optional()
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    
+    // Security: Verify caller has admin role via supabaseAdmin
+    const { data: hasRole } = await supabaseAdmin.rpc('has_role', { 
+      _user_id: userId, 
+      _role: 'admin' 
+    });
+    
+    if (!hasRole) throw new Error("Unauthorized: Admin access required");
+
+    const { manualVerifyPayment } = await import("./payments.server");
+    return await manualVerifyPayment(data.paymentId, userId, data.approved, data.notes);
+  });
