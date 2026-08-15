@@ -6,8 +6,10 @@ import {
   FileCode, 
   Layout, 
   MessageSquare, 
-  Zap 
+  Zap,
+  ArrowRight
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -75,9 +77,10 @@ export const CategorySection = () => {
               const Icon = iconMap[category.icon || 'Bot'] || Bot;
               const colorClass = categoryColors[category.name] || "bg-gray-50 text-gray-600";
               return (
-                <a
+                <Link
                   key={category.id}
-                  href={`/category/${category.slug}`}
+                  to="/category/$slug"
+                  params={{ slug: category.slug }}
                   className="group flex flex-col items-center justify-center rounded-3xl border-2 border-transparent bg-surface-2 p-8 text-center transition-all hover:border-primary/20 hover:shadow-[var(--shadow-elevated)] hover:-translate-y-1"
                 >
                   <div className={`mb-4 flex h-20 w-20 items-center justify-center rounded-3xl border-2 ${colorClass} transition-all group-hover:scale-110 shadow-sm group-hover:shadow-[var(--brand-glow)]`}>
@@ -88,7 +91,7 @@ export const CategorySection = () => {
                   <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                     {category.name}
                   </h3>
-                </a>
+                </Link>
               );
             })
           )}
