@@ -44,7 +44,7 @@ const features = [
 
 export const ProcessSection = () => {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-24 bg-surface-0">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Why CloudApper */}
         <div className="mb-24 grid gap-12 lg:grid-cols-2 lg:items-center">
@@ -68,17 +68,18 @@ export const ProcessSection = () => {
             </div>
           </div>
           <div className="relative hidden lg:block">
-            <div className="aspect-square rounded-2xl bg-muted overflow-hidden">
+            <div className="aspect-square rounded-3xl bg-surface-1 overflow-hidden border-2 border-primary/10">
                <img 
                  src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" 
                  alt="Digital World"
                  className="h-full w-full object-cover opacity-80"
                />
             </div>
-            <div className="absolute -bottom-6 -left-6 h-32 w-32 rounded-3xl bg-[var(--brand-gradient)] p-6 text-white shadow-[var(--brand-glow)]">
-               <div className="text-4xl font-bold italic">10k+</div>
-               <div className="text-xs font-medium uppercase tracking-wider opacity-90">Happy Users</div>
+            <div className="absolute -bottom-6 -left-6 h-36 w-36 rounded-[var(--brand-radius)] bg-[var(--brand-gradient)] p-8 text-white shadow-[var(--brand-glow)] animate-float flex flex-col justify-center items-center text-center">
+               <div className="text-4xl font-black italic mb-1">10k+</div>
+               <div className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-90 leading-tight">Global Customers</div>
             </div>
+
 
           </div>
         </div>
