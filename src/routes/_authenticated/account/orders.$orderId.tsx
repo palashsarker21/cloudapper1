@@ -66,17 +66,17 @@ function OrderDetailsPage() {
 
   const steps = [
     { label: 'Order Placed', status: 'completed' },
-    { label: 'Payment Processing', status: order?.status === 'pending' ? 'current' : 'completed' },
-    { label: 'Payment Confirmed', status: order?.status === 'paid' || order?.status === 'processing' || order?.status === 'completed' ? 'completed' : 'pending' },
-    { label: 'Preparing Delivery', status: order.status === 'processing' ? 'current' : (order.status === 'completed' ? 'completed' : 'pending') },
-    { label: 'Delivered', status: order.status === 'completed' ? 'completed' : 'pending' },
-    { label: 'Completed', status: order.status === 'completed' ? 'completed' : 'pending' },
+    { label: 'Payment Processing', status: (order as any).status === 'pending' ? 'current' : 'completed' },
+    { label: 'Payment Confirmed', status: ['paid', 'processing', 'completed'].includes((order as any).status) ? 'completed' : 'pending' },
+    { label: 'Preparing Delivery', status: (order as any).status === 'processing' ? 'current' : ((order as any).status === 'completed' ? 'completed' : 'pending') },
+    { label: 'Delivered', status: (order as any).status === 'completed' ? 'completed' : 'pending' },
+    { label: 'Completed', status: (order as any).status === 'completed' ? 'completed' : 'pending' },
   ];
 
   // Adjust steps based on failure
-  if (order.status === 'cancelled' || order.status === 'failed') {
+  if ((order as any).status === 'cancelled' || (order as any).status === 'failed') {
     steps[1].status = 'failed';
-    steps[1].label = order.status === 'cancelled' ? 'Order Cancelled' : 'Order Failed';
+    steps[1].label = (order as any).status === 'cancelled' ? 'Order Cancelled' : 'Order Failed';
     steps.splice(2);
   }
 
@@ -180,7 +180,7 @@ function OrderDetailsPage() {
                       </div>
 
                       {/* Delivery Info for this item */}
-                      {order.status === 'completed' && (
+                      { (order as any).status === 'completed' && (
                         <div className="mt-4 p-4 bg-muted/30 rounded-xl border border-dashed">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 text-sm font-medium">
@@ -216,7 +216,7 @@ function OrderDetailsPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Payment Status</span>
-                    <Badge variant={getStatusBadgeVariant(order.status)} className="h-5 py-0 px-2 capitalize">
+                    <Badge variant={getStatusBadgeVariant((order as any).status)} className="h-5 py-0 px-2 capitalize">
                       {order.status}
                     </Badge>
                   </div>
