@@ -154,6 +154,33 @@ export const getRelatedProducts = createServerFn({ method: "GET" })
   });
 
 
+export const getFeaturedProducts = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .select("*, categories(name)")
+      .eq("status", "active")
+      .eq("is_featured", true)
+      .limit(4);
+
+    if (error) throw error;
+    return data;
+  });
+
+export const getProductById = createServerFn({ method: "GET" })
+  .inputValidator((data) => z.string().parse(data))
+  .handler(async ({ data: id }) => {
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .select("*, categories(name)")
+      .eq("id", id)
+      .eq("status", "active")
+      .single();
+
+    if (error) throw error;
+    return data;
+  });
+
 export const syncExtensionsCatalog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
