@@ -274,8 +274,15 @@ export const updatePaymentReceiver = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin
       .from("payment_receivers")
       .upsert({
-        ...data,
-        id: data.id as any,
+        id: data.id,
+        provider: data.provider,
+        display_name: data.display_name,
+        receiver_identifier: data.receiver_identifier,
+        instructions: data.instructions ?? null,
+        currency: data.currency,
+        minimum_amount: data.minimum_amount,
+        enabled: data.enabled,
+        sort_order: data.sort_order,
         updated_at: new Date().toISOString()
       });
 
