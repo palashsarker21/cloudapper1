@@ -71,7 +71,7 @@ function TrackOrderPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-surface-0">
       <Header />
       
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-12">
@@ -88,7 +88,7 @@ function TrackOrderPage() {
           </p>
         </div>
 
-        <Card className="max-w-md mx-auto mb-16 border-muted/60 shadow-sm">
+        <Card className="max-w-md mx-auto mb-16 border-2 border-transparent bg-surface-2 shadow-lg">
           <CardHeader>
             <CardTitle className="text-xl">Find your order</CardTitle>
             <CardDescription>
