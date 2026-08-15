@@ -49,17 +49,15 @@ export const Header = () => {
   const navLinks = [
     { label: "Marketplace", href: "/search", search: { sort: 'newest', page: 1 } },
     { label: "AI Tools", href: "/category/$slug", params: { slug: 'ai-tools' }, search: { sort: 'newest', page: 1 } },
-    { label: "Credits", href: "/category/$slug", params: { slug: 'ai-credits' }, search: { sort: 'newest', page: 1 } },
     { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
-    { label: "Digital Products", href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
-    { label: "Pricing", href: "/" },
-    { label: "Fulfillment", href: "/admin/fulfillment" },
-    { label: "Settings", href: "/admin/settings/payments" },
-    { label: "Products", href: "/admin/products" },
-    { label: "Orders", href: "/admin/orders" },
+    { label: "Admin", children: [
+      { label: "Fulfillment", href: "/admin/fulfillment" },
+      { label: "Payments", href: "/admin/settings/payments" },
+      { label: "Products", href: "/admin/products" },
+      { label: "Orders", href: "/admin/orders" },
+    ]},
     { label: "Support", href: "/" },
-
   ];
 
   return (
