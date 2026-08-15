@@ -155,8 +155,10 @@ export const FeaturedProducts = () => {
               Hand-picked digital tools to elevate your workflow.
             </p>
           </div>
-          <Button variant="ghost" className="hidden sm:flex">
-            View All Marketplace
+          <Button variant="ghost" className="hidden sm:flex" asChild>
+            <Link to="/search" search={{ sort: 'newest', page: 1 }}>
+              View All Marketplace
+            </Link>
           </Button>
         </div>
 
