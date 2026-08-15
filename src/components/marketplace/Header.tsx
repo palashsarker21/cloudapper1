@@ -316,7 +316,7 @@ export const Header = () => {
               <div key={link.label} className="flex flex-col space-y-2">
                 {link.external ? (
                   <a
-                    href="https://wa.me/8801557749217"
+                    href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
