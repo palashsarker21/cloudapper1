@@ -39,15 +39,24 @@ export const ProductForm = ({ product }: { product?: any }) => {
       status: "draft",
       currency: "BDT",
       inventory_type: "unlimited",
-      product_type: "digital_files",
-      delivery_method: "instant_download",
+      product_type: "browser_extensions",
+      delivery_method: "license_key",
       price: 0,
       sale_price: null,
       stock_quantity: 0,
       features: [],
       whats_included: [],
       seo_keywords: [],
-      resale_auth_verified: false
+      resale_auth_verified: false,
+      is_featured: false,
+      license_duration: 30,
+      device_limit: 1,
+      compatibility: {
+        chrome: true,
+        firefox: true,
+        edge: true,
+        safari: false
+      }
     }
   });
 
@@ -207,27 +216,95 @@ export const ProductForm = ({ product }: { product?: any }) => {
             </Card>
 
             <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
-
               <CardHeader>
-                <CardTitle>Features & Content</CardTitle>
+                <CardTitle>Features & Benefits</CardTitle>
+                <CardDescription>List key highlights that sell the product.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
-                  <Label>Key Features</Label>
-                  {featureFields.map((field, index) => (
-                    <div key={field.id} className="flex gap-2">
-                      <Input {...register(`features.${index}` as const)} placeholder="Enter feature..." />
-                      <Button variant="ghost" size="icon" onClick={() => removeFeature(index)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                  <Button variant="outline" size="sm" type="button" onClick={() => appendFeature("")}>
-                    <Plus className="w-4 h-4 mr-2" /> Add Feature
-                  </Button>
+                  <div className="flex items-center justify-between">
+                    <Label>Key Features</Label>
+                    <Button variant="outline" size="sm" type="button" onClick={() => appendFeature("")}>
+                      <Plus className="w-4 h-4 mr-2" /> Add Feature
+                    </Button>
+                  </div>
+                  <div className="grid gap-3">
+                    {featureFields.map((field, index) => (
+                      <div key={field.id} className="flex gap-2">
+                        <Input {...register(`features.${index}` as const)} placeholder="Enter feature..." />
+                        <Button variant="ghost" size="icon" onClick={() => removeFeature(index)} className="shrink-0 text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label>What's Included</Label>
+                    <Button variant="outline" size="sm" type="button" onClick={() => appendIncluded("")}>
+                      <Plus className="w-4 h-4 mr-2" /> Add Item
+                    </Button>
+                  </div>
+                  <div className="grid gap-3">
+                    {includedFields.map((field, index) => (
+                      <div key={field.id} className="flex gap-2">
+                        <Input {...register(`whats_included.${index}` as const)} placeholder="e.g. 24/7 Support" />
+                        <Button variant="ghost" size="icon" onClick={() => removeIncluded(index)} className="shrink-0 text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </CardContent>
             </Card>
+
+            {watch("product_type") === 'browser_extensions' && (
+              <Card className="border-2 border-transparent bg-surface-1 shadow-sm">
+                <CardHeader>
+                  <CardTitle>Browser Compatibility</CardTitle>
+                  <CardDescription>Specify which browsers this extension supports.</CardDescription>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="flex items-center space-x-2 p-3 rounded-lg border bg-muted/20">
+                    <Switch 
+                      id="chrome" 
+                      checked={watch("compatibility.chrome")} 
+                      onCheckedChange={(v) => setValue("compatibility.chrome", v)} 
+                    />
+                    <Label htmlFor="chrome" className="cursor-pointer">Chrome</Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 rounded-lg border bg-muted/20">
+                    <Switch 
+                      id="firefox" 
+                      checked={watch("compatibility.firefox")} 
+                      onCheckedChange={(v) => setValue("compatibility.firefox", v)} 
+                    />
+                    <Label htmlFor="firefox" className="cursor-pointer">Firefox</Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 rounded-lg border bg-muted/20">
+                    <Switch 
+                      id="edge" 
+                      checked={watch("compatibility.edge")} 
+                      onCheckedChange={(v) => setValue("compatibility.edge", v)} 
+                    />
+                    <Label htmlFor="edge" className="cursor-pointer">Edge</Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 rounded-lg border bg-muted/20">
+                    <Switch 
+                      id="safari" 
+                      checked={watch("compatibility.safari")} 
+                      onCheckedChange={(v) => setValue("compatibility.safari", v)} 
+                    />
+                    <Label htmlFor="safari" className="cursor-pointer">Safari</Label>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="pricing" className="space-y-6">
@@ -248,18 +325,30 @@ export const ProductForm = ({ product }: { product?: any }) => {
                     <Input id="sale_price" type="number" step="0.01" {...register("sale_price")} />
                   </div>
                   <div className="space-y-2">
-                    <Label>Status</Label>
+                    <Label>Visibility Status</Label>
                     <Select onValueChange={(v) => setValue("status", v as any)} defaultValue={watch("status")}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="draft">Draft (Hidden)</SelectItem>
+                        <SelectItem value="active">Active (Visible)</SelectItem>
                         <SelectItem value="out_of_stock">Out of Stock</SelectItem>
                         <SelectItem value="archived">Archived</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 p-4 rounded-lg border bg-primary/5">
+                  <Switch 
+                    id="is_featured" 
+                    checked={watch("is_featured")} 
+                    onCheckedChange={(v) => setValue("is_featured", v)} 
+                  />
+                  <div>
+                    <Label htmlFor="is_featured" className="cursor-pointer font-bold text-primary">Featured Product</Label>
+                    <p className="text-xs text-muted-foreground">Display this product prominently on the homepage and discovery sections.</p>
                   </div>
                 </div>
               </CardContent>
@@ -303,14 +392,16 @@ export const ProductForm = ({ product }: { product?: any }) => {
                     <p className="text-sm text-muted-foreground mb-4">
                       Keys are managed separately. You can upload keys after creating the product profile.
                     </p>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>License Duration (Days)</Label>
-                        <Input type="number" {...register("license_duration")} placeholder="365" />
+                        <Input type="number" {...register("license_duration")} placeholder="30" />
+                        <p className="text-[10px] text-muted-foreground">0 for lifetime, 1 for 24h, 7 for weekly, etc.</p>
                       </div>
                       <div className="space-y-2">
                         <Label>Device Limit</Label>
                         <Input type="number" {...register("device_limit")} placeholder="1" />
+                        <p className="text-[10px] text-muted-foreground">Max number of devices per license.</p>
                       </div>
                     </div>
                   </div>
