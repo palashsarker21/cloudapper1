@@ -38,7 +38,7 @@ export const getMarketplaceProducts = createServerFn({ method: "GET" })
     }
 
     if (data.productType) {
-      query = query.eq("product_type", data.productType);
+      query = query.eq("product_type", data.productType as any);
     }
     
     if (data.isFeatured !== undefined) {
