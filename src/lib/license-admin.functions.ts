@@ -134,3 +134,74 @@ export const revokeLicense = createServerFn({ method: "POST" })
 
     return { success: true };
   });
+
+export const reinstateLicense = createServerFn({ method: "POST" })
+  .inputValidator((data) => z.object({ 
+    licenseId: z.string().uuid(),
+    reason: z.string().optional()
+  }).parse(data))
+  .handler(async ({ data }) => {
+    // 1. Mark License as Active
+    const { data: license, error: licenseError } = await (supabaseAdmin
+      .from('licenses' as any)
+      .update({ 
+        status: 'active',
+        updated_at: new Date().toISOString(),
+        metadata: { 
+          reinstated_reason: data.reason || 'Reinstated by admin',
+          reinstated_at: new Date().toISOString()
+        }
+      })
+      .eq('id', data.licenseId)
+      .select('id, order_id, product_id, customer_id')
+      .single() as any);
+
+    if (licenseError || !license) throw new Error("License not found or update failed");
+
+    // 2. Restore related fulfillment
+    const { data: fulfillments } = await (supabaseAdmin
+      .from('fulfillments' as any)
+      .select('id')
+      .eq('order_id', license.order_id)
+      .eq('status', 'failed') as any);
+
+    if (fulfillments && fulfillments.length > 0) {
+      for (const f of fulfillments) {
+        await supabaseAdmin
+          .from('fulfillments' as any)
+          .update({ 
+            status: 'completed',
+            error_message: null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', f.id);
+
+        // Log the fulfillment reinstatement
+        await supabaseAdmin
+          .from('fulfillment_logs' as any)
+          .insert({
+            fulfillment_id: f.id,
+            event: 'fulfillment_reinstated',
+            details: { 
+              license_id: license.id, 
+              reason: data.reason 
+            }
+          });
+      }
+    }
+
+    // 3. Update Entitlements (restore to active)
+    await supabaseAdmin
+      .from('entitlements' as any)
+      .update({
+        metadata: { 
+          status: 'active',
+          reinstated_at: new Date().toISOString()
+        }
+      })
+      .eq('order_id', license.order_id)
+      .eq('product_id', license.product_id)
+      .eq('user_id', license.customer_id);
+
+    return { success: true };
+  });
