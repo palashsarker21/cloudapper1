@@ -20,7 +20,8 @@ import {
   Share2,
   Heart,
   Loader2,
-  Check
+  Check,
+  Info
 } from 'lucide-react';
 import { Logo } from '@/components/marketplace/Logo';
 import { useCart } from '@/contexts/CartContext';
