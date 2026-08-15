@@ -169,8 +169,13 @@ function SuperAdminDashboard() {
           <div className="space-y-6">
             <Card className="glass-effect border-none shadow-xl border-t-2 border-primary/20">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-                  <Server className="h-4 w-4 text-primary" /> Core Engine Health
+                <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Server className="h-4 w-4 text-primary" /> Core Engine Health
+                  </div>
+                  <Link to="/super-admin/system/health" className="text-[10px] text-primary hover:underline">
+                    Detailed View
+                  </Link>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
