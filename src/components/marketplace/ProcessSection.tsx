@@ -1,44 +1,66 @@
-import { CheckCircle2 } from "lucide-react";
-
-const steps = [
-  {
-    title: "Choose product",
-    description: "Browse our extensive marketplace of AI tools and digital products.",
-    icon: "1",
-  },
-  {
-    title: "Checkout",
-    description: "Add items to your cart and proceed to our secure checkout process.",
-    icon: "2",
-  },
-  {
-    title: "Payment",
-    description: "Pay securely using your preferred payment method.",
-    icon: "3",
-  },
-  {
-    title: "Receive product",
-    description: "Get instant access or delivery details for your purchase.",
-    icon: "4",
-  },
-];
+import { 
+  CheckCircle2, 
+  ShieldCheck, 
+  Zap, 
+  Clock,
+  ArrowRight
+} from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
 const features = [
   {
-    title: "Fast delivery",
-    description: "Get your digital assets instantly after purchase confirmation.",
+    title: "Verified Products",
+    description: "Products are reviewed before being made available through the marketplace.",
+    icon: CheckCircle2,
   },
   {
-    title: "Secure checkout",
-    description: "Industry-standard encryption protects your financial data.",
+    title: "Secure Checkout",
+    description: "Payment and order information are handled through a controlled checkout and verification workflow.",
+    icon: ShieldCheck,
   },
   {
-    title: "Verified products",
-    description: "Every listing is manually reviewed for quality and safety.",
+    title: "Reliable Fulfillment",
+    description: "Approved purchases move through a controlled fulfillment process designed to deliver securely.",
+    icon: Zap,
   },
   {
-    title: "Customer support",
-    description: "24/7 dedicated support team to assist with any inquiries.",
+    title: "Transparent Order Tracking",
+    description: "Track payment verification, fulfillment and delivery status from your account.",
+    icon: Clock,
+  },
+];
+
+const steps = [
+  {
+    id: "01",
+    title: "Discover",
+    description: "Find AI tools, credits, extensions and digital products.",
+  },
+  {
+    id: "02",
+    title: "Choose",
+    description: "Review the product, package, pricing and available delivery method.",
+  },
+  {
+    id: "03",
+    title: "Checkout",
+    description: "Submit your order and complete the available payment process.",
+  },
+  {
+    id: "04",
+    title: "Verification",
+    description: "For manual payment methods, information is reviewed before fulfillment.",
+  },
+  {
+    id: "05",
+    title: "Fulfillment",
+    description: "Once approved, your order moves through the secure fulfillment workflow.",
+  },
+  {
+    id: "06",
+    title: "Access",
+    description: "Retrieve your purchased product or license from your CloudApper account.",
   },
 ];
 
@@ -47,60 +69,36 @@ export const ProcessSection = () => {
     <section className="py-24 bg-surface-0">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Why CloudApper */}
-        <div className="mb-24 grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Why Choose CloudApper?
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              We provide a seamless experience for acquiring the best digital tools in the industry.
-            </p>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2">
-              {features.map((feature) => (
-                <div key={feature.title} className="flex gap-3">
-                  <CheckCircle2 className="h-6 w-6 shrink-0 text-primary" />
-                  <div>
-                    <h3 className="font-semibold text-foreground">{feature.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{feature.description}</p>
-                  </div>
+        <div className="mb-32 text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Why teams choose CloudApper
+          </h2>
+          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature) => (
+              <div key={feature.title} className="flex flex-col items-center p-8 rounded-3xl bg-surface-1 border border-border/50 hover:border-primary/20 transition-all">
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <feature.icon className="h-6 w-6" />
                 </div>
-              ))}
-            </div>
-          </div>
-          <div className="relative hidden lg:block">
-            <div className="aspect-square rounded-3xl bg-surface-1 overflow-hidden border-2 border-primary/10">
-               <img 
-                 src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" 
-                 alt="Digital World"
-                 className="h-full w-full object-cover opacity-80"
-               />
-            </div>
-            <div className="absolute -bottom-6 -left-6 h-36 w-36 rounded-[var(--brand-radius)] bg-[var(--brand-gradient)] p-8 text-white shadow-[var(--brand-glow)] animate-float flex flex-col justify-center items-center text-center">
-               <div className="text-4xl font-black italic mb-1">10k+</div>
-               <div className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-90 leading-tight">Global Customers</div>
-            </div>
-
-
+                <h3 className="text-lg font-bold text-foreground">{feature.title}</h3>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* How it works */}
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            How It Works
+            From discovery to delivery
           </h2>
-          <div className="mt-16 grid gap-8 md:grid-cols-4">
-            {steps.map((step, index) => (
-              <div key={step.title} className="relative">
-                {index < steps.length - 1 && (
-                  <div className="absolute top-8 left-[60%] hidden w-full border-t border-dashed border-muted-foreground/30 md:block" />
-                )}
-                <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border bg-[var(--brand-gradient)] text-white shadow-[var(--brand-glow)] text-xl font-bold">
-                  {step.icon}
+          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {steps.map((step) => (
+              <div key={step.id} className="relative flex flex-col items-center p-8 rounded-3xl bg-surface-1 border border-border/50 hover:border-primary/20 transition-all text-center">
+                <div className="absolute top-4 right-6 text-4xl font-black text-primary/5 select-none">
+                  {step.id}
                 </div>
-
-                <h3 className="mt-6 font-semibold text-foreground">{step.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
+                <h3 className="text-xl font-bold text-foreground mb-4">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
               </div>
             ))}
           </div>

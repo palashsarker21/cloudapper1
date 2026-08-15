@@ -17,8 +17,11 @@ export const Footer = () => {
               <Logo />
             </Link>
 
-            <p className="mt-4 text-sm text-muted-foreground">
-              The premier marketplace for AI tools, digital credits, and professional software resources. Elevate your productivity today.
+            <p className="mt-4 text-sm text-muted-foreground font-medium">
+              AI Tools, Credits & Digital Products
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Discover trusted AI tools, software resources, and digital products through CloudApper, a secure marketplace for modern creators and developers.
             </p>
             <div className="mt-6 flex gap-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
@@ -39,20 +42,39 @@ export const Footer = () => {
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Marketplace</h3>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/category/$slug" params={{ slug: 'ai-tools' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">AI Tools</Link></li>
-              <li><Link to="/category/$slug" params={{ slug: 'ai-credits' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">Credits</Link></li>
+              <li><Link to="/search" search={{ sort: 'newest', page: 1 }} className="hover:text-primary">AI Tools</Link></li>
+              <li><Link to="/category/$slug" params={{ slug: 'ai-credits' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">AI Credits</Link></li>
               <li><Link to="/category/$slug" params={{ slug: 'extensions' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">Extensions</Link></li>
+              <li><Link to="/category/$slug" params={{ slug: 'saas-products' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">SaaS & Software</Link></li>
               <li><Link to="/category/$slug" params={{ slug: 'digital-products' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">Digital Products</Link></li>
+              <li><Link to="/category/$slug" params={{ slug: 'templates' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">Templates & Resources</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Company</h3>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/" className="hover:text-primary">Pricing</Link></li>
-              <li><Link to="/" className="hover:text-primary">Support</Link></li>
-              <li><Link to="/" className="hover:text-primary">About Us</Link></li>
-              <li><Link to="/" className="hover:text-primary">Terms of Service</Link></li>
+              <li><Link to="/login" className="hover:text-primary">About</Link></li>
+              <li><Link to="/login" className="hover:text-primary">Contact</Link></li>
+              <li><Link to="/login" className="hover:text-primary">Support</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Customer</h3>
+            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/login" className="hover:text-primary">My Orders</Link></li>
+              <li><Link to="/track-order" search={{ orderId: undefined }} className="hover:text-primary">Track Order</Link></li>
+              <li><Link to="/login" className="hover:text-primary">Account</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Legal</h3>
+            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/login" className="hover:text-primary">Terms of Service</Link></li>
+              <li><Link to="/login" className="hover:text-primary">Privacy Policy</Link></li>
+              <li><Link to="/login" className="hover:text-primary">Refund Policy</Link></li>
             </ul>
           </div>
 

@@ -1,4 +1,4 @@
-import { Star, ShoppingCart, ExternalLink, Zap, ShieldCheck } from "lucide-react";
+import { Star, ShoppingCart, ExternalLink, Zap, ShieldCheck, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -146,10 +146,10 @@ export const FeaturedProducts = () => {
         <div className="mb-12 flex items-end justify-between">
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Featured Products
+              Explore the Marketplace
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Hand-picked digital tools to elevate your workflow.
+              Hand-picked AI tools and digital products from our verified collection.
             </p>
           </div>
           <Button variant="ghost" className="hidden sm:flex" asChild>
@@ -172,8 +172,19 @@ export const FeaturedProducts = () => {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed p-20 text-center">
-            <p className="text-muted-foreground">No products available at the moment.</p>
+          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 p-20 text-center bg-surface-1">
+            <div className="h-16 w-16 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+              <Package className="h-8 w-8 text-primary/40" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-2">New products are being added</h3>
+            <p className="text-muted-foreground max-w-md mx-auto mb-8">
+              CloudApper is preparing the next collection of verified AI tools and digital products.
+            </p>
+            <Button asChild>
+              <Link to="/search" search={{ sort: 'newest', page: 1 }}>
+                Browse Marketplace
+              </Link>
+            </Button>
           </div>
         )}
       </div>

@@ -79,9 +79,11 @@ export const Header = () => {
   const navLinks = [
     { label: "Marketplace", href: "/search", search: { sort: 'newest', page: 1 } },
     { label: "AI Tools", href: "/category/$slug", params: { slug: 'ai-tools' }, search: { sort: 'newest', page: 1 } },
+    { label: "AI Credits", href: "/category/$slug", params: { slug: 'ai-credits' }, search: { sort: 'newest', page: 1 } },
     { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
+    { label: "Digital Products", href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
-    { label: "Support", href: "/" },
+    { label: "Support", href: "/login" },
   ];
 
   return (
@@ -98,19 +100,56 @@ export const Header = () => {
 
           <div className="hidden lg:flex flex-1 items-center justify-center">
             <NavigationMenu>
-              <NavigationMenuList>
-                {navLinks.map((link) => (
-                  <NavigationMenuItem key={link.label}>
-                    <Link
-                      to={link.href as any}
-                      params={(link as any).params}
-                      search={(link as any).search}
-                      className={navigationMenuTriggerStyle()}
-                    >
-                      {link.label}
-                    </Link>
-                  </NavigationMenuItem>
-                ))}
+              <NavigationMenuList className="gap-1">
+                <NavigationMenuItem>
+                  <Link to="/search" search={{ sort: 'newest', page: 1 }} className={navigationMenuTriggerStyle()}>
+                    Marketplace
+                  </Link>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50">Products</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] glass-effect border-none shadow-2xl">
+                      {[
+                        { title: "AI Tools", slug: "ai-tools", desc: "Practical AI solutions for creators." },
+                        { title: "AI Credits", slug: "ai-credits", desc: "Credits for top-tier AI models." },
+                        { title: "Extensions", slug: "extensions", desc: "Powerful browser enhancements." },
+                        { title: "Digital Products", slug: "digital-products", desc: "Ready-to-use digital assets." },
+                        { title: "SaaS & Software", slug: "saas-products", desc: "Enterprise software solutions." },
+                        { title: "Templates", slug: "templates", desc: "Custom templates and resources." }
+                      ].map((item) => (
+                        <li key={item.slug}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to="/category/$slug"
+                              params={{ slug: item.slug }}
+                              search={{ sort: 'newest', page: 1 }}
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-bold leading-none text-primary">{item.title}</div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+                                {item.desc}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <Link to="/track-order" search={{ orderId: undefined }} className={navigationMenuTriggerStyle()}>
+                    Track Order
+                  </Link>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
+                  <Link to="/login" className={navigationMenuTriggerStyle()}>
+                    Support
+                  </Link>
+                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
