@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ShoppingCart, User, Menu, X, Bell } from "lucide-react";
+import { ShoppingCart, User, Menu, X, Bell, Shield, Package, ShoppingBag, Truck, CreditCard, Settings, Users, History, DollarSign, Zap } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Logo } from "./Logo";
 import { MarketplaceSearchBar } from "./MarketplaceSearchBar";
@@ -14,6 +14,13 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
@@ -27,19 +34,41 @@ export const Header = () => {
   const { itemCount } = useCart();
   const fetchNotifications = useServerFn(getUserNotifications);
   
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
   const { data: notifications, refetch } = useQuery({
     queryKey: ['notifications'],
     queryFn: () => fetchNotifications(),
-    enabled: false, // Will enable manually based on session
+    enabled: false,
   });
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) refetch();
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
+        refetch();
+        
+        // Check roles
+        const { data: isSA } = await supabase.rpc('has_role' as any, {
+          _user_id: session.user.id,
+          _role: 'super_admin'
+        });
+        const { data: isA } = await supabase.rpc('has_role' as any, {
+          _user_id: session.user.id,
+          _role: 'admin'
+        });
+        
+        setIsSuperAdmin(!!isSA);
+        setIsAdmin(!!isA || !!isSA);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN') refetch();
+      if (event === 'SIGNED_OUT') {
+        setIsAdmin(false);
+        setIsSuperAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -47,21 +76,11 @@ export const Header = () => {
 
   const unreadCount = (notifications as any[])?.filter((n: any) => !n.read).length || 0;
 
-
   const navLinks = [
     { label: "Marketplace", href: "/search", search: { sort: 'newest', page: 1 } },
     { label: "AI Tools", href: "/category/$slug", params: { slug: 'ai-tools' }, search: { sort: 'newest', page: 1 } },
     { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
-    { label: "Admin", children: [
-      { label: "Dashboard", href: "/super-admin" },
-      { label: "Users", href: "/super-admin/users" },
-      { label: "Audit Logs", href: "/super-admin/audit-logs" },
-      { label: "Fulfillment", href: "/admin/fulfillment" },
-      { label: "Payments", href: "/admin/settings/payments" },
-      { label: "Products", href: "/admin/products" },
-      { label: "Orders", href: "/admin/orders" },
-    ]},
     { label: "Support", href: "/" },
   ];
 
@@ -82,36 +101,14 @@ export const Header = () => {
               <NavigationMenuList>
                 {navLinks.map((link) => (
                   <NavigationMenuItem key={link.label}>
-                    {link.children ? (
-                      <>
-                        <NavigationMenuTrigger>{link.label}</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <ul className="grid w-[200px] gap-2 p-4">
-                            {link.children.map((child) => (
-                              <li key={child.href}>
-                                <NavigationMenuLink asChild>
-                                  <Link
-                                    to={child.href as any}
-                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                  >
-                                    <div className="text-sm font-medium leading-none">{child.label}</div>
-                                  </Link>
-                                </NavigationMenuLink>
-                              </li>
-                            ))}
-                          </ul>
-                        </NavigationMenuContent>
-                      </>
-                    ) : (
-                      <Link
-                        to={link.href as any}
-                        params={(link as any).params}
-                        search={(link as any).search}
-                        className={navigationMenuTriggerStyle()}
-                      >
-                        {link.label}
-                      </Link>
-                    )}
+                    <Link
+                      to={link.href as any}
+                      params={(link as any).params}
+                      search={(link as any).search}
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      {link.label}
+                    </Link>
                   </NavigationMenuItem>
                 ))}
               </NavigationMenuList>
@@ -120,6 +117,71 @@ export const Header = () => {
 
           <div className="flex items-center gap-2">
             <MarketplaceSearchBar className="hidden md:block w-48 lg:w-64" />
+            
+            {isAdmin && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="hidden xl:flex text-xs font-bold uppercase tracking-widest text-primary hover:text-primary animate-pulse">
+                    <Shield className="mr-2 h-3 w-3" /> Control
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 glass-effect border-none shadow-2xl mt-2" align="end">
+                  <div className="px-2 py-2 text-[10px] font-black uppercase tracking-widest text-primary/70">
+                    Admin Tools
+                  </div>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/products" className="w-full flex items-center">
+                      <Package className="mr-2 h-4 w-4" /> Products
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/orders" className="w-full flex items-center">
+                      <ShoppingBag className="mr-2 h-4 w-4" /> Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/fulfillment" className="w-full flex items-center">
+                      <Truck className="mr-2 h-4 w-4" /> Fulfillment
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/settings" className="w-full flex items-center">
+                      <Settings className="mr-2 h-4 w-4" /> Settings
+                    </Link>
+                  </DropdownMenuItem>
+
+                  {isSuperAdmin && (
+                    <>
+                      <DropdownMenuSeparator className="bg-border/10" />
+                      <div className="px-2 py-2 text-[10px] font-black uppercase tracking-widest text-destructive/70">
+                        God Mode
+                      </div>
+                      <DropdownMenuItem asChild>
+                        <Link to="/super-admin" className="w-full flex items-center text-destructive focus:text-destructive">
+                          <Shield className="mr-2 h-4 w-4" /> Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/super-admin/users" className="w-full flex items-center">
+                          <Users className="mr-2 h-4 w-4" /> Users
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/super-admin/payments" className="w-full flex items-center">
+                          <DollarSign className="mr-2 h-4 w-4" /> Payments
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/super-admin/audit-logs" className="w-full flex items-center">
+                          <History className="mr-2 h-4 w-4" /> Logs
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
             <Button variant="ghost" size="icon" className="relative" asChild>
               <Link to="/account/notifications">
                 <Bell className="h-5 w-5" />
@@ -167,33 +229,15 @@ export const Header = () => {
             </div>
             {navLinks.map((link) => (
               <div key={link.label} className="flex flex-col space-y-2">
-                {link.children ? (
-                  <>
-                    <div className="px-2 py-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      {link.label}
-                    </div>
-                    {link.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        to={child.href as any}
-                        className="text-sm font-medium transition-colors hover:text-primary px-4 py-1"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </>
-                ) : (
-                  <Link
-                    to={link.href as any}
-                    params={(link as any).params}
-                    search={(link as any).search}
-                    className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                )}
+                <Link
+                  to={link.href as any}
+                  params={(link as any).params}
+                  search={(link as any).search}
+                  className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
               </div>
             ))}
             <Button variant="default" className="w-full mt-4" asChild>
