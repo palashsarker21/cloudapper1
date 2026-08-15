@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, Copy, Check, AlertTriangle, ExternalLink, CheckCircle2, Smartphone, Clock } from 'lucide-react';
+import { Loader2, Copy, Check, AlertTriangle, ExternalLink, CheckCircle2, Smartphone, Clock, Zap } from 'lucide-react';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 import { cn } from '@/lib/utils';
@@ -104,16 +104,38 @@ function PaymentProcessingPage() {
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-8">
+            {/* Order Items Summary */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground/50">Purchased Items</h4>
+              <div className="space-y-2">
+                {payment.orders.order_items.map((item: any) => (
+                  <div key={item.id} className="flex items-center justify-between p-3 rounded-xl bg-surface-1 border border-border/40">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <Zap className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold leading-tight">{item.product_name}</p>
+                        <p className="text-[10px] text-muted-foreground">Qty: {item.quantity}</p>
+                      </div>
+                    </div>
+                    <p className="text-sm font-black">৳{Number(item.total_price).toLocaleString()}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Amount Section */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-surface-3 border shadow-inner">
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-tight">Payable Amount</p>
-                <p className="text-3xl font-black text-primary">
-                  {payment.currency === 'BDT' ? '৳' : ''}{Number(payment.amount).toLocaleString()} {payment.currency}
+            <div className="flex items-center justify-between p-5 rounded-2xl bg-surface-3 border shadow-inner relative overflow-hidden group">
+              <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-1 relative z-10">
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Payable Amount</p>
+                <p className="text-4xl font-black text-primary tracking-tighter">
+                  {payment.currency === 'BDT' ? '৳' : ''}{Number(payment.amount).toLocaleString()}
                 </p>
               </div>
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <Smartphone className="w-6 h-6" />
+              <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary relative z-10 shadow-lg shadow-primary/10">
+                <Smartphone className="w-7 h-7" />
               </div>
             </div>
 

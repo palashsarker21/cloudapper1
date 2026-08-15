@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { Separator } from '@/components/ui/separator';
 import { PackageX, Loader2 } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const categorySearchSchema = z.object({
   sort: z.string().default('newest'),
@@ -24,6 +25,7 @@ export const Route = createFileRoute('/category/$slug')({
 function CategoryPage() {
   const { slug } = Route.useParams();
   const search = Route.useSearch() as any;
+  const { t, language } = useLanguage();
   
   const fetchCategory = useServerFn(getCategoryBySlug);
   const fetchProducts = useServerFn(getMarketplaceProducts);
@@ -76,10 +78,12 @@ function CategoryPage() {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4">{category.name}</h1>
-          {category.description && (
+          <h1 className="text-4xl font-bold mb-4">
+            {language === 'bn' && (category as any).name_bn ? (category as any).name_bn : category.name}
+          </h1>
+          {(category.description || (category as any).description_bn) && (
             <p className="text-lg text-muted-foreground max-w-3xl">
-              {category.description}
+              {language === 'bn' && (category as any).description_bn ? (category as any).description_bn : category.description}
             </p>
           )}
         </div>
@@ -99,8 +103,8 @@ function CategoryPage() {
                 key={p.id} 
                 product={{
                   id: p.id,
-                  name: p.name,
-                  category: p.categories?.name || category.name,
+                  name: language === 'bn' && p.name_bn ? p.name_bn : p.name,
+                  category: language === 'bn' && p.categories?.name_bn ? p.categories.name_bn : (p.categories?.name || category.name),
                   price: Number(p.price),
                   rating: 5.0,
                   reviews: 0,
@@ -117,7 +121,8 @@ function CategoryPage() {
         ) : (
           <div className="py-20 flex flex-col items-center text-center">
             <PackageX className="h-12 w-12 text-muted-foreground/20 mb-4" />
-            <h2 className="text-xl font-semibold">No products in this category yet</h2>
+            <h2 className="text-xl font-semibold">{t.common.noProductsYet}</h2>
+            <p className="text-sm text-muted-foreground mt-2">{t.common.exploreOtherCategories}</p>
           </div>
         )}
       </main>

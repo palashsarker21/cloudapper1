@@ -24,6 +24,7 @@ import {
   Info
 } from 'lucide-react';
 import { Logo } from '@/components/marketplace/Logo';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/contexts/CartContext';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -52,6 +53,7 @@ function ProductDetailPage() {
   const { productId } = Route.useParams();
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const { t, language } = useLanguage();
 
 
   const fetchProduct = useServerFn(getProductById);
@@ -63,7 +65,9 @@ function ProductDetailPage() {
       if (!data) throw new Error("Product not found");
 
       const isExtension = data.product_type === 'browser_extensions';
-      const features = (data.features as string[]) || [
+      const features = language === 'bn' && (data as any).features_bn 
+        ? ((data as any).features_bn as string[]) 
+        : (data.features as string[]) || [
         "Secure delivery",
         "Verified quality",
         "Premium support",
@@ -74,13 +78,13 @@ function ProductDetailPage() {
 
       return {
         id: data.id,
-        name: data.name,
-        category: (data.categories as any)?.name || 'Product',
+        name: language === 'bn' && (data as any).name_bn ? (data as any).name_bn : data.name,
+        category: language === 'bn' && (data.categories as any)?.name_bn ? (data.categories as any).name_bn : ((data.categories as any)?.name || 'Product'),
         price: `৳${Number(data.price).toLocaleString()}`,
         rating: 5.0,
         reviews: 0,
-        description: data.description || data.short_description || "No description available.",
-        fullDescription: data.full_description,
+        description: language === 'bn' && (data as any).short_description_bn ? (data as any).short_description_bn : (data.description || data.short_description || "No description available."),
+        fullDescription: language === 'bn' && (data as any).full_description_bn ? (data as any).full_description_bn : data.full_description,
         image: data.image_url,
         product_type: data.product_type,
         license_duration: data.license_duration,
@@ -157,7 +161,7 @@ function ProductDetailPage() {
           <div className="flex items-center gap-4">
             <Link to="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               <ChevronLeft className="mr-1 h-4 w-4" />
-              Back to Marketplace
+              {language === 'bn' ? 'মার্কেটপ্লেসে ফিরুন' : 'Back to Marketplace'}
             </Link>
             <Separator orientation="vertical" className="h-4" />
             <Logo variant="wordmark" />
@@ -274,30 +278,30 @@ function ProductDetailPage() {
                 value="features" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-8"
               >
-                Features
+                {language === 'bn' ? 'বৈশিষ্ট্যসমূহ' : 'Features'}
               </TabsTrigger>
               <TabsTrigger 
                 value="compatibility" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-8"
               >
-                Compatibility
+                {language === 'bn' ? 'উপযোগিতা' : 'Compatibility'}
               </TabsTrigger>
               <TabsTrigger 
                 value="instructions" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-8"
               >
-                Instructions
+                {language === 'bn' ? 'নির্দেশনা' : 'Instructions'}
               </TabsTrigger>
               <TabsTrigger 
                 value="specs" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-8"
               >
-                Specifications
+                {language === 'bn' ? 'স্পেসিফিকেশন' : 'Specifications'}
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="features" className="py-8 space-y-6">
-              <h3 className="text-xl font-bold">Key Features</h3>
+              <h3 className="text-xl font-bold">{language === 'bn' ? 'মূল বৈশিষ্ট্যসমূহ' : 'Key Features'}</h3>
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {product.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-3 p-4 rounded-xl border bg-muted/10">
@@ -309,11 +313,11 @@ function ProductDetailPage() {
             </TabsContent>
             
             <TabsContent value="compatibility" className="py-8 space-y-6">
-              <h3 className="text-xl font-bold">Supported Environments</h3>
+              <h3 className="text-xl font-bold">{language === 'bn' ? 'সাপোর্টেড এনভায়রনমেন্ট' : 'Supported Environments'}</h3>
               {product.compatibility ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <h4 className="font-semibold text-primary">System Environments</h4>
+                    <h4 className="font-semibold text-primary">{language === 'bn' ? 'সিস্টেম এনভায়রনমেন্ট' : 'System Environments'}</h4>
                     <ul className="space-y-2">
                       {product.compatibility.environments?.map((env: string, i: number) => (
                         <li key={i} className="text-muted-foreground flex items-center gap-2">
@@ -324,7 +328,7 @@ function ProductDetailPage() {
                     </ul>
                   </div>
                   <div className="space-y-4">
-                    <h4 className="font-semibold text-primary">Browsers</h4>
+                    <h4 className="font-semibold text-primary">{language === 'bn' ? 'ব্রাউজার' : 'Browsers'}</h4>
                     <ul className="grid grid-cols-2 gap-2">
                       {product.compatibility?.chrome && (
                         <li className="text-muted-foreground flex items-center gap-2">
@@ -360,7 +364,7 @@ function ProductDetailPage() {
             <TabsContent value="instructions" className="py-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                  <h3 className="text-xl font-bold">Delivery & Activation</h3>
+                  <h3 className="text-xl font-bold">{language === 'bn' ? 'ডেলিভারি ও অ্যাক্টিভেশন' : 'Delivery & Activation'}</h3>
                   <div className="p-6 rounded-3xl border bg-surface-2 space-y-4">
                     <div className="flex gap-4">
                       <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</div>
@@ -369,7 +373,7 @@ function ProductDetailPage() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-xl font-bold">Important Notes</h3>
+                  <h3 className="text-xl font-bold">{language === 'bn' ? 'গুরুত্বপূর্ণ নোট' : 'Important Notes'}</h3>
                   <div className="p-6 rounded-3xl border bg-destructive/5 border-destructive/10 space-y-4">
                     <div className="flex gap-4">
                       <ShieldCheck className="h-6 w-6 text-destructive shrink-0" />

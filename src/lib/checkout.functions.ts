@@ -5,6 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const orderItemSchema = z.object({
   productId: z.string().uuid(),
+  packageId: z.string().uuid().optional(), // Tiered package support
   quantity: z.number().int().positive(),
 });
 
@@ -37,6 +38,12 @@ export const createOrder = createServerFn({ method: "POST" })
 
     // 2. Calculate subtotal and validate inventory
     let subtotal = 0;
+    const { data: allPackages } = await (supabaseAdmin
+      .from("product_packages" as any) as any)
+      .select("*")
+      .in("product_id", productIds)
+      .eq("status", "active");
+
     for (const item of items) {
       const product = products.find((p) => p.id === item.productId)!;
       
@@ -45,20 +52,18 @@ export const createOrder = createServerFn({ method: "POST" })
         if (Number(product.stock_quantity || 0) < item.quantity) {
           throw new Error(`Product "${product.name}" is out of stock.`);
         }
-      } else if (product.inventory_type === "license") {
-        const { count, error: countError } = await supabaseAdmin
-          .from("product_licenses")
-          .select("id", { count: "exact", head: true })
-          .eq("product_id", product.id)
-          .eq("status", "available");
-        
-        if (countError || (count || 0) < item.quantity) {
-          throw new Error(`Product "${product.name}" has no available licenses.`);
-        }
       }
 
-      const price = product.sale_price || product.price;
-      subtotal += Number(price) * item.quantity;
+      let unitPrice = product.sale_price || product.price;
+
+      // Override price if package is selected
+      if (item.packageId && allPackages) {
+        const pkg = (allPackages as any[]).find(p => p.id === item.packageId && p.product_id === product.id);
+        if (!pkg) throw new Error("Invalid package selected.");
+        unitPrice = Number(pkg.price);
+      }
+
+      subtotal += Number(unitPrice) * item.quantity;
     }
 
     // 3. Handle Coupon
@@ -120,14 +125,20 @@ export const createOrder = createServerFn({ method: "POST" })
     // 5. Create Order Items
     const orderItems = items.map((item) => {
       const product = products.find((p) => p.id === item.productId)!;
-      const price = product.sale_price || product.price;
+      let unitPrice = product.sale_price || product.price;
+      
+      if (item.packageId && allPackages) {
+        const pkg = (allPackages as any[]).find(p => p.id === item.packageId);
+        if (pkg) unitPrice = Number(pkg.price);
+      }
+
       return {
         order_id: order.id,
         product_id: product.id,
         product_name: product.name,
         quantity: item.quantity,
-        unit_price: Number(price),
-        total_price: Number(price) * item.quantity,
+        unit_price: Number(unitPrice),
+        total_price: Number(unitPrice) * item.quantity,
       };
     });
 

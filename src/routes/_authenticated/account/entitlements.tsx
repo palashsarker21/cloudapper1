@@ -22,6 +22,7 @@ import {
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { useState } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export const Route = createFileRoute('/_authenticated/account/entitlements')({
   component: EntitlementsPage,
@@ -29,6 +30,7 @@ export const Route = createFileRoute('/_authenticated/account/entitlements')({
 
 function EntitlementsPage() {
   const fetchLicenses = useServerFn(getMyLicenses);
+  const { t, language } = useLanguage();
   
   const { data: licenses, isLoading } = useQuery({
     queryKey: ['my-licenses'],
@@ -42,9 +44,9 @@ function EntitlementsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-black tracking-tighter uppercase flex items-center gap-3">
             <ShieldCheck className="h-8 w-8 text-primary" />
-            Product Library
+            {language === 'bn' ? 'আমার প্রোডাক্ট লাইব্রেরি' : 'Product Library'}
           </h1>
-          <p className="text-muted-foreground">Access your licenses, downloads, and automation tools</p>
+          <p className="text-muted-foreground">{language === 'bn' ? 'আপনার লাইসেন্স, ডাউনলোড এবং অটোমেশন টুলস এখানে পাবেন' : 'Access your licenses, downloads, and automation tools'}</p>
         </div>
 
         {isLoading ? (
@@ -55,10 +57,10 @@ function EntitlementsPage() {
           <Card className="glass-effect border-none shadow-xl py-20 text-center">
             <CardContent>
               <Package className="h-16 w-16 mx-auto mb-4 opacity-10 text-primary" />
-              <h2 className="text-xl font-bold mb-2">Your library is empty</h2>
-              <p className="text-muted-foreground mb-8">Purchase an extension or tool to see it here.</p>
+              <h2 className="text-xl font-bold mb-2">{language === 'bn' ? 'আপনার লাইব্রেরি খালি' : 'Your library is empty'}</h2>
+              <p className="text-muted-foreground mb-8">{language === 'bn' ? 'প্রোডাক্ট কিনলে এখানে দেখা যাবে' : 'Purchase an extension or tool to see it here.'}</p>
               <Button asChild>
-                <Link to="/">Browse Marketplace</Link>
+                <Link to="/">{language === 'bn' ? 'মার্কেটপ্লেস দেখুন' : 'Browse Marketplace'}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -77,6 +79,7 @@ function EntitlementsPage() {
 
 function LicenseCard({ license }: { license: any }) {
   const fetchKey = useServerFn(getLicenseKey);
+  const { language } = useLanguage();
   const [revealedKey, setRevealedKey] = useState<string | null>(null);
   const [isRevealing, setIsRevealing] = useState(false);
 
@@ -115,10 +118,12 @@ function LicenseCard({ license }: { license: any }) {
             )}
           </div>
           <Badge variant={isExpired ? "destructive" : "outline"} className="text-[10px] uppercase">
-            {isExpired ? "Expired" : license.status}
+            {isExpired ? (language === 'bn' ? 'মেয়াদ উত্তীর্ণ' : "Expired") : license.status}
           </Badge>
         </div>
-        <CardTitle className="text-lg mt-4 leading-tight">{license.products?.name}</CardTitle>
+        <CardTitle className="text-lg mt-4 leading-tight">
+          {language === 'bn' && license.products?.name_bn ? license.products.name_bn : license.products?.name}
+        </CardTitle>
         <CardDescription className="text-xs font-mono">
           {license.plan} Plan • ID: {license.id.substring(0, 8)}
         </CardDescription>

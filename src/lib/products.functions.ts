@@ -161,7 +161,8 @@ export const getFeaturedProducts = createServerFn({ method: "GET" })
       .select("*, categories(name)")
       .eq("status", "active")
       .eq("is_featured", true)
-      .limit(4);
+      .order('is_primary_product', { ascending: false })
+      .limit(8);
 
     if (error) throw error;
     return data;

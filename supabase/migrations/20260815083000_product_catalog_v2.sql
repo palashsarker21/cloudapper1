@@ -5,14 +5,14 @@ ALTER TABLE public.products ADD COLUMN IF NOT EXISTS name_bn TEXT;
 ALTER TABLE public.products ADD COLUMN IF NOT EXISTS features_bn JSONB;
 ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_primary_product BOOLEAN DEFAULT false;
 ALTER TABLE public.products ADD COLUMN IF NOT EXISTS supported_platforms JSONB;
-ALTER TABLE public.products ADD COLUMN IF NOT EXISTS delivery_type TEXT DEFAULT 'instant'; -- instant, manual, scheduled
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS delivery_type TEXT DEFAULT 'instant';
 
 -- Product Status check constraint
-ALTER TABLE public.products DROP CONSTRAINT IF EXISTS product_status_check;
 DO $$ BEGIN
+    ALTER TABLE public.products DROP CONSTRAINT IF EXISTS product_status_check;
     ALTER TABLE public.products ADD CONSTRAINT product_status_check CHECK (status IN ('active', 'coming_soon', 'draft', 'archived'));
 EXCEPTION
-    WHEN duplicate_object THEN NULL;
+    WHEN others THEN NULL;
 END $$;
 
 -- Product Packages Table
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.product_packages (
     price DECIMAL(12,2) NOT NULL,
     currency TEXT NOT NULL DEFAULT 'BDT',
     duration_value INTEGER,
-    duration_unit TEXT, -- day, week, month, year, lifetime
+    duration_unit TEXT,
     license_plan TEXT,
     max_activations INTEGER DEFAULT 1,
     status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
@@ -41,11 +41,14 @@ GRANT ALL ON public.product_packages TO service_role;
 
 ALTER TABLE public.product_packages ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow public read access for active packages" ON public.product_packages
-    FOR SELECT TO public USING (status = 'active');
+DO $$ BEGIN
+    CREATE POLICY "Allow public read access for active packages" ON public.product_packages
+        FOR SELECT TO public USING (status = 'active');
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Initial Primary Product: Lovable Unlimited Credits Extension
--- First, get the extensions category ID
 DO $$
 DECLARE
     ext_cat_id UUID;
