@@ -1,4 +1,4 @@
-import { Star, ShoppingCart, ExternalLink } from "lucide-react";
+import { Star, ShoppingCart, ExternalLink, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
