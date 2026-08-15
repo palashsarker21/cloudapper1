@@ -130,9 +130,14 @@ export const FeaturedProducts = () => {
         name: p.name,
         category: (p.categories as any)?.name || 'Product',
         price: Number(p.price),
-        rating: 5.0, // Default for new products
+        rating: 5.0,
         reviews: 0,
         image: p.image_url || "https://images.unsplash.com/photo-1675557009875-436f49d7af8f?auto=format&fit=crop&q=80&w=400",
+        sku: p.sku,
+        product_type: p.product_type,
+        license_duration: p.license_duration,
+        inventory_type: p.inventory_type,
+        stock_status: p.stock_status,
       }));
     }
   });
