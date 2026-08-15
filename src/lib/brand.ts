@@ -28,5 +28,14 @@ export const brand = {
   },
   social: {
     ogImage: "https://cloudapper.online/brand/og-image.png",
-  }
+    whatsapp: {
+      number: "+8801557749217",
+      url: "https://wa.me/8801557749217",
+      message: "Hello CloudApper, I need help with your products.",
+    },
+    facebook: {
+      url: "https://www.facebook.com/cloudapper",
+      handle: "cloudapper",
+    },
+  },
 };

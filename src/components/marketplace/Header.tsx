@@ -1,8 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { ShoppingCart, User, Menu, X, Bell, Shield, Package, ShoppingBag, Truck, CreditCard, Settings, Users, History, DollarSign, Zap } from "lucide-react";
+import { ShoppingCart, User, Menu, X, Bell, Shield, Package, ShoppingBag, Truck, CreditCard, Settings, Users, History, DollarSign, Zap, MessageCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Logo } from "./Logo";
 import { MarketplaceSearchBar } from "./MarketplaceSearchBar";
+import { brand } from "@/lib/brand";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -83,6 +90,8 @@ export const Header = () => {
     { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
     { label: "Digital Products", href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
+    { label: "WhatsApp Support", href: brand.social.whatsapp.url, external: true },
+    { label: "Facebook Page", href: brand.social.facebook.url, external: true },
     { label: "Support", href: "/login" },
   ];
 
@@ -221,6 +230,21 @@ export const Header = () => {
               </DropdownMenu>
             )}
 
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
+                    <a href={brand.social.whatsapp.url} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-5 w-5 text-[#25D366]" />
+                    </a>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>WhatsApp Support</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
             <Button variant="ghost" size="icon" className="relative" asChild>
               <Link to="/account/notifications">
                 <Bell className="h-5 w-5" />
@@ -268,15 +292,27 @@ export const Header = () => {
             </div>
             {navLinks.map((link) => (
               <div key={link.label} className="flex flex-col space-y-2">
-                <Link
-                  to={link.href as any}
-                  params={(link as any).params}
-                  search={(link as any).search}
-                  className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
+                {link.external ? (
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.href as any}
+                    params={(link as any).params}
+                    search={(link as any).search}
+                    className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )}
               </div>
             ))}
             <Button variant="default" className="w-full mt-4" asChild>
