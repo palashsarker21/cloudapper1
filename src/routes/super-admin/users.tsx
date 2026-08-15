@@ -69,7 +69,7 @@ function SuperAdminUsersPage() {
             <h1 className="text-3xl font-black tracking-tighter">USER MANAGEMENT</h1>
             <p className="text-muted-foreground">Manage platform accounts and permissions</p>
           </div>
-          <Button variant="primary">
+          <Button variant="default">
             <UserPlus className="mr-2 h-4 w-4" />
             Add User
           </Button>
