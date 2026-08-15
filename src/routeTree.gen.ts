@@ -15,6 +15,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SuperAdminRouteImport } from './routes/super-admin'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as AdminFulfillmentRouteImport } from './routes/admin/fulfillment'
 import { Route as AdminHealthRouteImport } from './routes/admin.health'
@@ -65,6 +66,11 @@ const LoginRoute = LoginRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminRoute = SuperAdminRouteImport.update({
+  id: '/super-admin',
+  path: '/super-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrackOrderRoute = TrackOrderRouteImport.update({
@@ -190,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
+  '/super-admin': typeof SuperAdminRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
+  '/super-admin': typeof SuperAdminRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
@@ -249,6 +257,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
+  '/super-admin': typeof SuperAdminRoute
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/login'
     | '/search'
+    | '/super-admin'
     | '/track-order'
     | '/admin/fulfillment'
     | '/admin/health'
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/login'
     | '/search'
+    | '/super-admin'
     | '/track-order'
     | '/admin/fulfillment'
     | '/admin/health'
@@ -338,6 +349,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/login'
     | '/search'
+    | '/super-admin'
     | '/track-order'
     | '/admin/fulfillment'
     | '/admin/health'
@@ -369,6 +381,7 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRouteWithChildren
   LoginRoute: typeof LoginRoute
   SearchRoute: typeof SearchRoute
+  SuperAdminRoute: typeof SuperAdminRoute
   TrackOrderRoute: typeof TrackOrderRoute
   CategorySlugRoute: typeof CategorySlugRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
@@ -419,6 +432,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/super-admin': {
+      id: '/super-admin'
+      path: '/super-admin'
+      fullPath: '/super-admin'
+      preLoaderRoute: typeof SuperAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/track-order': {
@@ -668,6 +688,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRouteWithChildren,
   LoginRoute: LoginRoute,
   SearchRoute: SearchRoute,
+  SuperAdminRoute: SuperAdminRoute,
   TrackOrderRoute: TrackOrderRoute,
   CategorySlugRoute: CategorySlugRoute,
   ProductProductIdRoute: ProductProductIdRoute,
