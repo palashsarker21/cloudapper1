@@ -3,8 +3,10 @@ import { ArrowRight, PackageSearch, ShieldCheck, Zap, CheckCircle2, Headphones }
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export const Hero = () => {
+  const { t } = useLanguage();
   return (
     <section className="relative overflow-hidden bg-surface-0 py-20 sm:py-32">
       {/* Background decoration */}
@@ -17,32 +19,30 @@ export const Hero = () => {
         <div className="flex flex-col items-center text-center">
           <div className="inline-flex items-center rounded-full border bg-muted/50 px-3 py-1 text-xs font-medium text-muted-foreground mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <span className="flex h-2 w-2 rounded-full bg-primary mr-2" />
-            AI Tools, Credits & Digital Products Marketplace
+            {t.nav.marketplace}
           </div>
           
           <Logo variant="icon" className="h-24 w-24 mb-8 drop-shadow-[0_0_30px_rgba(var(--primary),0.3)] animate-float" />
           
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            AI Tools, Credits & <span className="bg-clip-text text-transparent bg-[var(--brand-gradient)]">Digital Products</span>.
-            <br />
-            Built for Modern Creators.
+            {t.home.heroTitle}
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Discover trusted AI tools, digital resources and software products in one secure marketplace — with transparent pricing, verified fulfillment and reliable delivery.
+            {t.home.heroSub}
           </p>
           
           <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Button size="lg" className="h-12 px-8 text-base" asChild>
               <Link to="/search" search={{ sort: 'newest', page: 1 }}>
-                Explore Marketplace
+                {t.common.exploreMarketplace}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button variant="outline" size="lg" className="h-12 px-8 text-base" asChild>
               <Link to="/track-order" search={{ orderId: undefined }}>
                 <PackageSearch className="mr-2 h-4 w-4" />
-                Track My Order
+                {t.nav.trackOrder}
               </Link>
             </Button>
           </div>
