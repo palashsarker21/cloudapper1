@@ -70,7 +70,7 @@ function SuperAdminProductsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <StatsCard title="Active Products" count={products?.length || 0} icon={<Package className="h-4 w-4" />} />
-          <StatsCard title="Categories" count={new Set(products?.map(p => p.category)).size} icon={<Layers className="h-4 w-4" />} color="text-primary" />
+          <StatsCard title="Categories" count={new Set((products as any[])?.map((p: any) => p.category)).size} icon={<Layers className="h-4 w-4" />} color="text-primary" />
           <StatsCard title="Total Inventory" count="9,999+" icon={<ArrowUpRight className="h-4 w-4" />} color="text-emerald-500" />
         </div>
 
