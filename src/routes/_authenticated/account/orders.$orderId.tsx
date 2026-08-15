@@ -75,8 +75,10 @@ function OrderDetailsPage() {
 
   // Adjust steps based on failure
   if ((order as any).status === 'cancelled' || (order as any).status === 'failed') {
-    steps[1].status = 'failed';
-    steps[1].label = (order as any).status === 'cancelled' ? 'Order Cancelled' : 'Order Failed';
+    if (steps[1]) {
+      steps[1].status = 'failed';
+      steps[1].label = (order as any).status === 'cancelled' ? 'Order Cancelled' : 'Order Failed';
+    }
     steps.splice(2);
   }
 
