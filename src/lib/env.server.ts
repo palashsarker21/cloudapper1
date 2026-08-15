@@ -35,13 +35,9 @@ export type EnvKey =
  * Safely check if a service is configured without exposing values
  */
 export function isServiceConfigured(service: 'binance' | 'eklas' | 'email'): boolean {
-  const keys = {
-    binance: BINANCE_PAY_API_KEY,
-    eklas: OPTIONAL_FULFILLMENT,
-    email: ['EMAIL_PROVIDER_API_KEY'] as const, // Minimum required
-  };
-
   if (service === 'binance') {
+    return OPTIONAL_PAYMENT.every(key => !!process.env[key]);
+  }
     return OPTIONAL_PAYMENT.every(key => !!process.env[key]);
   }
   if (service === 'eklas') {
