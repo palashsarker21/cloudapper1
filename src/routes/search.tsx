@@ -238,6 +238,5 @@ function SearchPage() {
 }
 
 const cn = (...inputs: any[]) => {
-  const { clsx, twMerge } = require('clsx-tailwind-merge');
-  return twMerge(clsx(inputs));
+  return inputs.filter(Boolean).join(' ');
 };
