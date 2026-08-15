@@ -38,8 +38,6 @@ export function isServiceConfigured(service: 'binance' | 'eklas' | 'email'): boo
   if (service === 'binance') {
     return OPTIONAL_PAYMENT.every(key => !!process.env[key]);
   }
-    return OPTIONAL_PAYMENT.every(key => !!process.env[key]);
-  }
   if (service === 'eklas') {
     return OPTIONAL_FULFILLMENT.every(key => !!process.env[key]);
   }
