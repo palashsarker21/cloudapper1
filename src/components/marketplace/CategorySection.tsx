@@ -81,6 +81,7 @@ export const CategorySection = () => {
                   key={category.id}
                   to="/category/$slug"
                   params={{ slug: category.slug }}
+                  search={{ sort: 'newest', page: 1 }}
                   className="group flex flex-col items-center justify-center rounded-3xl border-2 border-transparent bg-surface-2 p-8 text-center transition-all hover:border-primary/20 hover:shadow-[var(--shadow-elevated)] hover:-translate-y-1"
                 >
                   <div className={`mb-4 flex h-20 w-20 items-center justify-center rounded-3xl border-2 ${colorClass} transition-all group-hover:scale-110 shadow-sm group-hover:shadow-[var(--brand-glow)]`}>
