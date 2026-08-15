@@ -24,6 +24,7 @@ import { Route as AdminPaymentsRouteImport } from './routes/admin/payments'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
+import { Route as ExtensionsLovableUnlimitedCreditsRouteImport } from './routes/extensions.lovable-unlimited-credits'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
 import { Route as SuperAdminIndexRouteImport } from './routes/super-admin/index'
 import { Route as SuperAdminAuditLogsRouteImport } from './routes/super-admin/audit-logs'
@@ -124,6 +125,12 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExtensionsLovableUnlimitedCreditsRoute =
+  ExtensionsLovableUnlimitedCreditsRouteImport.update({
+    id: '/extensions/lovable-unlimited-credits',
+    path: '/extensions/lovable-unlimited-credits',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ProductProductIdRoute = ProductProductIdRouteImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
@@ -273,6 +280,7 @@ export interface FileRoutesByFullPath {
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
+  '/extensions/lovable-unlimited-credits': typeof ExtensionsLovableUnlimitedCreditsRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
   '/super-admin/licenses': typeof SuperAdminLicensesRoute
@@ -312,6 +320,7 @@ export interface FileRoutesByTo {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
+  '/extensions/lovable-unlimited-credits': typeof ExtensionsLovableUnlimitedCreditsRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
   '/super-admin/licenses': typeof SuperAdminLicensesRoute
@@ -355,6 +364,7 @@ export interface FileRoutesById {
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
+  '/extensions/lovable-unlimited-credits': typeof ExtensionsLovableUnlimitedCreditsRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
   '/super-admin/licenses': typeof SuperAdminLicensesRoute
@@ -398,6 +408,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/settings'
     | '/category/$slug'
+    | '/extensions/lovable-unlimited-credits'
     | '/product/$productId'
     | '/super-admin/audit-logs'
     | '/super-admin/licenses'
@@ -437,6 +448,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/products'
     | '/category/$slug'
+    | '/extensions/lovable-unlimited-credits'
     | '/product/$productId'
     | '/super-admin/audit-logs'
     | '/super-admin/licenses'
@@ -479,6 +491,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/settings'
     | '/category/$slug'
+    | '/extensions/lovable-unlimited-credits'
     | '/product/$productId'
     | '/super-admin/audit-logs'
     | '/super-admin/licenses'
@@ -516,6 +529,7 @@ export interface RootRouteChildren {
   SuperAdminRoute: typeof SuperAdminRouteWithChildren
   TrackOrderRoute: typeof TrackOrderRoute
   CategorySlugRoute: typeof CategorySlugRoute
+  ExtensionsLovableUnlimitedCreditsRoute: typeof ExtensionsLovableUnlimitedCreditsRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
   ApiPublicWebhooksBinanceRoute: typeof ApiPublicWebhooksBinanceRoute
@@ -627,6 +641,13 @@ declare module '@tanstack/react-router' {
       path: '/category/$slug'
       fullPath: '/category/$slug'
       preLoaderRoute: typeof CategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/extensions/lovable-unlimited-credits': {
+      id: '/extensions/lovable-unlimited-credits'
+      path: '/extensions/lovable-unlimited-credits'
+      fullPath: '/extensions/lovable-unlimited-credits'
+      preLoaderRoute: typeof ExtensionsLovableUnlimitedCreditsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/product/$productId': {
@@ -950,6 +971,8 @@ const rootRouteChildren: RootRouteChildren = {
   SuperAdminRoute: SuperAdminRouteWithChildren,
   TrackOrderRoute: TrackOrderRoute,
   CategorySlugRoute: CategorySlugRoute,
+  ExtensionsLovableUnlimitedCreditsRoute:
+    ExtensionsLovableUnlimitedCreditsRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   ApiPublicWebhookRoute: ApiPublicWebhookRoute,
   ApiPublicWebhooksBinanceRoute: ApiPublicWebhooksBinanceRoute,
