@@ -49,6 +49,7 @@ export const getLicenseInventory = createServerFn({ method: "GET" })
     const { data: isAdmin } = await (supabaseAdmin as any).rpc('has_role', { _user_id: userId, _role: 'admin' });
     if (!isAdmin) throw new Error("Unauthorized");
 
+    const { data: licenses, error } = await (supabaseAdmin
       .from('product_licenses' as any)
       .select('*')
       .eq('product_id', data.productId)
@@ -56,6 +57,7 @@ export const getLicenseInventory = createServerFn({ method: "GET" })
 
     if (error) throw error;
     return licenses;
+
   });
 
 export const updateLicenseStatus = createServerFn({ method: "POST" })
