@@ -39,38 +39,40 @@ export const submitPaymentVerification = createServerFn({ method: "POST" })
     
     const { data: payment } = await supabaseAdmin
       .from('payments')
-      .select('provider, status')
+      .select('provider, status, amount, currency, order_id')
       .eq('id', paymentId)
       .eq('user_id', userId)
       .single();
       
     if (!payment) throw new Error("Payment not found");
 
-    // Check for duplicate TXID
+    // Normalize transaction ID: trim whitespace
+    const normalizedTxId = transactionId.trim();
+    if (!normalizedTxId) throw new Error("Transaction ID is required");
+
+    // Check for duplicate TXID for the same provider
     const { data: duplicate } = await supabaseAdmin
       .from('payments')
-      .select('id')
+      .select('id, status')
       .eq('provider', payment.provider)
-      .eq('customer_transaction_id', transactionId)
+      .eq('customer_transaction_id', normalizedTxId)
       .neq('id', paymentId)
       .maybeSingle();
 
-    const status = duplicate ? 'manual_review' : 'payment_submitted';
-    const metadata: any = { 
-      duplicate_txid: !!duplicate,
-      original_status: payment.status 
-    };
+    if (duplicate) {
+      // If a successful or pending payment already exists with this TXID
+      throw new Error("This transaction ID has already been submitted.");
+    }
 
     const { error } = await supabaseAdmin
       .from('payments')
       .update({
-        customer_transaction_id: transactionId,
+        customer_transaction_id: normalizedTxId,
         sender_mobile: senderMobile ?? null,
         email_delivery_requested: emailDeliveryRequested,
-        status: status as any,
-        metadata
+        status: 'under_review' as any,
+        verification_status: 'pending'
       })
-
       .eq('id', paymentId);
 
     if (error) {
@@ -81,11 +83,13 @@ export const submitPaymentVerification = createServerFn({ method: "POST" })
     // Audit log
     await supabaseAdmin.from('audit_logs').insert({
       actor_id: userId,
-      action: duplicate ? 'DUPLICATE_TRANSACTION_SUBMITTED' : 'PAYMENT_SUBMITTED',
+      action: 'PAYMENT_SUBMITTED',
       target_type: 'payment',
       target_id: paymentId,
-      metadata: { transactionId, senderMobile }
+      metadata: { transactionId: normalizedTxId, senderMobile, emailDeliveryRequested }
     });
+
+    return { status: 'under_review' };
 
     return { status };
   });
