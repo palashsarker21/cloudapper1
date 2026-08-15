@@ -146,7 +146,7 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {licenses.map((license) => (
+                  {licenses.map((license: any) => (
                     <TableRow key={license.id}>
                       <TableCell className="font-mono text-xs whitespace-nowrap">
                         <div className="flex items-center gap-2">
