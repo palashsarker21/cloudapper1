@@ -206,21 +206,31 @@ function CheckoutPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-4">
-                <PaymentMethodButton 
-                  id="bkash"
-                  name="bKash"
-                  description="Pay securely with bKash"
-                  icon={<Smartphone className="h-6 w-6" />}
-                  selected={paymentProvider === 'bkash'}
-                  onClick={() => setPaymentProvider('bkash')}
-                />
+                {activeReceivers.map(receiver => (
+                  <PaymentMethodButton 
+                    key={receiver.id}
+                    id={receiver.provider}
+                    name={receiver.display_name}
+                    description={`Pay via ${receiver.provider.toUpperCase()}`}
+                    icon={<Smartphone className="h-6 w-6" />}
+                    selected={selectedReceiver?.id === receiver.id}
+                    onClick={() => {
+                      setPaymentProvider(receiver.provider as any);
+                      setSelectedReceiver(receiver);
+                    }}
+                  />
+                ))}
+                
                 <PaymentMethodButton 
                   id="binance_pay"
                   name="Binance Pay"
                   description="Pay with Binance Pay"
                   icon={<CreditCard className="h-6 w-6" />}
                   selected={paymentProvider === 'binance_pay'}
-                  onClick={() => setPaymentProvider('binance_pay')}
+                  onClick={() => {
+                    setPaymentProvider('binance_pay');
+                    setSelectedReceiver(null);
+                  }}
                 />
                 <PaymentMethodButton 
                   id="bitget_pay"
@@ -228,7 +238,10 @@ function CheckoutPage() {
                   description="Pay with Bitget Wallet"
                   icon={<Wallet className="h-6 w-6" />}
                   selected={paymentProvider === 'bitget_pay'}
-                  onClick={() => setPaymentProvider('bitget_pay')}
+                  onClick={() => {
+                    setPaymentProvider('bitget_pay');
+                    setSelectedReceiver(null);
+                  }}
                 />
                 <PaymentMethodButton 
                   id="crypto_wallet"
@@ -238,6 +251,7 @@ function CheckoutPage() {
                   selected={paymentProvider === 'crypto_wallet'}
                   onClick={() => {
                     setPaymentProvider('crypto_wallet');
+                    setSelectedReceiver(null);
                     loadCryptoWallets();
                   }}
                 />
