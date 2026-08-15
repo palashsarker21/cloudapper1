@@ -92,6 +92,7 @@ function CheckoutPage() {
         data: {
           orderId: orderResult.orderId,
           provider: paymentProvider as any,
+          receiverId: selectedReceiver?.id,
           currency: 'BDT',
           metadata: paymentProvider === 'crypto_wallet' ? {
             wallet_address: selectedWallet?.wallet_address,
