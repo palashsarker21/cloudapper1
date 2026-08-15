@@ -11,6 +11,7 @@ import { Logo } from '@/components/marketplace/Logo';
 import { useState } from 'react';
 import { useServerFn } from '@tanstack/react-start';
 import { createOrder, initiatePayment } from '@/lib/checkout.functions';
+import { getPaymentReceivers } from '@/lib/admin.functions';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { createPaymentRecord, getActiveCryptoWallets } from '@/lib/payments.functions';
@@ -38,7 +39,9 @@ function CheckoutPage() {
   const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>('bkash');
   const [paymentStep, setPaymentStep] = useState<'selector' | 'details'>('selector');
   const [cryptoWallets, setCryptoWallets] = useState<any[]>([]);
+  const [paymentReceivers, setPaymentReceivers] = useState<any[]>([]);
   const [selectedWallet, setSelectedWallet] = useState<any>(null);
+  const [selectedReceiver, setSelectedReceiver] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -49,6 +52,7 @@ function CheckoutPage() {
   const initiatePaymentFn = useServerFn(initiatePayment);
   const createPaymentRecordFn = useServerFn(createPaymentRecord);
   const getCryptoWalletsFn = useServerFn(getActiveCryptoWallets);
+  const getPaymentReceiversFn = useServerFn(getPaymentReceivers);
 
   if (items.length === 0) {
     return (

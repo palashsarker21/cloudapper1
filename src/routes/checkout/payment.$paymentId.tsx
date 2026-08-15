@@ -77,8 +77,9 @@ function PaymentProcessingPage() {
   if (isLoading) return <div className="p-20 text-center"><Loader2 className="animate-spin mx-auto text-primary" /></div>;
   if (!payment) return <div className="p-20 text-center">Payment not found</div>;
 
-  const receiverNumber = "+8801934857886";
-  const isManual = payment.provider === 'bkash' || payment.provider === 'nagad';
+  const receiver = (payment as any).receiver;
+  const receiverNumber = receiver?.receiver_identifier || "+8801934857886";
+  const isManual = payment.provider === 'bkash' || payment.provider === 'nagad' || receiver !== null;
   const isSubmitted = ['payment_submitted', 'under_review', 'ready_for_confirmation'].includes(payment.status);
 
   return (
