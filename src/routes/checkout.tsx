@@ -128,7 +128,7 @@ function CheckoutPage() {
     queryFn: () => getPaymentReceiversFn(),
   });
 
-  const activeReceivers = initialReceivers?.filter(r => r.enabled) || [];
+  const activeReceivers = initialReceivers?.filter((r: any) => r.enabled) || [];
 
   return (
     <div className="min-h-screen bg-surface-0">
@@ -200,7 +200,7 @@ function CheckoutPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-4">
-                {activeReceivers.map(receiver => (
+                {activeReceivers.map((receiver: any) => (
                   <PaymentMethodButton 
                     key={receiver.id}
                     id={receiver.provider}
