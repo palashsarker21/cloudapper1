@@ -15,6 +15,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SuperAdminRouteImport } from './routes/super-admin'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as AdminFulfillmentRouteImport } from './routes/admin/fulfillment'
 import { Route as AdminHealthRouteImport } from './routes/admin.health'
@@ -24,6 +25,13 @@ import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
+import { Route as SuperAdminIndexRouteImport } from './routes/super-admin/index'
+import { Route as SuperAdminAuditLogsRouteImport } from './routes/super-admin/audit-logs'
+import { Route as SuperAdminOrdersRouteImport } from './routes/super-admin/orders'
+import { Route as SuperAdminPaymentsRouteImport } from './routes/super-admin/payments'
+import { Route as SuperAdminProductsRouteImport } from './routes/super-admin/products'
+import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin/settings'
+import { Route as SuperAdminUsersRouteImport } from './routes/super-admin/users'
 import { Route as AuthenticatedAccountEntitlementsRouteImport } from './routes/_authenticated/account/entitlements'
 import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/_authenticated/account/notifications'
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin/products.$productId'
@@ -65,6 +73,11 @@ const LoginRoute = LoginRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminRoute = SuperAdminRouteImport.update({
+  id: '/super-admin',
+  path: '/super-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrackOrderRoute = TrackOrderRouteImport.update({
@@ -111,6 +124,41 @@ const ProductProductIdRoute = ProductProductIdRouteImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminIndexRoute = SuperAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminAuditLogsRoute = SuperAdminAuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminOrdersRoute = SuperAdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminPaymentsRoute = SuperAdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminProductsRoute = SuperAdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminSettingsRoute = SuperAdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminUsersRoute = SuperAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => SuperAdminRoute,
 } as any)
 const AuthenticatedAccountEntitlementsRoute =
   AuthenticatedAccountEntitlementsRouteImport.update({
@@ -190,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
+  '/super-admin': typeof SuperAdminRouteWithChildren
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
@@ -199,6 +248,13 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
+  '/super-admin/orders': typeof SuperAdminOrdersRoute
+  '/super-admin/payments': typeof SuperAdminPaymentsRoute
+  '/super-admin/products': typeof SuperAdminProductsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
+  '/super-admin/users': typeof SuperAdminUsersRoute
+  '/super-admin/': typeof SuperAdminIndexRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
@@ -227,6 +283,13 @@ export interface FileRoutesByTo {
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
+  '/super-admin/orders': typeof SuperAdminOrdersRoute
+  '/super-admin/payments': typeof SuperAdminPaymentsRoute
+  '/super-admin/products': typeof SuperAdminProductsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
+  '/super-admin/users': typeof SuperAdminUsersRoute
+  '/super-admin': typeof SuperAdminIndexRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
@@ -249,6 +312,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
+  '/super-admin': typeof SuperAdminRouteWithChildren
   '/track-order': typeof TrackOrderRoute
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
@@ -258,6 +322,13 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/super-admin/audit-logs': typeof SuperAdminAuditLogsRoute
+  '/super-admin/orders': typeof SuperAdminOrdersRoute
+  '/super-admin/payments': typeof SuperAdminPaymentsRoute
+  '/super-admin/products': typeof SuperAdminProductsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
+  '/super-admin/users': typeof SuperAdminUsersRoute
+  '/super-admin/': typeof SuperAdminIndexRoute
   '/_authenticated/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
   '/_authenticated/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
@@ -280,6 +351,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/login'
     | '/search'
+    | '/super-admin'
     | '/track-order'
     | '/admin/fulfillment'
     | '/admin/health'
@@ -289,6 +361,13 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/category/$slug'
     | '/product/$productId'
+    | '/super-admin/audit-logs'
+    | '/super-admin/orders'
+    | '/super-admin/payments'
+    | '/super-admin/products'
+    | '/super-admin/settings'
+    | '/super-admin/users'
+    | '/super-admin/'
     | '/account/entitlements'
     | '/account/notifications'
     | '/admin/products/$productId'
@@ -317,6 +396,13 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/category/$slug'
     | '/product/$productId'
+    | '/super-admin/audit-logs'
+    | '/super-admin/orders'
+    | '/super-admin/payments'
+    | '/super-admin/products'
+    | '/super-admin/settings'
+    | '/super-admin/users'
+    | '/super-admin'
     | '/account/entitlements'
     | '/account/notifications'
     | '/admin/products/$productId'
@@ -338,6 +424,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/login'
     | '/search'
+    | '/super-admin'
     | '/track-order'
     | '/admin/fulfillment'
     | '/admin/health'
@@ -347,6 +434,13 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/category/$slug'
     | '/product/$productId'
+    | '/super-admin/audit-logs'
+    | '/super-admin/orders'
+    | '/super-admin/payments'
+    | '/super-admin/products'
+    | '/super-admin/settings'
+    | '/super-admin/users'
+    | '/super-admin/'
     | '/_authenticated/account/entitlements'
     | '/_authenticated/account/notifications'
     | '/admin/products/$productId'
@@ -369,6 +463,7 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRouteWithChildren
   LoginRoute: typeof LoginRoute
   SearchRoute: typeof SearchRoute
+  SuperAdminRoute: typeof SuperAdminRouteWithChildren
   TrackOrderRoute: typeof TrackOrderRoute
   CategorySlugRoute: typeof CategorySlugRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
@@ -419,6 +514,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/super-admin': {
+      id: '/super-admin'
+      path: '/super-admin'
+      fullPath: '/super-admin'
+      preLoaderRoute: typeof SuperAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/track-order': {
@@ -483,6 +585,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/product/$productId'
       preLoaderRoute: typeof ProductProductIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/super-admin/': {
+      id: '/super-admin/'
+      path: '/'
+      fullPath: '/super-admin/'
+      preLoaderRoute: typeof SuperAdminIndexRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/audit-logs': {
+      id: '/super-admin/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/super-admin/audit-logs'
+      preLoaderRoute: typeof SuperAdminAuditLogsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/orders': {
+      id: '/super-admin/orders'
+      path: '/orders'
+      fullPath: '/super-admin/orders'
+      preLoaderRoute: typeof SuperAdminOrdersRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/payments': {
+      id: '/super-admin/payments'
+      path: '/payments'
+      fullPath: '/super-admin/payments'
+      preLoaderRoute: typeof SuperAdminPaymentsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/products': {
+      id: '/super-admin/products'
+      path: '/products'
+      fullPath: '/super-admin/products'
+      preLoaderRoute: typeof SuperAdminProductsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/settings': {
+      id: '/super-admin/settings'
+      path: '/settings'
+      fullPath: '/super-admin/settings'
+      preLoaderRoute: typeof SuperAdminSettingsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/users': {
+      id: '/super-admin/users'
+      path: '/users'
+      fullPath: '/super-admin/users'
+      preLoaderRoute: typeof SuperAdminUsersRouteImport
+      parentRoute: typeof SuperAdminRoute
     }
     '/_authenticated/account/entitlements': {
       id: '/_authenticated/account/entitlements'
@@ -661,6 +812,30 @@ const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
   CheckoutRouteChildren,
 )
 
+interface SuperAdminRouteChildren {
+  SuperAdminAuditLogsRoute: typeof SuperAdminAuditLogsRoute
+  SuperAdminOrdersRoute: typeof SuperAdminOrdersRoute
+  SuperAdminPaymentsRoute: typeof SuperAdminPaymentsRoute
+  SuperAdminProductsRoute: typeof SuperAdminProductsRoute
+  SuperAdminSettingsRoute: typeof SuperAdminSettingsRoute
+  SuperAdminUsersRoute: typeof SuperAdminUsersRoute
+  SuperAdminIndexRoute: typeof SuperAdminIndexRoute
+}
+
+const SuperAdminRouteChildren: SuperAdminRouteChildren = {
+  SuperAdminAuditLogsRoute: SuperAdminAuditLogsRoute,
+  SuperAdminOrdersRoute: SuperAdminOrdersRoute,
+  SuperAdminPaymentsRoute: SuperAdminPaymentsRoute,
+  SuperAdminProductsRoute: SuperAdminProductsRoute,
+  SuperAdminSettingsRoute: SuperAdminSettingsRoute,
+  SuperAdminUsersRoute: SuperAdminUsersRoute,
+  SuperAdminIndexRoute: SuperAdminIndexRoute,
+}
+
+const SuperAdminRouteWithChildren = SuperAdminRoute._addFileChildren(
+  SuperAdminRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -668,6 +843,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRouteWithChildren,
   LoginRoute: LoginRoute,
   SearchRoute: SearchRoute,
+  SuperAdminRoute: SuperAdminRouteWithChildren,
   TrackOrderRoute: TrackOrderRoute,
   CategorySlugRoute: CategorySlugRoute,
   ProductProductIdRoute: ProductProductIdRoute,
