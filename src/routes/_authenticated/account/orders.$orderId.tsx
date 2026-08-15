@@ -158,62 +158,89 @@ function OrderDetailsPage() {
               </CardHeader>
               <CardContent>
                 <div className="divide-y divide-border">
-                  {order.order_items.map((item: any) => (
-                    <div key={item.id} className="py-6 first:pt-0 last:pb-0">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex gap-4">
-                          <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                            {item.products?.image_url ? (
-                              <img src={item.products.image_url} alt={item.product_name} className="h-full w-full object-cover rounded-lg" />
-                            ) : (
-                              <Package className="h-8 w-8 text-muted-foreground/40" />
-                            )}
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-lg">{item.product_name}</h4>
-                            <div className="flex gap-2 mt-1">
-                              <Badge variant="outline" className="text-[10px] capitalize">{item.products?.product_type || 'Digital'}</Badge>
-                              <Badge variant="secondary" className="text-[10px]">Qty: {item.quantity}</Badge>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold">{item.total_price} {order.currency}</p>
-                          <p className="text-xs text-muted-foreground">{item.unit_price} each</p>
-                        </div>
-                      </div>
+                  {order.order_items.map((item: any) => {
+                    const itemFulfillment = order.fulfillments?.find((f: any) => f.product_id === item.product_id);
+                    const itemEntitlement = order.entitlements?.find((e: any) => e.product_id === item.product_id);
 
-                      {/* Delivery Info for this item */}
-                      { (order as any).status === 'paid' || (order as any).status === 'completed' ? (
-                        <div className="mt-4 p-4 bg-primary/5 rounded-xl border border-primary/20 border-dashed animate-in fade-in slide-in-from-top-2">
-                          <div className="flex items-center justify-between">
-                            <div className="flex flex-col gap-0.5">
-                              <div className="flex items-center gap-2 text-sm font-bold text-primary">
-                                <ShieldCheck className="h-4 w-4" />
-                                Product Delivered
+                    return (
+                      <div key={item.id} className="py-6 first:pt-0 last:pb-0">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex gap-4">
+                            <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                              {item.products?.image_url ? (
+                                <img src={item.products.image_url} alt={item.product_name} className="h-full w-full object-cover rounded-lg" />
+                              ) : (
+                                <Package className="h-8 w-8 text-muted-foreground/40" />
+                              )}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-lg">{item.product_name}</h4>
+                              <div className="flex gap-2 mt-1">
+                                <Badge variant="outline" className="text-[10px] capitalize">{item.products?.product_type || 'Digital'}</Badge>
+                                <Badge variant="secondary" className="text-[10px]">Qty: {item.quantity}</Badge>
                               </div>
-                              <p className="text-[10px] text-muted-foreground">Access your license and download instructions in your library.</p>
-                            </div>
-                            <Button size="sm" variant="default" className="h-8 px-4 text-xs shadow-lg shadow-primary/20" asChild>
-                              <Link to="/account/entitlements">
-                                Access Library
-                              </Link>
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (order as any).status === 'processing' ? (
-                        <div className="mt-4 p-4 bg-surface-2 rounded-xl border border-border/10 border-dashed">
-                          <div className="flex items-center gap-3">
-                            <Loader2 className="h-4 w-4 text-primary animate-spin" />
-                            <div className="flex flex-col">
-                              <span className="text-xs font-bold">Generating License...</span>
-                              <span className="text-[10px] text-muted-foreground">Eklas automation is preparing your keys. This takes ~30 seconds.</span>
                             </div>
                           </div>
+                          <div className="text-right">
+                            <p className="font-bold">{item.total_price} {order.currency}</p>
+                            <p className="text-xs text-muted-foreground">{item.unit_price} each</p>
+                          </div>
                         </div>
-                      ) : null}
-                    </div>
-                  ))}
+
+                        {/* Delivery Info for this item */}
+                        {itemFulfillment?.status === 'completed' && itemEntitlement ? (
+                          <div className="mt-4 p-4 bg-success/5 rounded-xl border border-success/20 border-dashed animate-in fade-in slide-in-from-top-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-2 text-sm font-bold text-success">
+                                  <ShieldCheck className="h-4 w-4" />
+                                  Product Delivered & Ready
+                                </div>
+                                <p className="text-[10px] text-muted-foreground">Access your license key and setup instructions below.</p>
+                              </div>
+                              <Button size="sm" variant="default" className="h-8 px-4 text-xs shadow-lg shadow-success/20 bg-success hover:bg-success/90" asChild>
+                                <Link to="/account/entitlements">
+                                  View in Library
+                                </Link>
+                              </Button>
+                            </div>
+                            
+                            {/* Quick License Preview for Premium Feel */}
+                            <div className="mt-3 p-3 bg-surface-2 rounded-lg border border-border/5 flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <Key className="h-4 w-4 text-primary" />
+                                <div className="flex flex-col">
+                                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">License ID</span>
+                                  <span className="text-xs font-mono">{itemEntitlement.license_id?.substring(0, 12)}...</span>
+                                </div>
+                              </div>
+                              <Badge variant="outline" className="text-[9px] bg-primary/5 border-primary/20 text-primary">Active</Badge>
+                            </div>
+                          </div>
+                        ) : itemFulfillment?.status === 'pending' || itemFulfillment?.status === 'processing' || order.status === 'processing' ? (
+                          <div className="mt-4 p-4 bg-surface-2 rounded-xl border border-border/10 border-dashed">
+                            <div className="flex items-center gap-3">
+                              <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                              <div className="flex flex-col">
+                                <span className="text-xs font-bold">Generating License...</span>
+                                <span className="text-[10px] text-muted-foreground">Eklas automation is preparing your keys. This usually takes 30-60 seconds.</span>
+                              </div>
+                            </div>
+                          </div>
+                        ) : itemFulfillment?.status === 'failed' ? (
+                          <div className="mt-4 p-4 bg-destructive/5 rounded-xl border border-destructive/20 border-dashed">
+                            <div className="flex items-center gap-3 text-destructive">
+                              <AlertCircle className="h-4 w-4" />
+                              <div className="flex flex-col">
+                                <span className="text-xs font-bold">Fulfillment Failed</span>
+                                <span className="text-[10px] opacity-80">There was an issue generating your license. Support has been notified.</span>
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
