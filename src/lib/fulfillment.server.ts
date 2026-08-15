@@ -113,7 +113,6 @@ export async function processOrderFulfillment(orderId: string) {
       // Execute delivery based on method
       if (product.delivery_method === 'license_key') {
         // Check if it's Eklas powered
-        // For now we assume extension products use Eklas
         if (product.product_type === 'browser_extensions') {
           const { generateEklasLicense } = await import("./license-fulfillment.server");
           await generateEklasLicense(orderId, item.id, {
@@ -127,11 +126,14 @@ export async function processOrderFulfillment(orderId: string) {
         }
       } else if (product.delivery_method === 'instant_download') {
         await deliverDigitalFile(fulfillment, item, product, order.customer_id!);
-      } else {
-        // Manual delivery remains in processing/pending for admin
+      } else if (product.delivery_method === 'manual_fulfillment') {
+        // Manual delivery remains in processing for admin
         await logFulfillmentEvent(fulfillment.id, 'manual_required', { product: product.name });
-        continue; // Don't mark completed yet
+        continue; 
+      } else {
+        throw new Error(`Unsupported delivery method: ${product.delivery_method}`);
       }
+
 
       // Mark completed
       await updateFulfillmentStatus(fulfillment.id, 'completed');

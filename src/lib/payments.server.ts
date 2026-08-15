@@ -124,15 +124,20 @@ export async function updatePaymentStatus(paymentId: string, status: PaymentStat
 
   // Trigger Order Status & Fulfillment if Paid
   if (status === 'paid') {
-    await (supabaseAdmin
+    // Atomic update of order status to paid
+    const { error: orderUpdateError } = await (supabaseAdmin
       .from('orders' as any)
       .update({ status: 'paid', updated_at: new Date().toISOString() })
-      .eq('id', currentPayment.order_id) as any);
+      .eq('id', currentPayment.order_id)
+      .eq('status', 'pending') as any); // Only transition from pending to paid
     
-    // Asynchronous fulfillment trigger
-    processOrderFulfillment(currentPayment.order_id).catch(err => {
-      console.error(`[PaymentService] Fulfillment failed for order ${currentPayment.order_id}`, err);
-    });
+    if (!orderUpdateError) {
+      // Asynchronous fulfillment trigger - non-blocking but logged
+      processOrderFulfillment(currentPayment.order_id).catch(err => {
+        console.error(`[PaymentService] Fulfillment failed for order ${currentPayment.order_id}`, err);
+      });
+    }
+
   }
 
   return updatedPayment;
