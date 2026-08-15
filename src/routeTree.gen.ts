@@ -18,6 +18,7 @@ import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as AdminFulfillmentRouteImport } from './routes/admin/fulfillment'
 import { Route as AdminHealthRouteImport } from './routes/admin.health'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
+import { Route as AdminPaymentsRouteImport } from './routes/admin/payments'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
@@ -72,6 +73,11 @@ const AdminHealthRoute = AdminHealthRouteImport.update({
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
   id: '/admin/orders',
   path: '/admin/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/admin/payments',
+  path: '/admin/payments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByTo {
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/admin/fulfillment': typeof AdminFulfillmentRoute
   '/admin/health': typeof AdminHealthRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -210,6 +219,7 @@ export interface FileRouteTypes {
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
+    | '/admin/payments'
     | '/admin/products'
     | '/admin/settings'
     | '/category/$slug'
@@ -231,6 +241,7 @@ export interface FileRouteTypes {
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
+    | '/admin/payments'
     | '/admin/products'
     | '/admin/settings'
     | '/category/$slug'
@@ -253,6 +264,7 @@ export interface FileRouteTypes {
     | '/admin/fulfillment'
     | '/admin/health'
     | '/admin/orders'
+    | '/admin/payments'
     | '/admin/products'
     | '/admin/settings'
     | '/category/$slug'
@@ -276,6 +288,7 @@ export interface RootRouteChildren {
   AdminFulfillmentRoute: typeof AdminFulfillmentRoute
   AdminHealthRoute: typeof AdminHealthRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   AdminSettingsRoute: typeof AdminSettingsRoute
   CategorySlugRoute: typeof CategorySlugRoute
@@ -346,6 +359,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/orders'
       fullPath: '/admin/orders'
       preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/admin/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/products': {
@@ -481,6 +501,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminFulfillmentRoute: AdminFulfillmentRoute,
   AdminHealthRoute: AdminHealthRoute,
   AdminOrdersRoute: AdminOrdersRoute,
+  AdminPaymentsRoute: AdminPaymentsRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminSettingsRoute: AdminSettingsRoute,
   CategorySlugRoute: CategorySlugRoute,
