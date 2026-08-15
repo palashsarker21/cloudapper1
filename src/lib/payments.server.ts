@@ -5,16 +5,92 @@ export type PaymentProvider = 'bkash' | 'nagad' | 'binance_pay' | 'bitget_pay' |
 export type PaymentStatus = 'created' | 'pending' | 'processing' | 'paid' | 'failed' | 'expired' | 'cancelled' | 'refunded' | 'underpaid' | 'overpaid' | 'manual_review' | 'awaiting_payment' | 'payment_submitted' | 'under_review' | 'ready_for_confirmation' | 'payment_verified' | 'payment_rejected';
 
 
-export async function logPaymentAudit(paymentId: string, orderId: string, action: string, previousStatus: PaymentStatus | null, newStatus: PaymentStatus, actor: string | null = 'system', metadata: any = {}) {
-  await supabaseAdmin.from('payment_audit_log').insert({
-    payment_id: paymentId,
-    order_id: orderId,
-    actor: actor,
-    action,
-    previous_status: previousStatus,
-    new_status: newStatus,
-    metadata
-  });
+export async function logPaymentAudit(
+  paymentId: string, 
+  orderId: string, 
+  action: string, 
+  previousStatus: PaymentStatus | null, 
+  newStatus: PaymentStatus, 
+  actor: string | null = 'system', 
+  metadata: any = {}
+) {
+  // Try to use the unified audit_logs table first
+  try {
+    await supabaseAdmin.from('audit_logs').insert({
+      actor_id: actor && actor !== 'system' ? actor : null,
+      action,
+      payment_id: paymentId,
+      order_id: orderId,
+      target_type: 'payment',
+      target_id: paymentId,
+      metadata: { ...metadata, previousStatus, newStatus }
+    });
+  } catch (err) {
+    // Fallback to old table if exists or ignore
+    console.warn("Failed to log to audit_logs, trying payment_audit_log fallback", err);
+    await supabaseAdmin.from('payment_audit_log').insert({
+      payment_id: paymentId,
+      order_id: orderId,
+      actor: actor,
+      action,
+      previous_status: previousStatus,
+      new_status: newStatus,
+      metadata
+    }).catch(e => console.error("Total audit logging failure", e));
+  }
+}
+
+export async function calculatePaymentRisk(paymentId: string) {
+  const { data: payment } = await supabaseAdmin
+    .from('payments')
+    .select('*, orders(total)')
+    .eq('id', paymentId)
+    .single();
+    
+  if (!payment) return 'low';
+  
+  const flags: any[] = [];
+  let riskScore = 'low';
+
+  // 1. Amount Mismatch
+  if (payment.received_amount && Number(payment.received_amount) !== Number(payment.amount)) {
+    flags.push({
+      flag_type: 'amount_mismatch',
+      severity: 'medium',
+      description: `Expected ${payment.amount}, received ${payment.received_amount}`
+    });
+    riskScore = 'medium';
+  }
+
+  // 2. Duplicate Customer TXID
+  if (payment.customer_transaction_id) {
+    const { data: duplicates } = await supabaseAdmin
+      .from('payments')
+      .select('id')
+      .eq('customer_transaction_id', payment.customer_transaction_id)
+      .eq('provider', payment.provider)
+      .neq('id', paymentId);
+      
+    if (duplicates && duplicates.length > 0) {
+      flags.push({
+        flag_type: 'duplicate_customer_txid',
+        severity: 'high',
+        description: `TXID ${payment.customer_transaction_id} already exists in another payment`
+      });
+      riskScore = 'high';
+    }
+  }
+  
+  // Store flags if table exists
+  if (flags.length > 0) {
+    await supabaseAdmin.from('payment_risk_flags').insert(
+      flags.map(f => ({ ...f, payment_id: paymentId }))
+    ).catch(() => {});
+  }
+  
+  await supabaseAdmin.from('payments').update({ risk_score: riskScore }).eq('id', paymentId).catch(() => {});
+  
+  return riskScore;
 }
 
 export async function updatePaymentStatus(paymentId: string, status: PaymentStatus, providerReference?: string, metadata: any = {}, actor: string | null = 'system') {
