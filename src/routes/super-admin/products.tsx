@@ -106,7 +106,7 @@ function SuperAdminProductsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {products?.map((product) => (
+                  {(products as any[])?.map((product: any) => (
                     <TableRow key={product.id} className="hover:bg-surface-1/30 transition-colors">
                       <TableCell>
                         <div className="h-10 w-10 rounded-lg bg-surface-2 flex items-center justify-center border border-border/10 overflow-hidden">
