@@ -64,7 +64,7 @@ CloudApper follows a modern, full-stack React structure:
 
 ```text
 /
-├── .github/          # CI/CD Workflows (recommended)
+├── .github/          # CI/CD Workflows (Supabase CI, Vercel Deployment)
 ├── public/           # Static assets (favicons, robots.txt)
 ├── src/
 │   ├── components/   # Reusable UI (shadcn, marketplace)
