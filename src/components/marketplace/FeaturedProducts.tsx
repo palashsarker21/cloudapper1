@@ -1,4 +1,4 @@
-import { Star, ShoppingCart, ExternalLink, Zap, ShieldCheck, Package } from "lucide-react";
+import { Star, ShoppingCart, ExternalLink, Zap, ShieldCheck, Package, LayoutGrid, Clock, Smartphone, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import { useLanguage } from "@/hooks/useLanguage";
 
 import { useServerFn } from "@tanstack/react-start";
 import { getFeaturedProducts } from "@/lib/products.functions";
@@ -117,6 +118,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
 export const FeaturedProducts = () => {
   const fetchFeatured = useServerFn(getFeaturedProducts);
+  const { t, language } = useLanguage();
+  
   const { data: products, isLoading } = useQuery({
     queryKey: ['featured-products'],
     queryFn: async () => {
@@ -124,7 +127,7 @@ export const FeaturedProducts = () => {
       
       return (data as any[]).map(p => ({
         id: p.id,
-        name: p.name,
+        name: language === 'bn' && p.name_bn ? p.name_bn : p.name,
         category: (p.categories as any)?.name || 'Product',
         price: Number(p.price),
         rating: 5.0,
@@ -146,15 +149,15 @@ export const FeaturedProducts = () => {
         <div className="mb-12 flex items-end justify-between">
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Explore the Marketplace
+              {t.home.featuredTitle}
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Hand-picked AI tools and digital products from our verified collection.
+              {t.home.featuredSub}
             </p>
           </div>
           <Button variant="ghost" className="hidden sm:flex" asChild>
             <Link to="/search" search={{ sort: 'newest', page: 1 }}>
-              View All Marketplace
+              {t.common.exploreMarketplace}
             </Link>
           </Button>
         </div>

@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { ShoppingCart, User, Menu, X, Bell, Shield, Package, ShoppingBag, Truck, CreditCard, Settings, Users, History, DollarSign, Zap, MessageCircle } from "lucide-react";
+import { ShoppingCart, User, Menu, X, Bell, Shield, Package, ShoppingBag, Truck, CreditCard, Settings, Users, History, DollarSign, Zap, MessageCircle, Globe } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Logo } from "./Logo";
 import { MarketplaceSearchBar } from "./MarketplaceSearchBar";
+import { useLanguage } from "@/hooks/useLanguage";
 import { brand } from "@/lib/brand";
 import {
   Tooltip,
@@ -83,16 +84,18 @@ export const Header = () => {
 
   const unreadCount = (notifications as any[])?.filter((n: any) => !n.read).length || 0;
 
+  const { t, language, setLanguage } = useLanguage();
+
   const navLinks = [
-    { label: "Marketplace", href: "/search", search: { sort: 'newest', page: 1 } },
-    { label: "AI Tools", href: "/category/$slug", params: { slug: 'ai-tools' }, search: { sort: 'newest', page: 1 } },
-    { label: "AI Credits", href: "/category/$slug", params: { slug: 'ai-credits' }, search: { sort: 'newest', page: 1 } },
-    { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
-    { label: "Digital Products", href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
-    { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
+    { label: t.nav.marketplace, href: "/search", search: { sort: 'newest', page: 1 } },
+    { label: t.nav.aiTools, href: "/category/$slug", params: { slug: 'ai-tools' }, search: { sort: 'newest', page: 1 } },
+    { label: t.nav.aiCredits, href: "/category/$slug", params: { slug: 'ai-credits' }, search: { sort: 'newest', page: 1 } },
+    { label: t.nav.extensions, href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
+    { label: t.nav.digitalProducts, href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
+    { label: t.nav.trackOrder, href: "/track-order", search: { orderId: undefined } },
     { label: "WhatsApp Support", href: brand.social.whatsapp.url, external: true },
     { label: "Facebook Page", href: brand.social.facebook.url, external: true },
-    { label: "Support", href: "/login" },
+    { label: t.nav.support, href: "/login" },
   ];
 
   return (
@@ -265,10 +268,29 @@ export const Header = () => {
                 )}
               </Link>
             </Button>
+            <div className="hidden sm:flex items-center gap-1 border-x px-2 h-10">
+              <Button 
+                variant={language === 'en' ? 'secondary' : 'ghost'} 
+                size="sm" 
+                className="h-7 px-2 text-[10px]"
+                onClick={() => setLanguage('en')}
+              >
+                EN
+              </Button>
+              <Button 
+                variant={language === 'bn' ? 'secondary' : 'ghost'} 
+                size="sm" 
+                className="h-7 px-2 text-[10px]"
+                onClick={() => setLanguage('bn')}
+              >
+                বাংলা
+              </Button>
+            </div>
+            
             <Button variant="default" className="hidden sm:flex" asChild>
               <Link to="/login">
                 <User className="mr-2 h-4 w-4" />
-                Login
+                {t.nav.login}
               </Link>
             </Button>
             <Button

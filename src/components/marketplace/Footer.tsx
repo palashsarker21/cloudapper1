@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Logo } from "./Logo";
 import { SocialLinks } from "./SocialLinks";
 import { brand } from "@/lib/brand";
+import { useLanguage } from "@/hooks/useLanguage";
 
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   return (
     <footer className="border-t bg-surface-1">
