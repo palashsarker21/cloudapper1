@@ -24,6 +24,7 @@ import {
   Info
 } from 'lucide-react';
 import { Logo } from '@/components/marketplace/Logo';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/contexts/CartContext';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -52,6 +53,7 @@ function ProductDetailPage() {
   const { productId } = Route.useParams();
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const { t, language } = useLanguage();
 
 
   const fetchProduct = useServerFn(getProductById);
@@ -63,7 +65,9 @@ function ProductDetailPage() {
       if (!data) throw new Error("Product not found");
 
       const isExtension = data.product_type === 'browser_extensions';
-      const features = (data.features as string[]) || [
+      const features = language === 'bn' && (data as any).features_bn 
+        ? ((data as any).features_bn as string[]) 
+        : (data.features as string[]) || [
         "Secure delivery",
         "Verified quality",
         "Premium support",
@@ -74,13 +78,13 @@ function ProductDetailPage() {
 
       return {
         id: data.id,
-        name: data.name,
-        category: (data.categories as any)?.name || 'Product',
+        name: language === 'bn' && (data as any).name_bn ? (data as any).name_bn : data.name,
+        category: language === 'bn' && (data.categories as any)?.name_bn ? (data.categories as any).name_bn : ((data.categories as any)?.name || 'Product'),
         price: `৳${Number(data.price).toLocaleString()}`,
         rating: 5.0,
         reviews: 0,
-        description: data.description || data.short_description || "No description available.",
-        fullDescription: data.full_description,
+        description: language === 'bn' && (data as any).short_description_bn ? (data as any).short_description_bn : (data.description || data.short_description || "No description available."),
+        fullDescription: language === 'bn' && (data as any).full_description_bn ? (data as any).full_description_bn : data.full_description,
         image: data.image_url,
         product_type: data.product_type,
         license_duration: data.license_duration,
@@ -157,7 +161,7 @@ function ProductDetailPage() {
           <div className="flex items-center gap-4">
             <Link to="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               <ChevronLeft className="mr-1 h-4 w-4" />
-              Back to Marketplace
+              {language === 'bn' ? 'মার্কেটপ্লেসে ফিরুন' : 'Back to Marketplace'}
             </Link>
             <Separator orientation="vertical" className="h-4" />
             <Logo variant="wordmark" />
