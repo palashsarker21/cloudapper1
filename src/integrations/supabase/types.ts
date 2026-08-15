@@ -908,7 +908,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "super_admin"
       delivery_method:
         | "instant_download"
         | "email_delivery"
@@ -921,6 +921,10 @@ export type Database = {
         | "completed"
         | "failed"
         | "cancelled"
+        | "fulfillment_pending"
+        | "fulfillment_processing"
+        | "fulfilled"
+        | "fulfillment_failed"
       inventory_type: "unlimited" | "finite" | "license"
       license_status:
         | "available"
@@ -959,6 +963,12 @@ export type Database = {
         | "underpaid"
         | "overpaid"
         | "manual_review"
+        | "awaiting_payment"
+        | "payment_submitted"
+        | "under_review"
+        | "ready_for_confirmation"
+        | "payment_verified"
+        | "payment_rejected"
       product_status: "draft" | "active" | "out_of_stock" | "archived"
       product_type:
         | "ai_credits"
@@ -1098,7 +1108,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "super_admin"],
       delivery_method: [
         "instant_download",
         "email_delivery",
@@ -1112,6 +1122,10 @@ export const Constants = {
         "completed",
         "failed",
         "cancelled",
+        "fulfillment_pending",
+        "fulfillment_processing",
+        "fulfilled",
+        "fulfillment_failed",
       ],
       inventory_type: ["unlimited", "finite", "license"],
       license_status: [
@@ -1154,6 +1168,12 @@ export const Constants = {
         "underpaid",
         "overpaid",
         "manual_review",
+        "awaiting_payment",
+        "payment_submitted",
+        "under_review",
+        "ready_for_confirmation",
+        "payment_verified",
+        "payment_rejected",
       ],
       product_status: ["draft", "active", "out_of_stock", "archived"],
       product_type: [
