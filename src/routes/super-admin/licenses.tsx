@@ -166,7 +166,7 @@ function LicenseCenterPage() {
                   System logs for license generation events, including idempotency checks and API response codes.
                 </p>
                 <Button variant="link" className="px-0 h-auto text-xs mt-2" asChild>
-                   <Link to="/super-admin/logs">View System Logs</Link>
+                   <Link to="/super-admin">View System Logs</Link>
                 </Button>
               </CardContent>
             </Card>
