@@ -2,6 +2,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { Database } from "@/integrations/supabase/types";
+
+type ProductInsert = Database['public']['Tables']['products']['Insert'];
+type ProductUpdate = Database['public']['Tables']['products']['Update'];
 
 export const getMarketplaceProducts = createServerFn({ method: "GET" })
   .inputValidator((data) => z.object({
@@ -37,7 +41,7 @@ export const getMarketplaceProducts = createServerFn({ method: "GET" })
     // Apply sorting
     if (data.sort) {
       const [field, order] = data.sort.split(":");
-      query = query.order(field, { ascending: order === "asc" });
+      query = query.order(field as any, { ascending: order === "asc" });
     } else {
       query = query.order("created_at", { ascending: false });
     }
@@ -184,13 +188,13 @@ export const syncExtensionsCatalog = createServerFn({ method: "POST" })
 
     const results = [];
     for (const ext of extensions) {
-      const productData = {
+      const productData: ProductInsert = {
         name: ext.name,
         slug: ext.slug,
         sku: ext.sku,
         price: ext.price,
         currency: 'BDT',
-        category_id: extensionsCat.id,
+        category_id: extensionsCat!.id,
         product_type: 'browser_extensions',
         inventory_type: 'license',
         delivery_method: 'license_key',
@@ -202,7 +206,7 @@ export const syncExtensionsCatalog = createServerFn({ method: "POST" })
         compatibility: commonCompatibility,
         delivery_instructions: "Your license key will be generated instantly after payment verification. " + commonInstructions,
         status: 'active',
-        stock_status: 'in_stock', // Logic shows in_stock if licenses exist, but we seed the product profile first
+        stock_status: 'in_stock',
         image_url: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&q=80&w=800"
       };
 
@@ -215,7 +219,7 @@ export const syncExtensionsCatalog = createServerFn({ method: "POST" })
       if (existing) {
         const { error } = await supabaseAdmin
           .from('products')
-          .update(productData)
+          .update(productData as ProductUpdate)
           .eq('id', existing.id);
         if (error) throw error;
         results.push({ sku: ext.sku, action: 'updated' });
