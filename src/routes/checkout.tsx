@@ -81,7 +81,11 @@ function CheckoutPage() {
       // 1. Create Order
       const orderResult = await createOrderFn({
         data: {
-          items: items.map(item => ({ productId: item.id, quantity: item.quantity })),
+          items: items.map(item => ({ 
+            productId: item.id, 
+            packageId: item.package_id,
+            quantity: item.quantity 
+          })),
           customerEmail: formData.email,
           customerName: formData.name,
           notes: formData.notes,
