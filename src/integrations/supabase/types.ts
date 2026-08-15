@@ -119,6 +119,243 @@ export type Database = {
         }
         Relationships: []
       }
+      entitlements: {
+        Row: {
+          created_at: string
+          data: Json
+          download_count: number | null
+          expires_at: string | null
+          fulfillment_id: string | null
+          id: string
+          max_downloads: number | null
+          order_id: string | null
+          product_id: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          download_count?: number | null
+          expires_at?: string | null
+          fulfillment_id?: string | null
+          id?: string
+          max_downloads?: number | null
+          order_id?: string | null
+          product_id?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          download_count?: number | null
+          expires_at?: string | null
+          fulfillment_id?: string | null
+          id?: string
+          max_downloads?: number | null
+          order_id?: string | null
+          product_id?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entitlements_fulfillment_id_fkey"
+            columns: ["fulfillment_id"]
+            isOneToOne: false
+            referencedRelation: "fulfillments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entitlements_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entitlements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fulfillment_logs: {
+        Row: {
+          actor: string
+          created_at: string
+          details: Json | null
+          event: string
+          fulfillment_id: string
+          id: string
+        }
+        Insert: {
+          actor?: string
+          created_at?: string
+          details?: Json | null
+          event: string
+          fulfillment_id: string
+          id?: string
+        }
+        Update: {
+          actor?: string
+          created_at?: string
+          details?: Json | null
+          event?: string
+          fulfillment_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fulfillment_logs_fulfillment_id_fkey"
+            columns: ["fulfillment_id"]
+            isOneToOne: false
+            referencedRelation: "fulfillments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fulfillments: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          fulfillment_type: string
+          id: string
+          idempotency_key: string
+          metadata: Json | null
+          order_id: string
+          status: Database["public"]["Enums"]["fulfillment_status"]
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          fulfillment_type: string
+          id?: string
+          idempotency_key: string
+          metadata?: Json | null
+          order_id: string
+          status?: Database["public"]["Enums"]["fulfillment_status"]
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          fulfillment_type?: string
+          id?: string
+          idempotency_key?: string
+          metadata?: Json | null
+          order_id?: string
+          status?: Database["public"]["Enums"]["fulfillment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fulfillments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licenses: {
+        Row: {
+          created_at: string
+          customer_id: string
+          delivered_at: string | null
+          duration_unit: string | null
+          duration_value: number | null
+          expires_at: string | null
+          generated_at: string
+          id: string
+          license_key_encrypted: string
+          license_key_last4: string
+          max_activations: number | null
+          metadata: Json | null
+          order_id: string
+          order_item_id: string | null
+          plan: string | null
+          product_id: string | null
+          provider: string
+          provider_license_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          delivered_at?: string | null
+          duration_unit?: string | null
+          duration_value?: number | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          license_key_encrypted: string
+          license_key_last4: string
+          max_activations?: number | null
+          metadata?: Json | null
+          order_id: string
+          order_item_id?: string | null
+          plan?: string | null
+          product_id?: string | null
+          provider?: string
+          provider_license_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          delivered_at?: string | null
+          duration_unit?: string | null
+          duration_value?: number | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          license_key_encrypted?: string
+          license_key_last4?: string
+          max_activations?: number | null
+          metadata?: Json | null
+          order_id?: string
+          order_item_id?: string | null
+          plan?: string | null
+          product_id?: string | null
+          provider?: string
+          provider_license_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licenses_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licenses_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licenses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string
@@ -661,6 +898,7 @@ export type Database = {
         Args: { p_product_id: string; p_quantity: number }
         Returns: boolean
       }
+      get_decrypted_license: { Args: { _license_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -677,6 +915,12 @@ export type Database = {
         | "license_key"
         | "external_link"
         | "manual_fulfillment"
+      fulfillment_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "failed"
+        | "cancelled"
       inventory_type: "unlimited" | "finite" | "license"
       license_status:
         | "available"
@@ -861,6 +1105,13 @@ export const Constants = {
         "license_key",
         "external_link",
         "manual_fulfillment",
+      ],
+      fulfillment_status: [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "cancelled",
       ],
       inventory_type: ["unlimited", "finite", "license"],
       license_status: [
