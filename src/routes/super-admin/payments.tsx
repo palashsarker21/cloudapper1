@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,7 +35,9 @@ export const Route = createFileRoute('/super-admin/payments')({
 });
 
 function SuperAdminPaymentsPage() {
+  const navigate = useNavigate();
   const verifyFn = useServerFn(verifyPayment);
+
 
   const { data: payments, isLoading, refetch } = useQuery({
     queryKey: ['super-admin-payments'],
@@ -74,10 +76,11 @@ function SuperAdminPaymentsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <StatsCard title="Pending" count={payments?.filter(p => p.verification_status === 'pending').length || 0} icon={<Clock className="h-4 w-4" />} color="text-amber-500" />
-          <StatsCard title="Verified" count={payments?.filter(p => p.verification_status === 'verified').length || 0} icon={<CheckCircle2 className="h-4 w-4" />} color="text-emerald-500" />
-          <StatsCard title="Rejected" count={payments?.filter(p => p.verification_status === 'rejected').length || 0} icon={<XCircle className="h-4 w-4" />} color="text-red-500" />
-          <StatsCard title="Total Revenue" count={`৳${payments?.filter(p => p.status === 'paid').reduce((acc, curr) => acc + curr.amount, 0).toLocaleString() || 0}`} icon={<DollarSign className="h-4 w-4" />} color="text-primary" />
+          <StatsCard title="Pending" count={payments?.filter(p => p.status === 'payment_submitted' || p.status === 'pending').length || 0} icon={<Clock className="h-4 w-4" />} color="text-amber-500" />
+          <StatsCard title="Under Review" count={payments?.filter(p => p.status === 'under_review' || p.status === 'manual_review').length || 0} icon={<AlertCircle className="h-4 w-4" />} color="text-blue-500" />
+          <StatsCard title="Verified Today" count={payments?.filter(p => p.status === 'paid' && new Date(p.verified_at || '').toDateString() === new Date().toDateString()).length || 0} icon={<CheckCircle2 className="h-4 w-4" />} color="text-emerald-500" />
+          <StatsCard title="Total Revenue" count={`৳${payments?.filter(p => p.status === 'paid').reduce((acc, curr) => acc + Number(curr.amount), 0).toLocaleString() || 0}`} icon={<DollarSign className="h-4 w-4" />} color="text-primary" />
+
         </div>
 
         <div className="glass-effect rounded-2xl border-none shadow-xl overflow-hidden">
