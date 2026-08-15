@@ -182,21 +182,34 @@ function OrderDetailsPage() {
                       </div>
 
                       {/* Delivery Info for this item */}
-                      { (order as any).status === 'completed' && (
-                        <div className="mt-4 p-4 bg-muted/30 rounded-xl border border-dashed">
+                      { (order as any).status === 'paid' || (order as any).status === 'completed' ? (
+                        <div className="mt-4 p-4 bg-primary/5 rounded-xl border border-primary/20 border-dashed animate-in fade-in slide-in-from-top-2">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-sm font-medium">
-                              <FileText className="h-4 w-4 text-primary" />
-                              Delivery Available
+                            <div className="flex flex-col gap-0.5">
+                              <div className="flex items-center gap-2 text-sm font-bold text-primary">
+                                <ShieldCheck className="h-4 w-4" />
+                                Product Delivered
+                              </div>
+                              <p className="text-[10px] text-muted-foreground">Access your license and download instructions in your library.</p>
                             </div>
-                            <Button size="sm" variant="default" className="h-8 px-3 text-xs" asChild>
+                            <Button size="sm" variant="default" className="h-8 px-4 text-xs shadow-lg shadow-primary/20" asChild>
                               <Link to="/account/entitlements">
-                                Access Product
+                                Access Library
                               </Link>
                             </Button>
                           </div>
                         </div>
-                      )}
+                      ) : (order as any).status === 'processing' ? (
+                        <div className="mt-4 p-4 bg-surface-2 rounded-xl border border-border/10 border-dashed">
+                          <div className="flex items-center gap-3">
+                            <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                            <div className="flex flex-col">
+                              <span className="text-xs font-bold">Generating License...</span>
+                              <span className="text-[10px] text-muted-foreground">Eklas automation is preparing your keys. This takes ~30 seconds.</span>
+                            </div>
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   ))}
                 </div>
