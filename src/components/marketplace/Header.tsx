@@ -296,8 +296,7 @@ export const Header = () => {
                   to={link.href as any}
                   params={(link as any).params}
                   search={(link as any).search}
-                  target={link.external ? "_blank" : undefined}
-                  rel={link.external ? "noopener noreferrer" : undefined}
+                  {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
                   onClick={() => setIsMenuOpen(false)}
                 >
