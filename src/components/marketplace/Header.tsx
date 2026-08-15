@@ -47,11 +47,11 @@ export const Header = () => {
 
 
   const navLinks = [
-    { label: "Marketplace", href: "/" },
-    { label: "AI Tools", href: "/" },
-    { label: "Credits", href: "/" },
-    { label: "Extensions", href: "/" },
-    { label: "Digital Products", href: "/" },
+    { label: "Marketplace", href: "/search", search: { sort: 'newest', page: 1 } },
+    { label: "AI Tools", href: "/category/$slug", params: { slug: 'ai-tools' }, search: { sort: 'newest', page: 1 } },
+    { label: "Credits", href: "/category/$slug", params: { slug: 'ai-credits' }, search: { sort: 'newest', page: 1 } },
+    { label: "Extensions", href: "/category/$slug", params: { slug: 'extensions' }, search: { sort: 'newest', page: 1 } },
+    { label: "Digital Products", href: "/category/$slug", params: { slug: 'digital-products' }, search: { sort: 'newest', page: 1 } },
     { label: "Track Order", href: "/track-order", search: { orderId: undefined } },
     { label: "Pricing", href: "/" },
     { label: "Fulfillment", href: "/admin/fulfillment" },
@@ -79,7 +79,7 @@ export const Header = () => {
               <NavigationMenuList>
                 {navLinks.map((link) => (
                   <NavigationMenuItem key={link.href}>
-                    <Link to={link.href as any} search={(link as any).search} className={navigationMenuTriggerStyle()}>
+                    <Link to={link.href as any} params={(link as any).params} search={(link as any).search} className={navigationMenuTriggerStyle()}>
                       {link.label}
                     </Link>
                   </NavigationMenuItem>
@@ -139,6 +139,7 @@ export const Header = () => {
               <Link
                 key={link.href}
                 to={link.href as any}
+                params={(link as any).params}
                 search={(link as any).search}
                 className="text-sm font-medium transition-colors hover:text-primary px-2 py-1"
                 onClick={() => setIsMenuOpen(false)}
