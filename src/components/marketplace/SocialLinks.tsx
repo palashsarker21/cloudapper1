@@ -24,13 +24,13 @@ export const SocialLinks = ({ className, iconOnly = false, showLabels = true }: 
     {
       name: "Facebook",
       url: brand.social.facebook.url,
-      icon: (props: any) => (
+      icon: (props: React.ComponentProps<"svg">) => (
         <svg
           role="img"
           viewBox="0 0 24 24"
           fill="currentColor"
-          {...props}
           xmlns="http://www.w3.org/2000/svg"
+          {...props}
         >
           <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978 1.602 0 2.703.096 2.703.096v3.316h-1.617c-1.91 0-2.303 1.17-2.303 2.387v1.759h3.628l-.527 3.667H13.74v7.98h-4.639z" />
         </svg>
