@@ -110,7 +110,12 @@ function ProductDetailPage() {
   const fetchRelated = useServerFn(getRelatedProducts);
   const { data: relatedProducts } = useQuery({
     queryKey: ['related-products', productId, (product as any)?.category_id],
-    queryFn: () => fetchRelated({ productId, categoryId: (product as any)?.category_id } as any),
+    queryFn: () => fetchRelated({ 
+      data: {
+        productId, 
+        categoryId: (product as any)?.category_id 
+      }
+    }),
     enabled: !!product
   });
 
