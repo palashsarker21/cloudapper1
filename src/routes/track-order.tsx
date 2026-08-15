@@ -10,6 +10,7 @@ import { Logo } from '@/components/marketplace/Logo';
 import { useState, useEffect } from 'react';
 import { useServerFn } from '@tanstack/react-start';
 import { getOrderStatus } from '@/lib/orders.functions';
+import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -46,12 +47,20 @@ function TrackOrderPage() {
     retry: false,
   });
 
-  const handleTrack = (e: React.FormEvent) => {
+  const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!orderId.trim()) return;
     
-    // Trigger navigation to update search params, which triggers useQuery
-    window.location.href = `/track-order?orderId=${orderId.trim()}`;
+    // Security: Check if user is logged in
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session) {
+      // If logged in, redirect to the authenticated detailed tracking page
+      window.location.href = `/_authenticated/account/orders/${orderId.trim()}`;
+    } else {
+      // If not logged in, just show basic status here (existing logic)
+      window.location.href = `/track-order?orderId=${orderId.trim()}`;
+    }
   };
 
   const getStatusIcon = (status: string) => {

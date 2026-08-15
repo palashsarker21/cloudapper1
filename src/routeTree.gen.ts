@@ -21,9 +21,11 @@ import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
 import { Route as AuthenticatedAccountEntitlementsRouteImport } from './routes/_authenticated/account/entitlements'
+import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/_authenticated/account/notifications'
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin/products.$productId'
 import { Route as AdminProductsNewRouteImport } from './routes/admin/products.new'
 import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
+import { Route as AuthenticatedAccountOrdersOrderIdRouteImport } from './routes/_authenticated/account/orders.$orderId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -85,6 +87,12 @@ const AuthenticatedAccountEntitlementsRoute =
     path: '/account/entitlements',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAccountNotificationsRoute =
+  AuthenticatedAccountNotificationsRouteImport.update({
+    id: '/account/notifications',
+    path: '/account/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AdminProductsProductIdRoute = AdminProductsProductIdRouteImport.update({
   id: '/$productId',
   path: '/$productId',
@@ -100,6 +108,12 @@ const ApiPublicWebhookRoute = ApiPublicWebhookRouteImport.update({
   path: '/api/public/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAccountOrdersOrderIdRoute =
+  AuthenticatedAccountOrdersOrderIdRouteImport.update({
+    id: '/account/orders/$orderId',
+    path: '/account/orders/$orderId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -113,9 +127,11 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
+  '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -129,9 +145,11 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
+  '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -147,9 +165,11 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/_authenticated/account/entitlements': typeof AuthenticatedAccountEntitlementsRoute
+  '/_authenticated/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/_authenticated/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -165,9 +185,11 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/product/$productId'
     | '/account/entitlements'
+    | '/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/account/orders/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -181,9 +203,11 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/product/$productId'
     | '/account/entitlements'
+    | '/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/account/orders/$orderId'
   id:
     | '__root__'
     | '/'
@@ -198,9 +222,11 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/product/$productId'
     | '/_authenticated/account/entitlements'
+    | '/_authenticated/account/notifications'
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/_authenticated/account/orders/$orderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -304,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountEntitlementsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/account/notifications': {
+      id: '/_authenticated/account/notifications'
+      path: '/account/notifications'
+      fullPath: '/account/notifications'
+      preLoaderRoute: typeof AuthenticatedAccountNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/admin/products/$productId': {
       id: '/admin/products/$productId'
       path: '/$productId'
@@ -325,15 +358,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/account/orders/$orderId': {
+      id: '/_authenticated/account/orders/$orderId'
+      path: '/account/orders/$orderId'
+      fullPath: '/account/orders/$orderId'
+      preLoaderRoute: typeof AuthenticatedAccountOrdersOrderIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountEntitlementsRoute: typeof AuthenticatedAccountEntitlementsRoute
+  AuthenticatedAccountNotificationsRoute: typeof AuthenticatedAccountNotificationsRoute
+  AuthenticatedAccountOrdersOrderIdRoute: typeof AuthenticatedAccountOrdersOrderIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountEntitlementsRoute: AuthenticatedAccountEntitlementsRoute,
+  AuthenticatedAccountNotificationsRoute:
+    AuthenticatedAccountNotificationsRoute,
+  AuthenticatedAccountOrdersOrderIdRoute:
+    AuthenticatedAccountOrdersOrderIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
