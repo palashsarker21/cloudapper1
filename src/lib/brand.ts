@@ -1,9 +1,7 @@
-import logoAsset from "@/assets/cloudapper-logo.png.asset.json";
-
 export const brand = {
   name: "CloudApper",
   url: "https://cloudapper.online",
-  logo: logoAsset.url,
+  logo: "/brand/cloudapper-logo.png",
   colors: {
     // Primary: Electric Cyan/Blue from the logo
     primary: "oklch(0.65 0.25 240)", 
@@ -29,6 +27,6 @@ export const brand = {
     fontFamily: "Inter, system-ui, sans-serif",
   },
   social: {
-    ogImage: logoAsset.url,
+    ogImage: "https://cloudapper.online/brand/cloudapper-logo.png",
   }
 };

@@ -8,7 +8,7 @@ interface LogoProps {
   onClick?: () => void;
 }
 
-export function Logo({ className, variant = 'full', onClick }: LogoProps) {
+export function Logo({ className, variant = 'full', theme = 'auto', onClick }: LogoProps) {
   return (
     <div 
       className={cn("flex items-center cursor-pointer select-none", className)}
@@ -18,10 +18,15 @@ export function Logo({ className, variant = 'full', onClick }: LogoProps) {
         <img 
           src={brand.logo} 
           alt={brand.name} 
+          width={variant === 'full' ? 32 : 40}
+          height={variant === 'full' ? 32 : 40}
           className={cn(
             "object-contain transition-transform hover:scale-105",
-            variant === 'full' ? "h-8 w-auto mr-2" : "h-10 w-10"
+            variant === 'full' ? "h-8 w-auto mr-2" : (variant === 'icon' ? (className?.includes('h-24') ? "h-24 w-24" : "h-10 w-10") : "h-10 w-10")
           )}
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
         />
       )}
       {(variant === 'full' || variant === 'wordmark') && (
