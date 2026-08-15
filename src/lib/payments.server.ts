@@ -124,3 +124,12 @@ export async function getPaymentMethodConfig(provider: PaymentProvider) {
   const providers = (settings?.value as any) || {};
   return providers[provider];
 }
+
+export async function manualVerifyPayment(paymentId: string, adminUserId: string, approved: boolean, notes?: string) {
+  const status = approved ? 'paid' : 'failed';
+  return await updatePaymentStatus(paymentId, status, undefined, { 
+    manual_verification: true,
+    verified_by: adminUserId,
+    notes 
+  }, adminUserId);
+}
