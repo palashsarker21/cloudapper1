@@ -53,18 +53,7 @@ export const getMarketplaceProducts = createServerFn({ method: "GET" })
   });
 
 export const syncExtensionsCatalog = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { supabase } = context;
-    
-    // Check if admin
-    const { data: isAdmin } = await supabase.rpc('has_role', { 
-      _user_id: context.userId, 
-      _role: 'admin' 
-    });
-    
-    if (!isAdmin) throw new Error("Unauthorized");
-
+  .handler(async () => {
     // 1. Ensure Marketplace Parent Category
     let { data: marketplaceCat } = await supabaseAdmin
       .from('categories')
