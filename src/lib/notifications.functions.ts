@@ -8,13 +8,13 @@ export const getUserNotifications = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { userId } = context;
     const { data, error } = await supabaseAdmin
-      .from('notifications')
+      .from('notifications' as any)
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data;
+    return data as any[];
   });
 
 export const markNotificationRead = createServerFn({ method: "POST" })
@@ -27,8 +27,8 @@ export const markNotificationRead = createServerFn({ method: "POST" })
     const { userId } = context;
 
     const { error } = await supabaseAdmin
-      .from('notifications')
-      .update({ read: true })
+      .from('notifications' as any)
+      .update({ read: true } as any)
       .eq('id', notificationId)
       .eq('user_id', userId);
 
@@ -42,8 +42,8 @@ export const markAllNotificationsRead = createServerFn({ method: "POST" })
     const { userId } = context;
 
     const { error } = await supabaseAdmin
-      .from('notifications')
-      .update({ read: true })
+      .from('notifications' as any)
+      .update({ read: true } as any)
       .eq('user_id', userId)
       .eq('read', false);
 

@@ -38,5 +38,5 @@ export const getOrderDetails = createServerFn({ method: "GET" })
       throw new Error("Order not found or unauthorized.");
     }
 
-    return order;
+    return order as any;
   });
