@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, PackageSearch } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
+import { cn } from "@/lib/utils";
+
 
 
 export const Hero = () => {
