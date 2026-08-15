@@ -129,7 +129,7 @@ function SuperAdminProductsPage() {
                       <div className="flex items-center gap-2">
                         <h3 className="font-bold text-lg tracking-tight">{product.name}</h3>
                         {product.is_featured && (
-                          <Badge variant="primary" className="text-[8px] px-1 uppercase">Featured</Badge>
+                          <Badge variant="default" className="text-[8px] px-1 uppercase">Featured</Badge>
                         )}
                       </div>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
