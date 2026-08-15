@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Search, Package, ArrowRight, Loader2, CheckCircle2, Clock, XCircle, FileText } from 'lucide-react';
 import { Logo } from '@/components/marketplace/Logo';
+import { useLanguage } from '@/hooks/useLanguage';
 
 import { useState, useEffect } from 'react';
 import { useServerFn } from '@tanstack/react-start';
@@ -39,6 +40,7 @@ function TrackOrderPage() {
   const { orderId: searchOrderId } = Route.useSearch();
   const [orderId, setOrderId] = useState(searchOrderId || '');
   const getStatus = useServerFn(getOrderStatus);
+  const { t, language } = useLanguage();
 
   const { data: order, isLoading, isError, refetch } = useQuery({
     queryKey: ['order-status', searchOrderId],
@@ -90,11 +92,11 @@ function TrackOrderPage() {
             <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
             <Logo variant="icon" className="h-20 w-20 relative z-10 animate-float" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground bg-[var(--brand-gradient)] bg-clip-text text-transparent">Track Your Order</h1>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground bg-[var(--brand-gradient)] bg-clip-text text-transparent">{language === 'bn' ? 'অর্ডার ট্র্যাক করুন' : 'Track Your Order'}</h1>
 
 
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Enter your order ID to check the status of your purchase and fulfillment.
+            {language === 'bn' ? 'আপনার অর্ডারের বর্তমান অবস্থা এবং ডেলিভারি সম্পর্কে জানতে আপনার অর্ডার আইডি দিন।' : 'Enter your order ID to check the status of your purchase and fulfillment.'}
           </p>
         </div>
 
@@ -121,7 +123,7 @@ function TrackOrderPage() {
                 </div>
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : 'Track Order'}
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : (language === 'bn' ? 'অর্ডার ট্র্যাক করুন' : 'Track Order')}
                 {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
               </Button>
             </form>
