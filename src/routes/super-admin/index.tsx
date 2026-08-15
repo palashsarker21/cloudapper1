@@ -78,7 +78,7 @@ function SuperAdminDashboard() {
               Sync Data
             </Button>
             <Button 
-              variant="primary" 
+              variant="default" 
               onClick={() => bootstrapMutation.mutate()}
               disabled={bootstrapMutation.isPending}
             >
