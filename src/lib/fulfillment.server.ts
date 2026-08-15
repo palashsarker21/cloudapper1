@@ -47,16 +47,35 @@ export async function processOrderFulfillment(orderId: string) {
 
     const idempotencyKey = `fulfillment-${orderId}-${item.id}`;
     
-    // Check if already fulfilled
-    const { data: existingData } = await (supabaseAdmin
+    // Check if already fulfilled - search for successful license first
+    const { data: existingLicense } = await (supabaseAdmin
+      .from('licenses' as any)
+      .select('id')
+      .eq('order_item_id', item.id)
+      .eq('status', 'active')
+      .maybeSingle() as any);
+
+    if (existingLicense) {
+      console.log(`[Fulfillment] Order item ${item.id} already has an active license. Skipping.`);
+      
+      // Ensure fulfillment record is marked completed
+      await supabaseAdmin.from('fulfillments' as any).update({ 
+        status: 'completed', 
+        updated_at: new Date().toISOString() 
+      }).eq('idempotency_key', idempotencyKey);
+      
+      continue;
+    }
+
+    // Check existing fulfillment record
+    const { data: existingFulfillment } = await (supabaseAdmin
       .from('fulfillments' as any)
       .select('*')
       .eq('idempotency_key', idempotencyKey)
-      .single() as any);
+      .maybeSingle() as any);
 
-    const existing = existingData;
-    if (existing && existing.status === 'completed') {
-      console.log(`[Fulfillment] Item ${item.id} already fulfilled. Skipping.`);
+    if (existingFulfillment && existingFulfillment.status === 'completed') {
+      console.log(`[Fulfillment] Item ${item.id} fulfillment already completed. Skipping.`);
       continue;
     }
 
