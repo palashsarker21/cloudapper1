@@ -231,3 +231,75 @@ export const deleteCryptoWallet = createServerFn({ method: "POST" })
     return { success: true };
   });
 
+export const getPaymentReceivers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { userId, supabase } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const { data, error } = await supabaseAdmin
+      .from("payment_receivers")
+      .select("*")
+      .order("sort_order", { ascending: true });
+
+    if (error) throw error;
+    return data;
+  });
+
+export const updatePaymentReceiver = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    id: z.string().uuid().optional(),
+    provider: z.string(),
+    display_name: z.string(),
+    receiver_identifier: z.string(),
+    instructions: z.string().optional(),
+    currency: z.string().default('BDT'),
+    minimum_amount: z.number().default(0),
+    enabled: z.boolean().default(true),
+    sort_order: z.number().default(0),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId, supabase } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const { error } = await supabaseAdmin
+      .from("payment_receivers")
+      .upsert({
+        ...data,
+        id: data.id as any,
+        updated_at: new Date().toISOString()
+      });
+
+    if (error) throw error;
+    return { success: true };
+  });
+
+export const deletePaymentReceiver = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { userId, supabase } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const { error } = await supabaseAdmin
+      .from("payment_receivers")
+      .delete()
+      .eq("id", data.id);
+
+    if (error) throw error;
+    return { success: true };
+  });
+
