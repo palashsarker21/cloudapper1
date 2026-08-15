@@ -60,9 +60,9 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
 
   const counts = {
     total: licenses?.length || 0,
-    available: licenses?.filter(l => l.status === 'available').length || 0,
-    assigned: licenses?.filter(l => l.status === 'assigned').length || 0,
-    revoked: licenses?.filter(l => l.status === 'revoked').length || 0,
+    available: licenses?.filter((l: any) => l.status === 'available').length || 0,
+    assigned: licenses?.filter((l: any) => l.status === 'assigned').length || 0,
+    revoked: licenses?.filter((l: any) => l.status === 'revoked').length || 0,
   };
 
   return (
@@ -146,7 +146,7 @@ export const LicenseManager = ({ productId }: { productId: string }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {licenses.map((license) => (
+                  {licenses.map((license: any) => (
                     <TableRow key={license.id}>
                       <TableCell className="font-mono text-xs whitespace-nowrap">
                         <div className="flex items-center gap-2">

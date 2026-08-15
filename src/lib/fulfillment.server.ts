@@ -93,7 +93,19 @@ export async function processOrderFulfillment(orderId: string) {
 
       // Execute delivery based on method
       if (product.delivery_method === 'license_key') {
-        await deliverLicense(fulfillment, item, product, order.customer_id!);
+        // Check if it's Eklas powered
+        // For now we assume extension products use Eklas
+        if (product.product_type === 'browser_extensions') {
+          const { generateEklasLicense } = await import("./license-fulfillment.server");
+          await generateEklasLicense(orderId, item.id, {
+            ...product,
+            customer_id: order.customer_id,
+            fulfillment_id: fulfillment.id
+          }, order.customer_email);
+        } else {
+          // Fallback to legacy inventory system
+          await deliverLicense(fulfillment, item, product, order.customer_id!);
+        }
       } else if (product.delivery_method === 'instant_download') {
         await deliverDigitalFile(fulfillment, item, product, order.customer_id!);
       } else {
@@ -112,6 +124,17 @@ export async function processOrderFulfillment(orderId: string) {
       console.error(`[Fulfillment] Failed for item ${item.id}`, err);
       await updateFulfillmentStatus(fulfillment.id, 'failed', err.message);
       await logFulfillmentEvent(fulfillment.id, 'failed', { error: err.message });
+      
+      // Log to system audit logs if available
+      try {
+        await supabaseAdmin.from('audit_logs' as any).insert({
+          actor_id: order.customer_id,
+          action: 'LICENSE_GENERATION_FAILED',
+          target_type: 'order',
+          target_id: orderId,
+          metadata: { error: err.message, item_id: item.id }
+        });
+      } catch (e) {}
     }
   }
 }
@@ -175,3 +198,4 @@ async function deliverDigitalFile(fulfillment: any, item: any, product: any, use
     }
   });
 }
+
