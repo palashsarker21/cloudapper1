@@ -1,163 +1,71 @@
-# CloudApper Infrastructure & Deployment Guide
+# CloudApper — Production Marketplace Infrastructure
 
-This document serves as the authoritative guide for the production infrastructure, deployment workflow, and platform configurations for **CloudApper**.
+CloudApper is a premium AI Tools, Credits & Digital Products Marketplace built for high-scale, production-ready operations.
 
-## 1. Target Architecture
+## 🚀 Quick Start (Production)
 
-The CloudApper production lifecycle follows a clean separation of concerns across multiple platforms:
+1. **Supabase Setup**:
+   - Enable Auth (Email, Google).
+   - Configure Storage Buckets: `digital-products` (Private), `public-assets` (Public).
+   - Apply migrations: `supabase db push`.
 
-```text
-Developer (Lovable)
-   ↓
-GitHub Repository (Source of Truth)
-   ↓
-Pull Request / Main Branch
-   ↓
-CI/CD Workflows
-   ├── Supabase Migration Deployment (Database Schema)
-   └── Vercel Application Deployment (Frontend/Backend Logic)
-   ↓
-Supabase (Backend Infrastructure)
-   ├── PostgreSQL (Database)
-   ├── Auth (User Management)
-   ├── Storage (Digital Assets)
-   ├── Realtime (Notifications)
-   └── RLS (Security Layer)
-   ↓
-Vercel (Application Hosting)
-   ├── Production Application
-   ├── Preview Deployments
-   └── Environment Variables
-   ↓
-Custom Domain (cloudapper.online)
-   ↓
-CloudApper Production
-```
+2. **Environment Configuration**:
+   - Copy `.env.example` to `.env`.
+   - Configure **REQUIRED_CORE** variables (Supabase URL/Key).
+   - Configure optional providers (Binance, Eklas, SMTP).
 
-## 2. Platform Responsibilities
+3. **Deployment**:
+   - **Vercel**: Connect repository, add environment variables, and deploy from `main`.
+   - **Supabase CI**: GitHub Actions automatically verify migrations on PRs.
 
-| Platform | Primary Purpose |
-| :--- | :--- |
-| **Lovable** | AI-assisted development, UI implementation, and rapid prototyping. Synchronizes code directly to GitHub. |
-| **GitHub** | Version control, source code repository, pull requests, and the centralized source of truth for migrations and configuration. |
-| **Supabase** | Managed PostgreSQL database, Authentication, Row Level Security, and secure Storage for digital assets. |
-| **Vercel** | Production hosting, automated preview deployments, SSL management, and global edge distribution. |
-| **Custom Domain** | Canonical production identity (`cloudapper.online`) providing HTTPS and trust for end-users. |
+## 🛠 Architecture
 
-## 3. Source of Truth
+### Fault-Tolerant Fulfillment Engine
+CloudApper uses a decoupled fulfillment state machine:
+- **Payment Lifecycle**: `created` → `pending` → `under_review` → `paid`.
+- **Fulfillment Lifecycle**: `pending` → `processing` → `completed` | `failed` | `pending_configuration`.
 
-**GitHub is the absolute source of truth** for:
-- Application source code (React/TypeScript)
-- Database migration files (`supabase/migrations/`)
-- Supabase configuration (`supabase/config.toml`)
-- Deployment workflows (GitHub Actions)
-- Project documentation
+If an optional provider like **Eklas** is unconfigured, the system marks the fulfillment as `pending_configuration`. This prevents data loss and allows a Super Admin to retry fulfillment after providing the missing API key.
 
-**Critical Rules:**
-- **Never** use the production Supabase SQL Editor for standard schema changes.
-- **Never** make undocumented production schema changes.
-- All database modifications **must** be represented by migration files in the repository.
+### Enterprise Security
+- **RBAC**: Three-tier role system (`user`, `admin`, `super_admin`).
+- **RLS**: Row-Level Security enabled on all sensitive tables.
+- **Audit Logs**: Every administrative action is logged for compliance.
 
-## 4. Repository Structure
+## 🔑 Environment Variables
 
-CloudApper follows a modern, full-stack React structure:
+### Public Variables (Client-Side)
+| Variable | Description |
+|----------|-------------|
+| `VITE_SUPABASE_URL` | Supabase Project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase Anon Key |
 
-```text
-/
-├── .github/          # CI/CD Workflows (Supabase CI, Vercel Deployment)
-├── public/           # Static assets (favicons, robots.txt)
-├── src/
-│   ├── components/   # Reusable UI (shadcn, marketplace)
-│   ├── integrations/ # Auto-generated Supabase clients
-│   ├── lib/          # Business logic & Server Functions
-│   ├── routes/       # File-based routing (TanStack Router)
-│   ├── styles.css    # Tailwind CSS v4 configuration
-│   └── ...
-├── supabase/
-│   ├── migrations/   # SQL Schema history (Source of Truth)
-│   └── config.toml   # Supabase project settings
-├── package.json      # Dependencies and scripts
-├── vite.config.ts    # Build configuration
-└── README.md         # Production setup guide
-```
+### Server-Only Secrets (Private)
+| Variable | Description |
+|----------|-------------|
+| `SUPABASE_SERVICE_ROLE_KEY` | Admin bypass key (Never expose to client) |
+| `EKLAS_LICENSE_API_KEY` | License generation credentials |
+| `BINANCE_PAY_API_KEY` | Binance Merchant API Key |
+| `BINANCE_PAY_SECRET_KEY` | Binance Merchant Secret Key |
+| `EMAIL_PROVIDER_API_KEY` | Resend/SendGrid API Key |
 
-## 5. Branch Strategy & CI/CD Workflow
+## 📦 Database & Migrations
 
-CloudApper uses a branch-based deployment strategy to ensure production stability, powered by **GitHub Actions**.
+Migrations live in `supabase/migrations/`. 
+- **Workflow**: Create a new migration for changes. Never edit applied migrations.
+- **CI/CD**: GitHub Actions run `supabase db lint` to detect destructive changes.
 
-*   **`main` Branch:** Represents the current production state. Only stable, reviewed code is merged here. Pushes to `main` trigger an automatic **Production Deployment** to Vercel.
-*   **`feature/*` Branches:** Used for active development. Opening a Pull Request triggers the following automation:
-    *   **Supabase CI:** Lints and verifies database migrations in the `supabase/` directory.
-    *   **Vercel Preview:** Builds and deploys a temporary preview environment for live testing.
+## 🏥 Health & Monitoring
+Super Admins can monitor system health at `/super-admin/system/health`.
+This dashboard provides real-time visibility into:
+- Supabase Connection & Service Role status.
+- External API availability (Binance, Eklas).
+- Email delivery configuration.
 
-**Recommended Workflow:**
-1. Create a `feature/` branch for new changes.
-2. Submit a **Pull Request (PR)** to `main`.
-3. Wait for CI checks to pass and verify the **Vercel Preview** link in the PR comments.
-4. Review and approve the PR.
-5. Merge to `main` triggers the final **Production Deployment**.
+## 💸 Payment Providers
+1. **bKash/Nagad (Manual)**: Highly reliable, human-in-the-loop verification.
+2. **Binance Pay (Automated)**: Instant fulfillment via cryptocurrency.
+3. **Crypto Wallet (Manual)**: Blockchain transaction hash verification.
 
-*Note: Required GitHub secrets (`VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`) must be configured in the repository settings to enable these workflows.*
-
-## 6. Supabase Infrastructure
-
-### Authentication
-CloudApper uses Supabase Auth for secure user management.
-- **Super Admin:** Authorized via the `super_admin` role in the `public.user_roles` table.
-- **RBAC:** Access to `/super-admin` and `/admin` routes is restricted via server-side verification and RLS.
-- **Identity:** `palashsarker1993@gmail.com` is the designated Super Admin.
-
-### Row Level Security (RLS)
-RLS is enabled on all sensitive tables to ensure data isolation.
-- `orders` & `payments`: Users can only see their own records.
-- `licenses` & `fulfillments`: Customers can only see their purchased items.
-- `user_roles`: Read-only for authenticated users; write-restricted to Super Admins.
-- `settings`: Sensitive payment settings are restricted to Super Admins.
-
-### Database Migrations
-Database schema changes are managed via versioned SQL files in `supabase/migrations/`.
-- **Never edit an already-applied migration.**
-- Create a new migration file for every subsequent change using the `YYYYMMDDHHMMSS_name.sql` format.
-
-## 7. Vercel & Environment Variables
-
-### Environment Separation
-Configuration is managed through environment variables on Vercel.
-
-**Public Variables (Client-side):**
-- `VITE_SUPABASE_URL`: Supabase project endpoint.
-- `VITE_SUPABASE_ANON_KEY`: Public anonymous API key.
-
-**Server-side Secrets (Private):**
-- `EKLAS_LICENSE_API_KEY`: API key for automated license generation.
-- *Any payment gateway secrets (Binance, Webhooks, etc.)*
-
-**Security Policy:**
-- **Never** expose server-side secrets to the browser or client-side bundles.
-- **Never** commit `.env` files containing real secrets to GitHub.
-
-## 8. Custom Domain & DNS
-
-**Canonical Domain:** `cloudapper.online`
-
-### Configuration
-1. **Vercel Settings:** Add the domain under `Project Settings -> Domains`.
-2. **DNS Management:** Use the exact A and CNAME records provided by Vercel in your DNS provider (e.g., Namecheap, Cloudflare).
-3. **SSL:** Vercel automatically provisions and renews SSL certificates once DNS is verified.
-
-### Canonicalization
-All traffic is redirected to the canonical `https://cloudapper.online` to ensure SEO consistency and secure OAuth/Payment callbacks.
-
-## 9. Integration Flow: Payment to Fulfillment
-
-CloudApper implements a hardened, idempotent fulfillment engine:
-
-1. **Customer Submission:** Customer pays (bKash/Nagad) and submits a Transaction ID.
-2. **Payment Review:** Status moves to `under_review`.
-3. **Super Admin Verification:** Admin verifies the transaction in the Super Admin dashboard.
-4. **License Generation:** Upon approval, the system calls the **Eklas License API** server-side.
-5. **Entitlement:** The generated license is stored in the database and delivered to the customer's **Product Library**.
-
----
-
-*This document was generated for CloudApper (2026). For technical issues, refer to the source code repository or Supabase/Vercel platform logs.*
+## 📄 License & Terms
+CloudApper proprietary software. All rights reserved. 2026.
