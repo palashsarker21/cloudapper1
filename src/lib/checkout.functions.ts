@@ -39,10 +39,10 @@ export const createOrder = createServerFn({ method: "POST" })
     // 2. Calculate subtotal and validate inventory
     let subtotal = 0;
     const { data: allPackages } = await supabaseAdmin
-      .from("product_packages")
+      .from("product_packages" as any)
       .select("*")
-      .in("product_id", productIds)
-      .eq("status", "active");
+      .in("product_id" as any, productIds)
+      .eq("status" as any, "active");
 
     for (const item of items) {
       const product = products.find((p) => p.id === item.productId)!;
@@ -52,15 +52,13 @@ export const createOrder = createServerFn({ method: "POST" })
         if (Number(product.stock_quantity || 0) < item.quantity) {
           throw new Error(`Product "${product.name}" is out of stock.`);
         }
-      } else if (product.inventory_type === "license") {
-        // ... inventory check for license omitted for brevity, logic remains same
       }
 
       let unitPrice = product.sale_price || product.price;
 
       // Override price if package is selected
       if (item.packageId && allPackages) {
-        const pkg = allPackages.find(p => p.id === item.packageId && p.product_id === product.id);
+        const pkg = (allPackages as any[]).find(p => p.id === item.packageId && p.product_id === product.id);
         if (!pkg) throw new Error("Invalid package selected.");
         unitPrice = Number(pkg.price);
       }
@@ -130,7 +128,7 @@ export const createOrder = createServerFn({ method: "POST" })
       let unitPrice = product.sale_price || product.price;
       
       if (item.packageId && allPackages) {
-        const pkg = allPackages.find(p => p.id === item.packageId);
+        const pkg = (allPackages as any[]).find(p => p.id === item.packageId);
         if (pkg) unitPrice = Number(pkg.price);
       }
 
@@ -141,7 +139,6 @@ export const createOrder = createServerFn({ method: "POST" })
         quantity: item.quantity,
         unit_price: Number(unitPrice),
         total_price: Number(unitPrice) * item.quantity,
-        metadata: item.packageId ? { package_id: item.packageId } : null
       };
     });
 
