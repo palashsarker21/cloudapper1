@@ -697,6 +697,7 @@ export type Database = {
           provider_transaction_id: string | null
           received_amount: number | null
           received_transaction_id: string | null
+          receiver_id: string | null
           rejection_reason: string | null
           risk_score: string | null
           screenshot_url: string | null
@@ -730,6 +731,7 @@ export type Database = {
           provider_transaction_id?: string | null
           received_amount?: number | null
           received_transaction_id?: string | null
+          receiver_id?: string | null
           rejection_reason?: string | null
           risk_score?: string | null
           screenshot_url?: string | null
@@ -763,6 +765,7 @@ export type Database = {
           provider_transaction_id?: string | null
           received_amount?: number | null
           received_transaction_id?: string | null
+          receiver_id?: string | null
           rejection_reason?: string | null
           risk_score?: string | null
           screenshot_url?: string | null
@@ -783,6 +786,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "payment_receivers"
             referencedColumns: ["id"]
           },
         ]
