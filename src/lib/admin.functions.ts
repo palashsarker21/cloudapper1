@@ -193,7 +193,12 @@ export const updateCryptoWallet = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin
       .from("crypto_wallets")
       .upsert({
-        ...data,
+        id: data.id as any,
+        asset: data.asset,
+        network: data.network,
+        wallet_address: data.wallet_address,
+        minimum_amount: data.minimum_amount,
+        is_active: data.is_active,
         updated_at: new Date().toISOString()
       });
 
