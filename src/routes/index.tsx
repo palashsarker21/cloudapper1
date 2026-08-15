@@ -19,6 +19,8 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "AI Tools, Credits & Digital Products — All in One Place" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: "https://cloudapper.online/brand/cloudapper-logo.png" },
+      { name: "twitter:image", content: "https://cloudapper.online/brand/cloudapper-logo.png" },
     ],
   }),
 });
