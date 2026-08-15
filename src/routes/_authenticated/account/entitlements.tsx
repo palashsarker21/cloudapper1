@@ -30,6 +30,7 @@ export const Route = createFileRoute('/_authenticated/account/entitlements')({
 
 function EntitlementsPage() {
   const fetchLicenses = useServerFn(getMyLicenses);
+  const { t, language } = useLanguage();
   
   const { data: licenses, isLoading } = useQuery({
     queryKey: ['my-licenses'],
