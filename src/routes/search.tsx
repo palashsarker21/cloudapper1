@@ -9,6 +9,7 @@ import { useServerFn } from '@tanstack/react-start';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Filter, SlidersHorizontal, PackageX, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -34,6 +35,7 @@ function SearchPage() {
   const search = Route.useSearch() as any;
   const navigate = Route.useNavigate();
   const fetchProducts = useServerFn(getMarketplaceProducts);
+  const { t } = useLanguage();
   
   const { data, isLoading } = useQuery({
     queryKey: ['search-products', search],
