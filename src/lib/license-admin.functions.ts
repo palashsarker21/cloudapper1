@@ -1,13 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
 
 export const getPlatformStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { userId } = context;
-    const { data: isAdmin } = await supabaseAdmin.rpc('is_admin_or_super', { _user_id: userId });
+    const { data: isAdmin } = await (supabaseAdmin as any).rpc('is_admin_or_super', { _user_id: userId });
     if (!isAdmin) throw new Error("Unauthorized");
+
 
     const { count: users } = await supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true });
     const { count: orders } = await supabaseAdmin.from('orders').select('*', { count: 'exact', head: true });
@@ -28,8 +31,9 @@ export const getEklasProviderStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { userId } = context;
-    const { data: isAdmin } = await supabaseAdmin.rpc('is_admin_or_super', { _user_id: userId });
+    const { data: isAdmin } = await (supabaseAdmin as any).rpc('is_admin_or_super', { _user_id: userId });
     if (!isAdmin) throw new Error("Unauthorized");
+
 
     const apiKey = process.env['EKLAS_LICENSE_API_KEY'];
     return {
@@ -44,8 +48,9 @@ export const getRecentLicenses = createServerFn({ method: "GET" })
   .inputValidator((data) => z.object({ limit: z.number().optional().default(10) }).parse(data))
   .handler(async ({ data, context }) => {
     const { userId } = context;
-    const { data: isAdmin } = await supabaseAdmin.rpc('is_admin_or_super', { _user_id: userId });
+    const { data: isAdmin } = await (supabaseAdmin as any).rpc('is_admin_or_super', { _user_id: userId });
     if (!isAdmin) throw new Error("Unauthorized");
+
 
     const { data: licenses, error } = await (supabaseAdmin
       .from('licenses' as any)
@@ -66,8 +71,9 @@ export const retryLicenseFulfillment = createServerFn({ method: "POST" })
   .inputValidator((data) => z.object({ fulfillmentId: z.string() }).parse(data))
   .handler(async ({ data, context }) => {
     const { userId } = context;
-    const { data: isAdmin } = await supabaseAdmin.rpc('is_admin_or_super', { _user_id: userId });
+    const { data: isAdmin } = await (supabaseAdmin as any).rpc('is_admin_or_super', { _user_id: userId });
     if (!isAdmin) throw new Error("Unauthorized");
+
 
     const { processOrderFulfillment } = await import("./fulfillment.server");
     const { data: fulfillment } = await (supabaseAdmin
@@ -91,8 +97,9 @@ export const revokeLicense = createServerFn({ method: "POST" })
   }).parse(data))
   .handler(async ({ data, context }) => {
     const { userId } = context;
-    const { data: isSuperAdmin } = await supabaseAdmin.rpc('is_super_admin', { _user_id: userId });
+    const { data: isSuperAdmin } = await (supabaseAdmin as any).rpc('is_super_admin', { _user_id: userId });
     if (!isSuperAdmin) throw new Error("Unauthorized: Super Admin access required");
+
 
     // 1. Mark License as Revoked
     const { data: license, error: licenseError } = await (supabaseAdmin
@@ -160,11 +167,16 @@ export const revokeLicense = createServerFn({ method: "POST" })
   });
 
 export const reinstateLicense = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({ 
     licenseId: z.string().uuid(),
     reason: z.string().optional()
   }).parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { data: isSuperAdmin } = await (supabaseAdmin as any).rpc('is_super_admin', { _user_id: userId });
+    if (!isSuperAdmin) throw new Error("Unauthorized: Super Admin access required");
+
     // 1. Mark License as Active
     const { data: license, error: licenseError } = await (supabaseAdmin
       .from('licenses' as any)
