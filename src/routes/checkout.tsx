@@ -120,13 +120,6 @@ function CheckoutPage() {
     } catch (err) {
       console.error(err);
     }
-  const loadPaymentReceivers = async () => {
-    try {
-      const receivers = await getPaymentReceiversFn();
-      setPaymentReceivers(receivers.filter(r => r.enabled));
-    } catch (err) {
-      console.error(err);
-    }
   };
 
   const { data: initialReceivers } = useQuery({
