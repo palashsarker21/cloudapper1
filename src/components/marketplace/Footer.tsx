@@ -39,10 +39,12 @@ export const Footer = () => {
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Marketplace</h3>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/category/$slug" params={{ slug: 'ai-tools' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">AI Tools</Link></li>
-              <li><Link to="/category/$slug" params={{ slug: 'ai-credits' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">Credits</Link></li>
+              <li><Link to="/search" search={{ sort: 'newest', page: 1 }} className="hover:text-primary">AI Tools</Link></li>
+              <li><Link to="/category/$slug" params={{ slug: 'ai-credits' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">AI Credits</Link></li>
               <li><Link to="/category/$slug" params={{ slug: 'extensions' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">Extensions</Link></li>
+              <li><Link to="/category/$slug" params={{ slug: 'saas-products' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">SaaS & Software</Link></li>
               <li><Link to="/category/$slug" params={{ slug: 'digital-products' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">Digital Products</Link></li>
+              <li><Link to="/category/$slug" params={{ slug: 'templates' }} search={{ sort: 'newest', page: 1 }} className="hover:text-primary">Templates & Resources</Link></li>
             </ul>
           </div>
 
