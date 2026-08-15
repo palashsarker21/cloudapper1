@@ -167,9 +167,10 @@ function AdminOrdersPage() {
                     <TableCell>{order.total} {order.currency}</TableCell>
                     <TableCell>
                       <Badge variant={
-                        order.status === 'paid' ? 'default' : 
-                        order.status === 'pending' ? 'secondary' : 
+                        order.status === 'paid' ? 'success' : 
+                        order.status === 'pending' ? 'warning' : 
                         'destructive'
+
                       }>
                         {order.status}
                       </Badge>
@@ -179,7 +180,8 @@ function AdminOrdersPage() {
                         <div className="flex items-center gap-2">
                           <Badge variant="outline">{order.payments[0].provider}</Badge>
                           {order.payments[0].verification_status === 'pending' && (
-                            <Badge className="bg-amber-500 hover:bg-amber-600">Pending Verify</Badge>
+                            <Badge variant="warning">Pending Verify</Badge>
+
                           )}
                         </div>
                       ) : (

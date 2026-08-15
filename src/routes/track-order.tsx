@@ -58,13 +58,14 @@ function TrackOrderPage() {
     switch (status) {
       case 'paid':
       case 'completed':
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+        return <CheckCircle2 className="h-5 w-5 text-success" />;
       case 'pending':
       case 'processing':
-        return <Clock className="h-5 w-5 text-amber-500" />;
+        return <Clock className="h-5 w-5 text-warning" />;
       case 'failed':
       case 'cancelled':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-destructive" />;
+
       default:
         return <Clock className="h-5 w-5 text-muted-foreground" />;
     }
@@ -130,9 +131,10 @@ function TrackOrderPage() {
                   <CardTitle className="text-lg">Order Details</CardTitle>
                   <CardDescription className="font-mono text-xs">{order.id}</CardDescription>
                 </div>
-                <Badge variant={order.status === 'paid' ? 'default' : 'secondary'} className="capitalize">
+                <Badge variant={order.status === 'paid' ? 'success' : 'secondary'} className="capitalize">
                   {order.status}
                 </Badge>
+
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -192,9 +194,10 @@ function TrackOrderPage() {
                           {(order.fulfillments as any) && (order.fulfillments as any).length > 0 ? (
                             (order.fulfillments as any).map((f: any) => (
                               <div key={f.id} className="flex items-center gap-2">
-                                <Badge variant={f.status === 'completed' ? 'default' : 'secondary'} className="text-[10px] py-0">
+                                <Badge variant={f.status === 'completed' ? 'success' : 'secondary'} className="text-[10px] py-0">
                                   {f.status}
                                 </Badge>
+
                                 <span className="text-xs text-muted-foreground">
                                   {f.metadata?.product_name}
                                 </span>

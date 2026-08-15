@@ -54,12 +54,17 @@ function AdminHealthPage() {
 
   const StatusBadge = ({ status }: { status: string }) => {
     const isHealthy = ['Healthy', 'Configured', 'Authenticated'].includes(status);
+    const isError = ['Error', 'Not Configured'].includes(status);
+    
     return (
-      <Badge variant={isHealthy ? 'secondary' : 'destructive'} className={isHealthy ? 'bg-green-500/10 text-green-600 border-green-500/20' : ''}>
+      <Badge 
+        variant={isHealthy ? 'success' : isError ? 'destructive' : 'warning'}
+      >
         {isHealthy ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <AlertCircle className="mr-1 h-3 w-3" />}
         {status}
       </Badge>
     );
+
   };
 
   return (
