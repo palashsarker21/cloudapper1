@@ -269,8 +269,9 @@ function PaymentProcessingPage() {
                 </div>
                 <Button 
                   className="mt-4 gap-2" 
-                  onClick={() => navigate({ to: '/account/orders' })}
+                  onClick={() => navigate({ to: '/track-order' })}
                 >
+
                   <ExternalLink className="w-4 h-4" />
                   Go to Orders
                 </Button>
