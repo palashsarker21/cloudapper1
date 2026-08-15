@@ -82,6 +82,10 @@ export const ProductForm = ({ product }: { product?: any }) => {
         price: Number(data.price),
         sale_price: data.sale_price ? Number(data.sale_price) : null,
         stock_quantity: data.stock_quantity ? parseInt(data.stock_quantity) : 0,
+        license_duration: data.license_duration ? parseInt(data.license_duration) : null,
+        device_limit: data.device_limit ? parseInt(data.device_limit) : null,
+        is_featured: !!data.is_featured,
+        resale_auth_verified: !!data.resale_auth_verified
       };
 
       if (product) {
@@ -188,12 +192,14 @@ export const ProductForm = ({ product }: { product?: any }) => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="ai_credits">AI Credits</SelectItem>
                         <SelectItem value="ai_tools">AI Tools</SelectItem>
                         <SelectItem value="browser_extensions">Extensions</SelectItem>
                         <SelectItem value="saas_products">SaaS</SelectItem>
                         <SelectItem value="digital_files">Digital Files</SelectItem>
                         <SelectItem value="templates">Templates</SelectItem>
+                        <SelectItem value="ai_credits">AI Credits</SelectItem>
+                        <SelectItem value="prompts">Prompts</SelectItem>
+                        <SelectItem value="automation">Automation</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -211,6 +217,11 @@ export const ProductForm = ({ product }: { product?: any }) => {
                 <div className="space-y-2">
                   <Label htmlFor="full_description">Full Description</Label>
                   <Textarea id="full_description" {...register("full_description")} className="min-h-[200px]" placeholder="Detailed product information..." />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="requirements">Technical Requirements</Label>
+                  <Textarea id="requirements" {...register("requirements")} placeholder="System requirements, prerequisites, etc." />
                 </div>
               </CardContent>
             </Card>
