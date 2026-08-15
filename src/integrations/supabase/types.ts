@@ -21,6 +21,8 @@ export type Database = {
           created_at: string | null
           id: string
           metadata: Json | null
+          order_id: string | null
+          payment_id: string | null
           target_id: string
           target_type: string
         }
@@ -30,6 +32,8 @@ export type Database = {
           created_at?: string | null
           id?: string
           metadata?: Json | null
+          order_id?: string | null
+          payment_id?: string | null
           target_id: string
           target_type: string
         }
@@ -39,10 +43,27 @@ export type Database = {
           created_at?: string | null
           id?: string
           metadata?: Json | null
+          order_id?: string | null
+          payment_id?: string | null
           target_id?: string
           target_type?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categories: {
         Row: {
@@ -576,6 +597,86 @@ export type Database = {
           },
         ]
       }
+      payment_receivers: {
+        Row: {
+          created_at: string | null
+          currency: string
+          display_name: string
+          enabled: boolean | null
+          id: string
+          instructions: string | null
+          minimum_amount: number | null
+          provider: string
+          receiver_identifier: string
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string
+          display_name: string
+          enabled?: boolean | null
+          id?: string
+          instructions?: string | null
+          minimum_amount?: number | null
+          provider: string
+          receiver_identifier: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string
+          display_name?: string
+          enabled?: boolean | null
+          id?: string
+          instructions?: string | null
+          minimum_amount?: number | null
+          provider?: string
+          receiver_identifier?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      payment_risk_flags: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          flag_type: string
+          id: string
+          metadata: Json | null
+          payment_id: string | null
+          severity: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          flag_type: string
+          id?: string
+          metadata?: Json | null
+          payment_id?: string | null
+          severity?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          flag_type?: string
+          id?: string
+          metadata?: Json | null
+          payment_id?: string | null
+          severity?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_risk_flags_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           admin_notes: string | null
@@ -596,7 +697,9 @@ export type Database = {
           provider_transaction_id: string | null
           received_amount: number | null
           received_transaction_id: string | null
+          receiver_id: string | null
           rejection_reason: string | null
+          risk_score: string | null
           screenshot_url: string | null
           sender_mobile: string | null
           status: Database["public"]["Enums"]["payment_status"]
@@ -628,7 +731,9 @@ export type Database = {
           provider_transaction_id?: string | null
           received_amount?: number | null
           received_transaction_id?: string | null
+          receiver_id?: string | null
           rejection_reason?: string | null
+          risk_score?: string | null
           screenshot_url?: string | null
           sender_mobile?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
@@ -660,7 +765,9 @@ export type Database = {
           provider_transaction_id?: string | null
           received_amount?: number | null
           received_transaction_id?: string | null
+          receiver_id?: string | null
           rejection_reason?: string | null
+          risk_score?: string | null
           screenshot_url?: string | null
           sender_mobile?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
@@ -679,6 +786,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "payment_receivers"
             referencedColumns: ["id"]
           },
         ]

@@ -24,14 +24,20 @@ export const getOrderStatus = createServerFn({ method: "GET" })
         ),
         payments (
           status,
-          provider
+          provider,
+          customer_transaction_id,
+          verification_status,
+          risk_score,
+          created_at
         ),
         fulfillments (
           id,
           status,
           fulfillment_type,
           metadata,
-          error_message
+          error_message,
+          created_at,
+          completed_at
         ),
         entitlements (
           id,

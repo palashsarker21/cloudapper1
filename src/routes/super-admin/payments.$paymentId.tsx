@@ -291,10 +291,15 @@ function SuperAdminPaymentDetailPage() {
                         "bg-amber-500/5 border border-amber-500/20"
                       )}>
                         <h4 className="text-xs font-black uppercase tracking-widest text-center">Analysis Result</h4>
-                        <div className="flex justify-center">
+                        <div className="flex justify-center flex-wrap gap-2">
                           <Badge variant={analysis.result === 'READY_FOR_CONFIRMATION' ? 'success' : 'outline'} className="uppercase text-[10px]">
                             {analysis.result.replace('_', ' ')}
                           </Badge>
+                          {analysis.riskFlags?.map((flag: any) => (
+                            <Badge key={flag.type} variant="destructive" className="uppercase text-[10px] bg-red-500/10 text-red-600 border-red-500/20">
+                              {flag.label}
+                            </Badge>
+                          ))}
                         </div>
                         
                         <div className="space-y-2 pt-2 border-t border-border/10">

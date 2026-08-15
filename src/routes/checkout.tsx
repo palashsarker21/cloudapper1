@@ -10,7 +10,9 @@ import { Logo } from '@/components/marketplace/Logo';
 
 import { useState } from 'react';
 import { useServerFn } from '@tanstack/react-start';
+import { useQuery } from '@tanstack/react-query';
 import { createOrder, initiatePayment } from '@/lib/checkout.functions';
+import { getPaymentReceivers } from '@/lib/admin.functions';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { createPaymentRecord, getActiveCryptoWallets } from '@/lib/payments.functions';
@@ -38,7 +40,9 @@ function CheckoutPage() {
   const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>('bkash');
   const [paymentStep, setPaymentStep] = useState<'selector' | 'details'>('selector');
   const [cryptoWallets, setCryptoWallets] = useState<any[]>([]);
+  const [paymentReceivers, setPaymentReceivers] = useState<any[]>([]);
   const [selectedWallet, setSelectedWallet] = useState<any>(null);
+  const [selectedReceiver, setSelectedReceiver] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -49,6 +53,7 @@ function CheckoutPage() {
   const initiatePaymentFn = useServerFn(initiatePayment);
   const createPaymentRecordFn = useServerFn(createPaymentRecord);
   const getCryptoWalletsFn = useServerFn(getActiveCryptoWallets);
+  const getPaymentReceiversFn = useServerFn(getPaymentReceivers);
 
   if (items.length === 0) {
     return (
@@ -88,6 +93,7 @@ function CheckoutPage() {
         data: {
           orderId: orderResult.orderId,
           provider: paymentProvider as any,
+          receiverId: selectedReceiver?.id,
           currency: 'BDT',
           metadata: paymentProvider === 'crypto_wallet' ? {
             wallet_address: selectedWallet?.wallet_address,
@@ -116,6 +122,13 @@ function CheckoutPage() {
       console.error(err);
     }
   };
+
+  const { data: initialReceivers } = useQuery({
+    queryKey: ['payment-receivers-checkout'],
+    queryFn: () => getPaymentReceiversFn(),
+  });
+
+  const activeReceivers = initialReceivers?.filter((r: any) => r.enabled) || [];
 
   return (
     <div className="min-h-screen bg-surface-0">
@@ -187,21 +200,31 @@ function CheckoutPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-4">
-                <PaymentMethodButton 
-                  id="bkash"
-                  name="bKash"
-                  description="Pay securely with bKash"
-                  icon={<Smartphone className="h-6 w-6" />}
-                  selected={paymentProvider === 'bkash'}
-                  onClick={() => setPaymentProvider('bkash')}
-                />
+                {activeReceivers.map((receiver: any) => (
+                  <PaymentMethodButton 
+                    key={receiver.id}
+                    id={receiver.provider}
+                    name={receiver.display_name}
+                    description={`Pay via ${receiver.provider.toUpperCase()}`}
+                    icon={<Smartphone className="h-6 w-6" />}
+                    selected={selectedReceiver?.id === receiver.id}
+                    onClick={() => {
+                      setPaymentProvider(receiver.provider as any);
+                      setSelectedReceiver(receiver);
+                    }}
+                  />
+                ))}
+                
                 <PaymentMethodButton 
                   id="binance_pay"
                   name="Binance Pay"
                   description="Pay with Binance Pay"
                   icon={<CreditCard className="h-6 w-6" />}
                   selected={paymentProvider === 'binance_pay'}
-                  onClick={() => setPaymentProvider('binance_pay')}
+                  onClick={() => {
+                    setPaymentProvider('binance_pay');
+                    setSelectedReceiver(null);
+                  }}
                 />
                 <PaymentMethodButton 
                   id="bitget_pay"
@@ -209,7 +232,10 @@ function CheckoutPage() {
                   description="Pay with Bitget Wallet"
                   icon={<Wallet className="h-6 w-6" />}
                   selected={paymentProvider === 'bitget_pay'}
-                  onClick={() => setPaymentProvider('bitget_pay')}
+                  onClick={() => {
+                    setPaymentProvider('bitget_pay');
+                    setSelectedReceiver(null);
+                  }}
                 />
                 <PaymentMethodButton 
                   id="crypto_wallet"
@@ -219,6 +245,7 @@ function CheckoutPage() {
                   selected={paymentProvider === 'crypto_wallet'}
                   onClick={() => {
                     setPaymentProvider('crypto_wallet');
+                    setSelectedReceiver(null);
                     loadCryptoWallets();
                   }}
                 />

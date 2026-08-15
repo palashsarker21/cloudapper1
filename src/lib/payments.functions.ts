@@ -15,7 +15,8 @@ export const getPaymentDetails = createServerFn({ method: "GET" })
         orders (
           *,
           order_items (*)
-        )
+        ),
+        receiver:receiver_id (*)
       `)
       .eq('id', data.paymentId)
       .eq('user_id', userId)
@@ -122,14 +123,14 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({
     orderId: z.string().uuid(),
-    provider: z.enum(['bkash', 'nagad', 'binance_pay', 'bitget_pay', 'crypto_wallet', 'lemon_squeezy', 'manual']),
-
+    provider: z.string(),
+    receiverId: z.string().uuid().optional(),
     currency: z.string().default('BDT'),
     metadata: z.any().optional()
   }).parse(data))
   .handler(async ({ data, context }) => {
     const { userId } = context;
-    const { orderId, provider, currency, metadata } = data;
+    const { orderId, provider, receiverId, currency, metadata } = data;
     
     // 0. Fetch Payment Settings & Validate Gateway/Currency
     const { data: settings, error: settingsError } = await supabaseAdmin
@@ -147,9 +148,14 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
     const providers = settingsObj.payment_providers || {};
     const config = settingsObj.payment_config || {};
 
-    // Check if provider is enabled
-    if (provider !== 'crypto_wallet' && (!providers[provider] || !providers[provider].enabled)) {
-      throw new Error(`Payment gateway ${provider} is not currently enabled`);
+    // Check if provider/receiver is enabled
+    if (provider !== 'crypto_wallet') {
+      if (receiverId) {
+        const { data: receiver } = await supabaseAdmin.from('payment_receivers').select('enabled').eq('id', receiverId).single();
+        if (!receiver || !receiver.enabled) throw new Error("This payment destination is not currently active");
+      } else if (!providers[provider] || !providers[provider].enabled) {
+        throw new Error(`Payment gateway ${provider} is not currently enabled`);
+      }
     }
 
     // Check if currency is allowed
@@ -186,7 +192,8 @@ export const createPaymentRecord = createServerFn({ method: "POST" })
       .insert({
         order_id: orderId,
         user_id: userId,
-        provider,
+        provider: provider as any,
+        receiver_id: (receiverId || null) as any,
         amount,
         currency,
         status: 'pending',
@@ -238,38 +245,50 @@ export const getPaymentVerificationAnalysis = createServerFn({ method: "POST" })
     const { data: hasRole } = await supabaseAdmin.rpc('has_role', { _user_id: userId, _role: 'super_admin' });
     if (!hasRole) throw new Error("Unauthorized");
 
-    const { data: payment } = await supabaseAdmin
-      .from('payments')
+    const { data: payment } = await (supabaseAdmin
+      .from('payments' as any)
       .select('*, orders(total)')
       .eq('id', data.paymentId)
-      .single();
+      .single() as any);
 
     if (!payment) throw new Error("Payment not found");
 
     const expectedAmount = Number(payment.amount);
     const receivedAmount = data.receivedAmount;
+    const normalizedReceivedTxId = data.receivedTransactionId.trim();
     
     let result = 'READY_FOR_CONFIRMATION';
     const matches = {
-      amount: receivedAmount === expectedAmount,
-      transaction: payment.customer_transaction_id === data.receivedTransactionId,
+      amount: Math.abs(receivedAmount - expectedAmount) < 0.01,
+      transaction: payment.customer_transaction_id === normalizedReceivedTxId,
       provider: true
     };
 
-    if (receivedAmount < expectedAmount) result = 'MISMATCH';
-    else if (receivedAmount > expectedAmount) result = 'NEEDS_REVIEW';
+    const riskFlags = [];
+
+    if (!matches.amount) {
+      result = 'MISMATCH';
+      riskFlags.push({ type: 'amount_mismatch', label: 'Amount Mismatch', severity: 'medium' });
+    }
+
+    if (!matches.transaction) {
+      riskFlags.push({ type: 'txid_mismatch', label: 'TXID Mismatch', severity: 'low' });
+    }
 
     // Check received transaction uniqueness
-    const { data: duplicate } = await supabaseAdmin
-      .from('payments')
+    const { data: duplicate } = await (supabaseAdmin
+      .from('payments' as any)
       .select('id')
-      .eq('received_transaction_id', data.receivedTransactionId)
+      .eq('received_transaction_id', normalizedReceivedTxId)
       .neq('id', data.paymentId)
-      .maybeSingle();
+      .maybeSingle() as any);
 
-    if (duplicate) result = 'DUPLICATE_TRANSACTION';
+    if (duplicate) {
+      result = 'DUPLICATE_TRANSACTION';
+      riskFlags.push({ type: 'duplicate_received_txid', label: 'Duplicate Received TXID', severity: 'high' });
+    }
 
-    return { result, matches, expectedAmount, receivedAmount };
+    return { result, matches, expectedAmount, receivedAmount, riskFlags };
   });
 
 export const confirmAndFulfillPayment = createServerFn({ method: "POST" })

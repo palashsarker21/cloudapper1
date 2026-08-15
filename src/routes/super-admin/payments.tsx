@@ -131,7 +131,7 @@ function SuperAdminPaymentsPage() {
                         </div>
                       </TableCell>
                       <TableCell className="font-bold text-primary">
-                        ৳{payment.amount.toLocaleString()}
+                        ৳{Number(payment.amount).toLocaleString()}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-widest">
@@ -139,9 +139,16 @@ function SuperAdminPaymentsPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={payment.status === 'paid' ? 'success' : payment.status === 'payment_rejected' ? 'destructive' : 'outline'} className="text-[10px] uppercase">
-                          {payment.status.replace('_', ' ')}
-                        </Badge>
+                        <div className="flex flex-col gap-1">
+                          <Badge variant={payment.status === 'paid' ? 'success' : payment.status === 'payment_rejected' ? 'destructive' : 'outline'} className="text-[10px] uppercase w-fit">
+                            {payment.status.replace('_', ' ')}
+                          </Badge>
+                          {payment.risk_score && payment.risk_score !== 'low' && (
+                            <Badge variant="destructive" className="text-[8px] uppercase py-0 px-1 w-fit bg-red-500/10 text-red-600 border-red-500/20">
+                              {payment.risk_score} RISK
+                            </Badge>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className="text-right">
                         <Button 
@@ -159,7 +166,6 @@ function SuperAdminPaymentsPage() {
                       </TableCell>
                     </TableRow>
                   ))}
-
                 </TableBody>
               </Table>
             )}

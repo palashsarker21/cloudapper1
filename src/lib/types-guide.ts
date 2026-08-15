@@ -52,6 +52,21 @@ export type Entitlement = Database["public"]["Tables"]["entitlements"]["Row"];
 export type CryptoWallet = Database["public"]["Tables"]["crypto_wallets"]["Row"];
 
 /**
+ * Admin-configured manual payment receiver (bKash, Nagad, etc.)
+ */
+export type PaymentReceiver = Database["public"]["Tables"]["payment_receivers"]["Row"];
+
+/**
+ * Deterministic risk flag for a payment submission
+ */
+export type PaymentRiskFlag = Database["public"]["Tables"]["payment_risk_flags"]["Row"];
+
+/**
+ * System audit log for all privileged actions
+ */
+export type AuditLog = Database["public"]["Tables"]["audit_logs"]["Row"];
+
+/**
  * Product category for marketplace organization
  */
 export type Category = Database["public"]["Tables"]["categories"]["Row"];
