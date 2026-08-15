@@ -16,11 +16,11 @@ export interface Product {
   rating: number;
   reviews: number;
   image: string;
-  sku?: string;
-  product_type?: string;
-  license_duration?: number;
-  inventory_type?: string;
-  stock_status?: string;
+  sku?: string | null;
+  product_type?: string | null;
+  license_duration?: number | null;
+  inventory_type?: string | null;
+  stock_status?: string | null;
 }
 
 interface ProductCardProps {
