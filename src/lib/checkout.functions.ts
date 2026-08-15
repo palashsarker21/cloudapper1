@@ -38,11 +38,11 @@ export const createOrder = createServerFn({ method: "POST" })
 
     // 2. Calculate subtotal and validate inventory
     let subtotal = 0;
-    const { data: allPackages } = await supabaseAdmin
-      .from("product_packages" as any)
+    const { data: allPackages } = await (supabaseAdmin
+      .from("product_packages" as any) as any)
       .select("*")
-      .in("product_id" as any, productIds)
-      .eq("status" as any, "active");
+      .in("product_id", productIds)
+      .eq("status", "active");
 
     for (const item of items) {
       const product = products.find((p) => p.id === item.productId)!;
