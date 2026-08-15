@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Loader2, Copy, Check, AlertTriangle, ExternalLink } from 'lucide-react';
+import { Loader2, Copy, Check, AlertTriangle, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { Header } from '@/components/marketplace/Header';
 import { Footer } from '@/components/marketplace/Footer';
 

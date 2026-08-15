@@ -13,6 +13,7 @@ import { useServerFn } from '@tanstack/react-start';
 import { createOrder, initiatePayment } from '@/lib/checkout.functions';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { createPaymentRecord, getActiveCryptoWallets } from '@/lib/payments.functions';
 
 export const Route = createFileRoute('/checkout')({
   head: () => ({
@@ -28,13 +29,16 @@ export const Route = createFileRoute('/checkout')({
 
 });
 
-type PaymentProvider = 'bkash' | 'nagad' | 'binance_pay' | 'manual';
+type PaymentProvider = 'bkash' | 'nagad' | 'binance_pay' | 'bitget_pay' | 'crypto_wallet' | 'lemon_squeezy' | 'manual';
 
 function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>('bkash');
+  const [paymentStep, setPaymentStep] = useState<'selector' | 'details'>('selector');
+  const [cryptoWallets, setCryptoWallets] = useState<any[]>([]);
+  const [selectedWallet, setSelectedWallet] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -43,6 +47,8 @@ function CheckoutPage() {
 
   const createOrderFn = useServerFn(createOrder);
   const initiatePaymentFn = useServerFn(initiatePayment);
+  const createPaymentRecordFn = useServerFn(createPaymentRecord);
+  const getCryptoWalletsFn = useServerFn(getActiveCryptoWallets);
 
   if (items.length === 0) {
     return (
@@ -77,21 +83,37 @@ function CheckoutPage() {
         }
       });
 
-      // 2. Initiate Payment
-      await initiatePaymentFn({
+      // 2. Create Payment Record (Server-side price verification)
+      const paymentResult = await createPaymentRecordFn({
         data: {
           orderId: orderResult.orderId,
-          provider: paymentProvider,
+          provider: paymentProvider as any,
+          currency: 'BDT',
+          metadata: paymentProvider === 'crypto_wallet' ? {
+            wallet_address: selectedWallet?.wallet_address,
+            asset: selectedWallet?.asset,
+            network: selectedWallet?.network
+          } : {}
         }
       });
 
       toast.success("Order created successfully!");
       clearCart();
-      navigate({ to: '/track-order', search: { orderId: orderResult.orderId } });
+      navigate({ to: '/checkout/payment/$paymentId', params: { paymentId: paymentResult.paymentId } });
     } catch (error: any) {
       toast.error(error.message || "Checkout failed. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadCryptoWallets = async () => {
+    try {
+      const wallets = await getCryptoWalletsFn();
+      setCryptoWallets(wallets);
+      if (wallets.length > 0) setSelectedWallet(wallets[0]);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -164,49 +186,63 @@ function CheckoutPage() {
               <CardDescription>Select your preferred payment provider.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Button
-                  type="button"
-                  variant={paymentProvider === 'bkash' ? 'default' : 'outline'}
-                  className="h-20 flex flex-col items-center justify-center space-y-2"
+              <div className="grid grid-cols-1 gap-4">
+                <PaymentMethodButton 
+                  id="bkash"
+                  name="bKash"
+                  description="Pay securely with bKash"
+                  icon={<Smartphone className="h-6 w-6" />}
+                  selected={paymentProvider === 'bkash'}
                   onClick={() => setPaymentProvider('bkash')}
-                >
-                  <Smartphone className="h-6 w-6" />
-                  <span>bKash</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant={paymentProvider === 'nagad' ? 'default' : 'outline'}
-                  className="h-20 flex flex-col items-center justify-center space-y-2"
-                  onClick={() => setPaymentProvider('nagad')}
-                >
-                  <Wallet className="h-6 w-6" />
-                  <span>Nagad</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant={paymentProvider === 'binance_pay' ? 'default' : 'outline'}
-                  className="h-20 flex flex-col items-center justify-center space-y-2"
+                />
+                <PaymentMethodButton 
+                  id="binance_pay"
+                  name="Binance Pay"
+                  description="Pay with Binance Pay"
+                  icon={<CreditCard className="h-6 w-6" />}
+                  selected={paymentProvider === 'binance_pay'}
                   onClick={() => setPaymentProvider('binance_pay')}
-                >
-                  <CreditCard className="h-6 w-6" />
-                  <span>Binance Pay</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant={paymentProvider === 'manual' ? 'default' : 'outline'}
-                  className="h-20 flex flex-col items-center justify-center space-y-2"
-                  onClick={() => setPaymentProvider('manual')}
-                >
-                  <Banknote className="h-6 w-6" />
-                  <span>Manual (Bank/Other)</span>
-                </Button>
+                />
+                <PaymentMethodButton 
+                  id="bitget_pay"
+                  name="Bitget Wallet Pay"
+                  description="Pay with Bitget Wallet"
+                  icon={<Wallet className="h-6 w-6" />}
+                  selected={paymentProvider === 'bitget_pay'}
+                  onClick={() => setPaymentProvider('bitget_pay')}
+                />
+                <PaymentMethodButton 
+                  id="crypto_wallet"
+                  name="Crypto Wallet"
+                  description="Pay USDT/Crypto directly from your wallet"
+                  icon={<Banknote className="h-6 w-6" />}
+                  selected={paymentProvider === 'crypto_wallet'}
+                  onClick={() => {
+                    setPaymentProvider('crypto_wallet');
+                    loadCryptoWallets();
+                  }}
+                />
               </div>
 
-              {paymentProvider === 'manual' && (
-                <div className="mt-6 p-4 bg-muted rounded-lg text-sm">
-                  <p className="font-semibold mb-2">Manual Payment Instructions:</p>
-                  <p>Please contact our support team after making the payment to verify your transaction. Use the Order ID provided after checkout.</p>
+              {paymentProvider === 'crypto_wallet' && cryptoWallets.length > 0 && (
+                <div className="mt-6 space-y-4 p-4 rounded-xl border bg-muted/20">
+                  <Label>Select Asset & Network</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {cryptoWallets.map(wallet => (
+                      <Button
+                        key={wallet.id}
+                        type="button"
+                        variant={selectedWallet?.id === wallet.id ? 'default' : 'outline'}
+                        className="justify-start h-auto py-3 px-4"
+                        onClick={() => setSelectedWallet(wallet)}
+                      >
+                        <div className="text-left">
+                          <div className="font-bold">{wallet.asset}</div>
+                          <div className="text-[10px] opacity-70">{wallet.network}</div>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>

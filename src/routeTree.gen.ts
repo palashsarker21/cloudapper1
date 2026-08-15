@@ -27,6 +27,7 @@ import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin/products.$productId'
 import { Route as AdminProductsNewRouteImport } from './routes/admin/products.new'
 import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
+import { Route as CheckoutPaymentPaymentIdRouteImport } from './routes/checkout/payment.$paymentId'
 import { Route as AuthenticatedAccountOrdersOrderIdRouteImport } from './routes/_authenticated/account/orders.$orderId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -120,6 +121,12 @@ const ApiPublicWebhookRoute = ApiPublicWebhookRouteImport.update({
   path: '/api/public/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutPaymentPaymentIdRoute =
+  CheckoutPaymentPaymentIdRouteImport.update({
+    id: '/payment/$paymentId',
+    path: '/payment/$paymentId',
+    getParentRoute: () => CheckoutRoute,
+  } as any)
 const AuthenticatedAccountOrdersOrderIdRoute =
   AuthenticatedAccountOrdersOrderIdRouteImport.update({
     id: '/account/orders/$orderId',
@@ -129,7 +136,7 @@ const AuthenticatedAccountOrdersOrderIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
@@ -145,11 +152,12 @@ export interface FileRoutesByFullPath {
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
@@ -165,13 +173,14 @@ export interface FileRoutesByTo {
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/track-order': typeof TrackOrderRoute
@@ -187,6 +196,7 @@ export interface FileRoutesById {
   '/admin/products/$productId': typeof AdminProductsProductIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
+  '/checkout/payment/$paymentId': typeof CheckoutPaymentPaymentIdRoute
   '/_authenticated/account/orders/$orderId': typeof AuthenticatedAccountOrdersOrderIdRoute
 }
 export interface FileRouteTypes {
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/checkout/payment/$paymentId'
     | '/account/orders/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/checkout/payment/$paymentId'
     | '/account/orders/$orderId'
   id:
     | '__root__'
@@ -250,13 +262,14 @@ export interface FileRouteTypes {
     | '/admin/products/$productId'
     | '/admin/products/new'
     | '/api/public/webhook'
+    | '/checkout/payment/$paymentId'
     | '/_authenticated/account/orders/$orderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  CheckoutRoute: typeof CheckoutRoute
+  CheckoutRoute: typeof CheckoutRouteWithChildren
   LoginRoute: typeof LoginRoute
   SearchRoute: typeof SearchRoute
   TrackOrderRoute: typeof TrackOrderRoute
@@ -398,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/payment/$paymentId': {
+      id: '/checkout/payment/$paymentId'
+      path: '/payment/$paymentId'
+      fullPath: '/checkout/payment/$paymentId'
+      preLoaderRoute: typeof CheckoutPaymentPaymentIdRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
     '/_authenticated/account/orders/$orderId': {
       id: '/_authenticated/account/orders/$orderId'
       path: '/account/orders/$orderId'
@@ -425,6 +445,18 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface CheckoutRouteChildren {
+  CheckoutPaymentPaymentIdRoute: typeof CheckoutPaymentPaymentIdRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutPaymentPaymentIdRoute: CheckoutPaymentPaymentIdRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
 interface AdminProductsRouteChildren {
   AdminProductsProductIdRoute: typeof AdminProductsProductIdRoute
   AdminProductsNewRoute: typeof AdminProductsNewRoute
@@ -442,7 +474,7 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  CheckoutRoute: CheckoutRoute,
+  CheckoutRoute: CheckoutRouteWithChildren,
   LoginRoute: LoginRoute,
   SearchRoute: SearchRoute,
   TrackOrderRoute: TrackOrderRoute,

@@ -143,7 +143,7 @@ export const initiatePayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({
     orderId: z.string().uuid(),
-    provider: z.enum(["bkash", "nagad", "binance_pay", "manual"]),
+    provider: z.enum(["bkash", "nagad", "binance_pay", "manual", "bitget_pay", "crypto_wallet", "lemon_squeezy"]),
     paymentDetails: z.any().optional(),
   }).parse(data))
   .handler(async ({ data, context }) => {
